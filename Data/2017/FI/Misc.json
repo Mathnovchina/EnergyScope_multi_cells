@@ -1,0 +1,60 @@
+{
+    "share_ned": {
+        "HVC": 0.779,
+        "METHANOL": 0.029,
+        "AMMONIA": 0.192
+    },
+    "share_short_haul_flights_max": 0.16444063747826496,
+    "share_short_haul_flights_min": 0.16434063747826497,
+    "solar_area_ground": 345.75,
+    "solar_area_ground_high_irr": 0.0,
+    "solar_area_rooftop": 80.49285731719203,
+    "STORAGE_DAILY": [
+        "TS_DEC_HP_ELEC",
+        "TS_DEC_THHP_GAS",
+        "TS_DEC_COGEN_GAS",
+        "TS_DEC_COGEN_OIL",
+        "TS_DEC_ADVCOGEN_GAS",
+        "TS_DEC_ADVCOGEN_H2",
+        "TS_DEC_BOILER_GAS",
+        "TS_DEC_BOILER_WOOD",
+        "TS_DEC_BOILER_OIL",
+        "TS_DEC_DIRECT_ELEC",
+        "TS_DHN_DAILY",
+        "BATT_LI",
+        "TS_HIGH_TEMP"
+    ],
+    "elec_export_capacity": 3,
+    "elec_import_capacity": 3,
+    "evs": {
+        "CAR": [
+            "CAR_PHEV",
+            "CAR_BEV"
+        ],
+        "EVs_BATT": [
+            "PHEV_BATT",
+            "BEV_BATT"
+        ],
+        "vehicule_capacity": [
+            50.4,
+            50.4
+        ],
+        "batt_per_car": [
+            10.0,
+            50.0
+        ]
+    },
+    "import_capacity": 4.5,
+    "re_share_primary": 0.41,
+    "share_freight_boat_max": 0.156,
+    "share_freight_boat_min": 0.154,
+    "share_freight_road_max": 1,
+    "share_freight_road_min": 0,
+    "share_freight_train_max": 0.109,
+    "share_freight_train_min": 0.108,
+    "share_heat_dhn_max": 0.02,
+    "share_heat_dhn_min": 0,
+    "share_mobility_public_max": 0.199,
+    "share_mobility_public_min": 0.198,
+    "solar_area": 338000
+}
