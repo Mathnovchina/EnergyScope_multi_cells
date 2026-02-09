@@ -25,18 +25,30 @@ class Cell:
     def arrange(self, dataframe, regroup_dict):
 
         for column_name, group_columns in regroup_dict.items():
-            if len(group_columns) > 1:
-                new_column = dataframe.pop(group_columns[0])
-                for i in range(1, len(group_columns)):
-                    new_column = new_column.add(dataframe.pop(group_columns[i]))
-                new_column.name = column_name
+            
+            existing_cols = [c for c in group_columns if c in dataframe.columns]
+            
+            if not existing_cols:
+                new_column = pd.Series(0.0, index=dataframe.index, name=column_name)
                 dataframe = pd.concat([dataframe, new_column], axis=1)
+                continue
+                
+            new_column = dataframe.pop(existing_cols[0])
+            for i in range(1, len(existing_cols)):
+                new_column = new_column.add(dataframe.pop(existing_cols[i]))
+            new_column.name = column_name
+            dataframe = pd.concat([dataframe, new_column], axis=1)
 
-            else:
-                dataframe = dataframe.rename(columns={group_columns[0]: column_name})
-        for column in dataframe.columns:
-            if column not in regroup_dict.keys():
-                dataframe.pop(column)
+        cols_to_keep = list(regroup_dict.keys())
+        # Drop columns that are not in the target keys (leftovers)
+        # We constructed the dataframe by popping old and appending new, 
+        # so remaining old columns are those not in any group_columns.
+        # But we must be careful not to drop the NEW columns we just made.
+        
+        current_cols = dataframe.columns.tolist()
+        for col in current_cols:
+            if col not in cols_to_keep:
+                dataframe.pop(col)
         return dataframe
 
     def arrange_columns(self, data_frame, regroup_dict):
@@ -54,27 +66,45 @@ def write_sankey_file(space_id, case_study):
     proj_dir = Path(__file__).parents[3]
     output_dir = proj_dir / "case_studies" / space_id / case_study / "outputs"
 
-    with open(output_dir / "Year_balance.csv", "r") as year_balance_file:
+    # Define separator
+    sep = ","
 
-        # Get the name of all the macrocells
-        year_balance_file.readline()
-        first_column = [line.split(";")[0] for line in year_balance_file.readlines()]
-        cells_name = []
-        for index_name in first_column:
-            if index_name not in cells_name:
-                cells_name.append(index_name)
+    # Read Year_balance.csv
+    # Try reading with single index first to check column names
+    all_data_balance = pd.read_csv(output_dir / "Year_balance.csv", index_col=0, sep=sep)
+    all_data_balance = all_data_balance.replace(to_replace=np.nan, value=0)
+    
+    if all_data_balance.index.name == 'Elements':
+         # Single cell case detected
+        cell_name = space_id
+        # Creates a MultiIndex [Macrocell, Elements]
+        all_data_balance = pd.concat({cell_name: all_data_balance}, names=['Macrocell', 'Elements'])
+        cells_name = [cell_name]
+    else:
+        # Multi cell case? Re-read with 2 indices if appropriate or assume current index is Cells?
+        # If the first column was actually Cell, and second was Elements.
+        # But for now let's assume if it is not Elements, it might be Cell.
+        # But typically we see "Node" or similar.
+        # Let's try to handle the case where it IS multi-cell.
+        # If we read index_col=0, and it is "Node", then "Elements" is a column.
+        if "Elements" in all_data_balance.columns:
+             all_data_balance = all_data_balance.reset_index().set_index([all_data_balance.index.name, 'Elements'])
+             cells_name = list(all_data_balance.index.get_level_values(0).unique())
+        else:
+             # Fallback/Error
+             print("Warning: unexpected structure in Year_balance.csv")
+             cells_name = []
 
-        year_balance_file.seek(0)
+    # Read Sto_assets.csv
+    all_data_sto = pd.read_csv(output_dir / "Sto_assets.csv", index_col=0, sep=sep)
+    all_data_sto = all_data_sto.replace(to_replace=np.nan, value=0)
+    
+    # Check structure for Sto_assets
+    # Usually index name is Technologies
+    if all_data_sto.index.name != 'Macrocell' and 'Macrocell' not in all_data_sto.index.names:
+         cell_name = space_id
+         all_data_sto = pd.concat({cell_name: all_data_sto}, names=['Macrocell', 'Technologies'])
 
-        # Get year_balance file under the form of a panda dataframe
-        all_data_balance = pd.read_csv(year_balance_file, index_col=[0, 1], sep=";")
-        all_data_balance = all_data_balance.replace(to_replace=np.nan, value=0)
-
-    with open(output_dir / "Sto_assets.csv", "r") as sto_assets_file:
-
-        # Get Sto_assets file under the form of a panda dataframe
-        all_data_sto = pd.read_csv(sto_assets_file, index_col=[0, 1], sep=";")
-        all_data_sto = all_data_sto.replace(to_replace=np.nan, value=0)
 
     cells = {}
     for cell_name in cells_name:
@@ -320,7 +350,7 @@ EndUseLayer = [
 ]
 
 EndUseName = {
-    "Elec": "Elec Demand",
+    "Elec.": "Elec Demand",
     "Ammonia": "Non-Energy Demand",
     "Methanol": "Non-Energy Demand",
     "HVC": "Non-Energy Demand",
@@ -328,7 +358,7 @@ EndUseName = {
 }
 
 LayerColor = {
-    "Elec": "#00BFFF",
+    "Elec.": "#00BFFF",
     "Oil": "#8B008B",
     #"Jet Fuel": "#CDC0B0",
     "Diesel": "#D3D3D3",

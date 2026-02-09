@@ -186,9 +186,14 @@ class Esmc:
         self.data_reg['Exch'] = dict()
         # self.data_reg['Exch']['Dist'] = pd.read_csv(data_path / 'Dist.csv', sep=CSV_SEPARATOR,
         #                                             header=[0], index_col=[0]).loc[self.regions_names, :]
-        self.data_reg['Exch']['Dist'] = pd.read_csv(data_path / 'Dist.csv', sep=CSV_SEPARATOR,
-                                                    header=[0], index_col=[0,1]).loc[
-                                        (self.regions_names, self.regions_names), :]
+        
+        # Read Dist.csv
+        df_dist = pd.read_csv(data_path / 'Dist.csv', sep=CSV_SEPARATOR, header=[0], index_col=[0,1])
+        # Filter for regions in self.regions_names (handling cases where no matches exist without KeyError)
+        mask = df_dist.index.get_level_values(0).isin(self.regions_names) & \
+               df_dist.index.get_level_values(1).isin(self.regions_names)
+        self.data_reg['Exch']['Dist'] = df_dist[mask]
+
         self.data_reg['Exch']['Exchange_losses'] = pd.read_csv(data_path / 'Exchange_losses.csv', sep=CSV_SEPARATOR,
                                                     header=[0], index_col=[0])
         r_path = (data_path / 'Misc_exch.json')
@@ -198,11 +203,18 @@ class Esmc:
         self.data_reg['Exch']['Lhv'] = pd.read_csv(data_path / 'Lhv.csv', sep=CSV_SEPARATOR, header=[0], index_col=[0])\
                                            .loc[self.data_reg['Exch']['Misc_exch']['add_sets']['EXCHANGE_FREIGHT_R'], :]
 
-        self.data_reg['Exch']['Network_exchanges'] = pd.read_csv(data_path / 'Network_exchanges.csv', sep=CSV_SEPARATOR,
-                                                      header=[0], index_col=[0, 1, 2, 3]).loc[
-                                          (self.regions_names, self.regions_names,
-                                           self.data_reg['Exch']['Misc_exch']['add_sets']['EXCHANGE_NETWORK_R'],
-                                           slice(None)), :]
+        # self.data_reg['Exch']['Network_exchanges'] = pd.read_csv(data_path / 'Network_exchanges.csv', sep=CSV_SEPARATOR,
+        #                                               header=[0], index_col=[0, 1, 2, 3]).loc[
+        #                                   (self.regions_names, self.regions_names,
+        #                                    self.data_reg['Exch']['Misc_exch']['add_sets']['EXCHANGE_NETWORK_R'],
+        #                                    slice(None)), :]
+
+        df_net_exch = pd.read_csv(data_path / 'Network_exchanges.csv', sep=CSV_SEPARATOR, header=[0], index_col=[0, 1, 2, 3])
+        exchange_network_r = self.data_reg['Exch']['Misc_exch']['add_sets']['EXCHANGE_NETWORK_R']
+        mask = df_net_exch.index.get_level_values(0).isin(self.regions_names) & \
+               df_net_exch.index.get_level_values(1).isin(self.regions_names) & \
+               df_net_exch.index.get_level_values(2).isin(exchange_network_r)
+        self.data_reg['Exch']['Network_exchanges'] = df_net_exch[mask]
 
     def read_data_indep(self):
         """Read data independent of the region dimension of the problem
@@ -671,7 +683,6 @@ class Esmc:
                              'crossover=0',
                              'timelimit 172800',
                              'bardisplay=1',
-                             'prestats=1',
                              'display=2']
             cplex_options_str = ' '.join(cplex_options)
             ampl_options = {'show_stats': 3,

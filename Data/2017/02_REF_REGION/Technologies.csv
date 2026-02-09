@@ -9,7 +9,7 @@ Category,Subcategory,Technologies name,Technologies param,c_inv,c_maint,gwp_cons
 [ktonCO2_eq/GWh]
 [ktonCO2_eq/(Mkmpass/h)]
 [ktonCO2_eq/(Mtonkm/h)]",[years],[],[],[],[GW],[GW],
-Electricity,Electricity,Nuclear,NUCLEAR,4845.734619,102.930986,707.88,60,0.849,0,1,0,0,
+Electricity,Electricity,Nuclear,NUCLEAR,4845.734619,102.930986,707.88,60,0.849,0.25,1,0,0,
 Electricity,Electricity,Nuclear,NUCLEAR_SMR,4845.734619,102.930986,707.88,60,0.849,0,1,0,0,
 Electricity,Electricity,Combined cycle gas turbine,CCGT,771.9917595,19.73031183,183.79,25,0.85,0,1,0,1.00E+15,
 Electricity,Electricity,Amonia combined cycle gas turbine,CCGT_AMMONIA ,771.99,19.55202588,183.79,25,0.961538462,0,1,0,1.00E+15,
@@ -124,7 +124,7 @@ Synthetic fuels,Synthetic fuels,Biowaste pyrolysis to gasoline (and diesel),BIOW
 Synthetic fuels,Synthetic fuels,Fischer Tropsch bio waste Diesel,BIOWASTE_TO_DIESEL,5608.0092,227.08396,0,25,0.91,0,1,0,1.00E+15,
 Synthetic fuels,Synthetic fuels,Fischer Tropsch bio waste Jet fuel,BIOWASTE_TO_JET_FUEL,5608.0092,227.08396,0,25,0.91,0,1,0,1.00E+15,
 Synthetic fuels,Synthetic fuels,Biowaste pyrolysis to LFO,BIOWASTE_TO_LFO,5608.0092,227.08396,0,25,0.91,0,1,0,1.00E+15,
-Synthetic fuels,Synthetic fuels,Diesel to jet fuel,DIESEL_TO_JET_FUEL,0,0,0,25,1,0,1,0,1.00E+15,
+Synthetic fuels,Synthetic fuels,Diesel to jet fuel,DIESEL_TO_JET_FUEL,0,0,0,25,1,0,1,0,0,
 Synthetic fuels,Synthetic fuels,Carbon capture atmospheric,ATM_CCS,5160,129.6,0,40,1,0,1,0,1.00E+15,
 Synthetic fuels,Synthetic fuels,Carbon capture from industry,INDUSTRY_CCS,2580,64.8,0,40,1,0,1,0,1.00E+15,
 Synthetic fuels,Synthetic fuels,Hydrogen methanolation,SYN_METHANOLATION,1679.651653,47.66486711,0,20,0.95,0,1,0,1.00E+15,

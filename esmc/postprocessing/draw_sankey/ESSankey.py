@@ -164,14 +164,10 @@ def main(argv):
         elif opt in ("-n", "--no-open"):
             auto_open = False
     if outputfile == '':
-        outputfile = path / 'python_generated_sankey.html'
+        outputfile = 'python_generated_sankey.html'
 
     drawSankey(path=path,outputfile=outputfile,auto_open=auto_open)
 
 
 if __name__ == '__main__':
-    #print("Executing without argument: assuming that this program file is in the same directory as the 'input2sankey.csv' directory.\nThe default input file is thus './input2sankey.csv'.")
-    #print("If this does not work, please open python3 and run:\n\t>>> from ESSankey.py import drawSankey\n\t>>> drawSankey(path='/path/to/sankey/')")
-    # main(sys.argv[1:])
-    path = Path('../../case_studies//test2/output/sankey')
-    drawSankey(path=path, auto_open=True)
+    main(sys.argv[1:])

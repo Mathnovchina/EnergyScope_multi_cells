@@ -18,7 +18,7 @@
         "CAR_BEV": 50.0
     },
     "state_of_charge_ev": {
-        "PHEV_BATT": [
+        "CAR_PHEV": [
             0.0,
             0.0,
             0.0,
@@ -44,7 +44,7 @@
             0.0,
             0.0
         ],
-        "BEV_BATT": [
+        "CAR_BEV": [
             0.0,
             0.0,
             0.0,
@@ -176,6 +176,7 @@
             "BATT_LI",
             "TS_HIGH_TEMP"
         ],
+        "RES_IMPORT_CONSTANT": [],
         "V2G": [
             "CAR_PHEV",
             "CAR_BEV"

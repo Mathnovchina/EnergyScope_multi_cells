@@ -180,6 +180,9 @@ param storage_discharge_time {REGIONS, STORAGE_TECH} >= 0; # t_sto_out [h]: Time
 
 # Other attributes
 param import_capacity{REGIONS} >= 0; # Maximum electricity import capacity [GW]
+param elec_import_capacity{REGIONS} >= 0; 
+param elec_export_capacity{REGIONS} >= 0; 
+param solar_area{REGIONS} >= 0;
 param solar_area_rooftop{REGIONS} >= 0; # Maximum land available for solar deployement on rooftops [km2]
 param solar_area_ground{REGIONS} >= 0; # Maximum land available for solar deployement on the ground [km2]
 param solar_area_ground_high_irr{REGIONS} >= 0; # Maximum land available for solar deployement on the ground in locations with high irradiance [km2]
