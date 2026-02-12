@@ -21,25 +21,26 @@ os.makedirs(PLOTS_DIR, exist_ok=True)
 # -----------------------------------------------------------------------------
 REALITY = {
     'Primary Energy': {
-        'WOOD': 105.0, # Wood & Bio combined
-        'OIL': 96.0,   # Refined Oil Products
+        'WOOD': 100.0,
+        'OIL': 80.0, # Diesel + Gasoline + LFO + Jet
         'NUCLEAR': 65.0, # Thermal input
-        'COAL_PEAT': 50.0, # Coal 35 + Peat 15
+        'COAL': 35.0,
         'GAS': 25.0,
         'HYDRO': 15.0,
         'WIND': 5.0,
+        'PEAT': 15.0, # Often grouped with others or missing
         'AMMONIA': 0.0
     },
     'Electricity Generation': {
         'Nuclear': 21.6,
         'Hydro': 14.6,
-        'Biomass': 11.0, 
-        'Coal': 9.0, # Coal + Peat approx
+        'Biomass': 11.0, # Approx
+        'Coal': 6.0,
         'Wind': 4.8,
         'Gas': 3.7,
-        'Solar': 0.1
-    },
-    'CO2 Emissions': 42.0 # MtCO2 (approx Energy Sector)
+        'Solar': 0.1,
+        'Peat': 3.0
+    }
 }
 
 # -----------------------------------------------------------------------------
@@ -50,12 +51,7 @@ def load_csv(filename):
     if not path.exists():
         print(f"Warning: {path} not found.")
         return pd.DataFrame()
-    # Try different separators
-    try:
-        df = pd.read_csv(path)
-    except:
-         df = pd.read_csv(path, sep=';')
-         
+    df = pd.read_csv(path)
     # Standardize first column name to 'item'
     df.rename(columns={df.columns[0]: 'item'}, inplace=True)
     
@@ -67,7 +63,7 @@ def load_csv(filename):
          if 'R_year_local' in df.columns: res_consump += df['R_year_local']
          if 'R_year_exterior' in df.columns: res_consump += df['R_year_exterior']
          if 'R_year_import' in df.columns: res_consump += df['R_year_import']
-         # exclude exports if necessary, but usually negligible for primary
+         # if 'R_year_export' in df.columns: res_consump -= df['R_year_export'] # Usually we want Gross Consumption, keeping simplistic
          
          df['Yearly'] = res_consump
 
@@ -93,19 +89,17 @@ def analyze_primary_energy():
     model_sum['WOOD'] = model_val
     
     # Oil Group
-    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL', 'DIESEL_RE', 'GASOLINE_RE', 'LFO_RE', 'JET_FUEL_RE']
+    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL']
     model_sum['OIL'] = resources[resources['item'].isin(oil_cols)]['Yearly'].sum() * SCALER
     
     # Nuclear
     model_sum['NUCLEAR'] = resources[resources['item'] == 'URANIUM']['Yearly'].sum() * SCALER
     
-    # Coal & Peat
-    # Sum COAL (which in model currently acts as Coal+Peat proxy or just Coal)
-    # If PEAT exists, add it.
-    model_sum['COAL_PEAT'] = resources[resources['item'].isin(['COAL', 'PEAT'])]['Yearly'].sum() * SCALER
+    # Coal
+    model_sum['COAL'] = resources[resources['item'] == 'COAL']['Yearly'].sum() * SCALER
     
     # Gas
-    model_sum['GAS'] = resources[resources['item'].isin(['GAS', 'GAS_RE'])]['Yearly'].sum() * SCALER
+    model_sum['GAS'] = resources[resources['item'] == 'GAS']['Yearly'].sum() * SCALER
     
     # Hydro
     model_sum['HYDRO'] = resources[resources['item'] == 'RES_HYDRO']['Yearly'].sum() * SCALER
@@ -122,23 +116,13 @@ def analyze_primary_energy():
         'Reality (Target)': REALITY['Primary Energy']
     }).fillna(0)
     
-    # Calculate Totals (TPES)
-    tpes_model = df['Model'].sum()
-    tpes_real = df['Reality (Target)'].sum() # Should be approx 360 TWh (100+80+65+35+25+15+5) -> 325 + Peat?
-    
     # Print Table
     print("\nPrimary Energy (TWh):")
     print(df)
-    
-    print("\n--- Total Primary Energy Supply (TPES) ---")
-    print(f"Model:   {tpes_model:.1f} TWh")
-    print(f"Reality: {tpes_real:.1f} TWh")
-    print(f"Diff:    {tpes_model - tpes_real:.1f} TWh ({(tpes_model/tpes_real - 1)*100:+.1f}%)")
 
     # Plot
     fig, ax = plt.subplots(figsize=(10, 6))
-    colors = ['#4c72b0', '#55a868'] # Blue vs Green
-    df.plot(kind='bar', ax=ax, width=0.8, color=colors)
+    df.plot(kind='bar', ax=ax, width=0.8)
     ax.set_title(f'Primary Energy Consumption (TWh) - {CASE_STUDY}')
     ax.set_ylabel('TWh')
     ax.grid(axis='y', linestyle='--', alpha=0.7)
@@ -150,69 +134,6 @@ def analyze_primary_energy():
     plt.tight_layout()
     plt.savefig(PLOTS_DIR / 'primary_energy_comparison.png')
     print("Saved primary_energy_comparison.png")
-
-def analyze_emissions():
-    print("Analyzing CO2 Emissions...")
-    yb = load_csv('Year_balance.csv')
-    resources = load_csv('Resources.csv')
-    
-    if yb.empty or resources.empty: return
-    
-    # EMISSION FACTORS (Approximate from Resources_indep.csv)
-    # Unit: ktCO2/GWh (Model uses kt and GWh) -> MtCO2 / TWh is equivalent (1/1000 * 1000)
-    # So factor 0.4 kt/GWh = 0.4 Mt/TWh
-    factors = {
-        'COAL': 0.40,  # Resources_indep says 0.4014
-        'OIL': 0.31,   # Diesel/LFO ~0.31
-        'GAS': 0.26,   # Gas ~0.26
-        'Peat': 0.38,  # Similar to coal
-        'Waste': 0.15  # Non-renewable part
-    }
-    
-    SCALER = 1/1000.0 # GWh -> TWh
-    
-    # Calculate Emissions Manually based on Primary Energy Consumption
-    # This avoids issues if the model's CO2_ATM tracking is weird
-    calculated_emissions = 0.0
-    
-    # Coal
-    coal_val = resources[resources['item'] == 'COAL']['Yearly'].sum() * SCALER
-    calculated_emissions += coal_val * factors['COAL']
-    
-    # Oil
-    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL']
-    oil_val = resources[resources['item'].isin(oil_cols)]['Yearly'].sum() * SCALER
-    calculated_emissions += oil_val * factors['OIL']
-    
-    # Gas
-    gas_val = resources[resources['item'] == 'GAS']['Yearly'].sum() * SCALER
-    calculated_emissions += gas_val * factors['GAS']
-    
-    # Waste
-    waste_val = resources[resources['item'] == 'WASTE']['Yearly'].sum() * SCALER
-    calculated_emissions += waste_val * factors['Waste']
-    
-    print("\nCO2 Emissions Analysis:")
-    print(f"Calculated from Primary Energy (Manual): {calculated_emissions:.2f} MtCO2")
-    print(f"Reality: {REALITY['CO2 Emissions']} MtCO2")
-    
-    # Simple Bar Plot
-    df = pd.DataFrame({
-        'Emissions': [calculated_emissions, REALITY['CO2 Emissions']]
-    }, index=['Model (Calc)', 'Reality'])
-    
-    fig, ax = plt.subplots(figsize=(6, 6))
-    df.plot(kind='bar', ax=ax, color=['#d62728', '#7f7f7f'], legend=False)
-    ax.set_title('CO2 Emissions (MtCO2)')
-    ax.set_ylabel('MtCO2')
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
-    for container in ax.containers:
-        ax.bar_label(container, fmt='%.1f')
-        
-    plt.tight_layout()
-    plt.savefig(PLOTS_DIR / 'co2_emissions_comparison.png')
-    print("Saved co2_emissions_comparison.png")
-
 
 def analyze_electricity():
     print("Analyzing Electricity Generation...")
@@ -317,6 +238,5 @@ if __name__ == "__main__":
     print(f"Comparing Model ({CASE_STUDY}) to Reality...")
     analyze_primary_energy()
     analyze_electricity()
-    analyze_emissions()
     generate_sankey()
     print("\nDone. Check plots/validation_2017 folder.")
