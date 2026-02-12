@@ -20,13 +20,13 @@ def run_finland_model():
     
     # Scenarios? The user asked about the 3 scenarios in run_esmc.py. 
     # For a calibration/first run, 'ref' (reference) is best.
-    case_study = 'ref_2017_finland'
+    case_study = 'calib_2017_finland'
     
     print(f"Running Case: {case_study}")
 
     config = {
         'case_study': case_study,
-        'comment': 'Finland 2017 Calibration Run',
+        'comment': 'Finland 2017 Calibration with f_min/f_max constraints',
         'regions_names': ['FI'], # Only Finland
         'gwp_limit_overall': None, # Unconstrained for calibration/validation
         're_share_primary': None,
