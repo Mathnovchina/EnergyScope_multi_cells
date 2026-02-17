@@ -7,12 +7,15 @@ import os
 
 # Set up paths
 SECTION = 'FI'
-CASE_STUDY = 'calib_2017_finland'
+CASE_STUDY = 'calib_2017_finland_v8_no_coal_us'
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = PROJECT_ROOT / 'case_studies' / SECTION / CASE_STUDY / 'outputs'
-PLOTS_DIR = PROJECT_ROOT / 'plots' / 'validation_2017'
+PLOTS_DIR = PROJECT_ROOT / 'plots' / 'calibration_v8_no_coal_us'
 
-# Ensure plots directory exists
+# Ensure plots directory exists and is empty (erase old)
+import shutil
+if os.path.exists(PLOTS_DIR):
+    shutil.rmtree(PLOTS_DIR)
 os.makedirs(PLOTS_DIR, exist_ok=True)
 
 # -----------------------------------------------------------------------------

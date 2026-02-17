@@ -5,156 +5,139 @@ from pathlib import Path
 import sys
 
 # Paths
+# Adjust the path to match your environment
 workspace_root = Path(r"c:\Users\borde\OneDrive\Bureau\model\EnergyScope_multi_cells")
-tech_file = workspace_root / "Data/2017/FI/Technologies.csv"
-backup_file = workspace_root / "Data/2017/FI/Technologies_REF.csv"
-
-# Add project root to path for Esmc
-sys.path.append(str(workspace_root))
-from esmc import Esmc
+tech_file_path = workspace_root / "Data/2017/FI/Technologies.csv"
+backup_file_path = workspace_root / "Data/2017/FI/Technologies_REF.csv"
+ref_indep_file = workspace_root / "Data/2017/02_REF_REGION/Technologies.csv" # Additional source if needed
 
 def run_calib():
-    # 1. Helper to update constraints
-    print(f"Reading {tech_file}")
+    print(f"Target file: {tech_file_path}")
     
-    # Read existing (3-column format expected: Technologies param, f_min, f_max)
-    df = pd.read_csv(tech_file, index_col=0)
-    
-    # Backup if not exists
-    if not os.path.exists(backup_file):
-        print(f"Backing up to {backup_file}")
-        shutil.copy(tech_file, backup_file)
+    # 1. Ensure backup exists (Golden Copy)
+    if not backup_file_path.exists():
+        print(f"Creating backup at {backup_file_path}")
+        if tech_file_path.exists():
+             shutil.copy(tech_file_path, backup_file_path)
+        else:
+             print("Error: Original Technologies.csv not found to backup!")
+             return
     else:
-        # If backup exists, RESTORE it first to ensure clean slate?
-        # Yes, good practice to avoid accumulating constraints.
-        print(f"Restoring clean REF from {backup_file}")
-        shutil.copy(backup_file, tech_file)
-        df = pd.read_csv(tech_file, index_col=0)
-    
-    # Ensure index is clean
-    df.index = df.index.str.strip()
+        # If backup exists, use it to restore clean state
+        # This prevents accumulating constraints if you run script multiple times
+        print("Restoring clean state from backup...")
+        shutil.copy(backup_file_path, tech_file_path)
 
-    # 2. Define Constraints (The "Limpens" Method)
-    # Units: GW (Power/Heat), Mpkm/h (Transport), Mtonkm/h (Freight)
+    # 2. Load the data
+    df = pd.read_csv(tech_file_path, index_col=0)
+    print(f"Loaded {len(df)} technologies.")
+
+    # 2b. Ensure necessary columns exist (this was the missing piece!)
+    # The model supports these params, but the CSV might be minimal.
+    required_cols = ['f_min', 'f_max', 'fmin_perc', 'fmax_perc']
+    for col in required_cols:
+        if col not in df.columns:
+            print(f"  [+] Adding missing column: {col}")
+            # Initialize with non-constraining default values
+            if 'min' in col:
+                df[col] = 0.0
+            elif 'max' in col and 'perc' in col:
+                df[col] = 1.0 # Default max percentage is 100%
+            elif 'max' in col:
+                df[col] = 100000.0 # Default max capacity is high
+
+    # 3. Define Constraints map
+    # Using fmin_perc/fmax_perc effectively forces market shares
+    # Using f_max=0 blocks future technologies
     
     constraints = {
-        # --- UNBLOCK TRANSPORT (ICE Proxies) ---
-        'CAR_HEV': {'f_max': 100000.0},
-        'CAR_PHEV': {'f_max': 100000.0},
-        'TRUCK_NG': {'f_max': 100000.0},
-        'TRUCK_METHANOL': {'f_max': 100000.0}, # Allow alternatives if NG limited
-
-        # --- PHASE OUT FUTURE TECHS (f_max=0) ---
-        'CAR_BEV': {'f_max': 0},
-        # 'CAR_PHEV': {'f_max': 0},
-        # 'CAR_HEV': {'f_max': 0}, # Unblock HEV to allow ICE proxy
-        'CAR_FUEL_CELL': {'f_max': 0}, 
-        'CAR_METHANOL': {'f_max': 0},
-        'BUS_COACH_FC_HYBRIDH2': {'f_max': 0},
-        'TRUCK_FUEL_CELL': {'f_max': 0},
-        'TRUCK_ELEC': {'f_max': 0},
-        # 'TRUCK_METHANOL': {'f_max': 0},
-        # 'TRUCK_NG': {'f_max': 0}, # Unblock NG Truck to allow transport (ICE Proxy)
-        
-        # --- SYNTHETIC FUELS / HYDROGEN (Relaxed to allow transport if ICE missing) ---
-        # 'H2_ELECTROLYSIS': {'f_max': 0},
-        # 'H2_NG': {'f_max': 0}, 
-        # 'H2_BIOMASS': {'f_max': 0},
-        # 'POWER_TO_GASOLINE': {'f_max': 0},
-        # 'POWER_TO_DIESEL': {'f_max': 0},
-        # 'BIOMASS_TO_GASOLINE': {'f_max': 0},
-        # 'BIOMASS_TO_DIESEL': {'f_max': 0},
-        
-        # --- FORCE HISTORICAL CAPACITIES (f_min, f_max) ---
-        'NUCLEAR': {'f_min': 2.7, 'f_max': 2.8},
+        # --- ELECTRICITY GENERATION ---
+        'NUCLEAR':      {'f_min': 2.5, 'f_max': 2.8, 'fmin_perc': 0.0, 'fmax_perc': 1.0},
         'WIND_ONSHORE': {'f_min': 2.0, 'f_max': 2.1},
-        'WIND_OFFSHORE': {'f_max': 0.1},
-        'HYDRO_RIVER': {'f_min': 1.9, 'f_max': 2.1},
-        'HYDRO_DAM': {'f_min': 1.1, 'f_max': 1.3}, 
+        'HYDRO_DAM':    {'f_min': 1.1, 'f_max': 1.3}, 
+        'HYDRO_RIVER':  {'f_min': 1.9, 'f_max': 2.1},
+        'COAL_US':      {'f_min': 3.5, 'f_max': 4.5}, # Coal condensation
+        'PV_ROOFTOP':   {'f_min': 0.02, 'f_max': 2.0}, # Very small in 2017
+        'PV_UTILITY':   {'f_max': 1.0},
         
-        # --- FORCE BIOMASS USE ---
-        # Real 2017 Biomass: ~105 TWh total.
-        # Ind: 40 TWh -> ~5 GW
-        # DHN: 20 TWh -> ~2.5 GW
-        # Increase mins to force model usage
-        'IND_BOILER_WOOD': {'f_min': 5.0}, 
-        'DHN_COGEN_WOOD': {'f_min': 2.5},
-        'IND_COGEN_WOOD': {'f_min': 1.0}, # Add Cogen wood min
+        # --- HEAT GENERATION ---
+        # 2017 was dominated by Wood/Biomass and Coal/Peat, with some Gas/Oil.
+        # Force Wood/Biomass
+        'IND_BOILER_WOOD': {'f_min': 5.0, 'fmin_perc': 0.4},
+        'DHN_COGEN_WOOD':  {'f_min': 2.5, 'fmin_perc': 0.3},
+        # Force Coal
+        'DHN_COGEN_COAL':  {'f_min': 0.5, 'fmin_perc': 0.3},
+        'DHN_BOILER_COAL': {'f_min': 0.5, 'fmin_perc': 0.1},
+        'IND_BOILER_COAL': {'f_min': 0.5, 'fmin_perc': 0.1},
+        # Limit Gas/Oil to historical low shares
+        'IND_BOILER_GAS':  {'fmax_perc': 0.2}, 
+        'DHN_COGEN_GAS':   {'fmax_perc': 0.2},
+        'DHN_BOILER_OIL':  {'fmax_perc': 0.1},
+        'IND_BOILER_OIL':  {'f_min': 0.0},
 
-        # --- LIMIT FOSSIL IMPORTS ---
-        # Force GAS to max 25 TWh (approx 2.8 GW avg, set 3.5 GW capacity max)
-        # Note: Esmc treats GAS as resource 'avail_exterior' if not in Techs.
-        # But we must ensure the Technologies consumming gas are limited too.
-        'GAS': {'f_max': 3.5},
-        'IND_BOILER_GAS': {'f_max': 2.0}, # Constrain Ind Gas Boiler
+        # --- TRANSPORT: PASSENGER CARS ---
+        # Share: ~55% Gasoline, ~40% Diesel, <1% EV/Hybrid
+        'CAR_GASOLINE':  {'fmin_perc': 0.55, 'fmax_perc': 0.65},
+        'CAR_DIESEL':    {'fmin_perc': 0.30, 'fmax_perc': 0.40},
+        'CAR_BEV':       {'fmax_perc': 0.01}, 
+        'CAR_PHEV':      {'fmax_perc': 0.01},
+        'CAR_HEV':       {'fmax_perc': 0.05},
+        'CAR_FUEL_CELL': {'f_max': 0, 'fmax_perc': 0.0},
+        'CAR_METHANOL':  {'f_max': 0},
         
-        # --- ENABLE ELECTRICITY IMPORTS ---
-        # Real 2017: ~5 GW capacity (Sweden, Estonia, Russia)
-        'HVAC_LINE': {'f_max': 3.5},  # Interconnection Sweden/Norway
-        'HVDC_SUBSEA': {'f_max': 1.5}, # Estonia/Russia
+        # --- TRANSPORT: TRUCKS ---
+        # Share: >90% Diesel
+        'TRUCK_DIESEL': {'fmin_perc': 0.90, 'fmax_perc': 1.0},
+        'TRUCK_NG':     {'fmax_perc': 0.05},
+        'TRUCK_ELEC':   {'f_max': 0},
+        'TRUCK_FUEL_CELL': {'f_max': 0},
+        
+        # --- TRANSPORT: BUSES ---
+        # Share: >90% Diesel
+        'BUS_COACH_DIESEL': {'fmin_perc': 0.90},
+        'BUS_COACH_FC_HYBRIDH2': {'f_max': 0},
+
+        # --- TRANSPORT: SHIPPING (INTERNATIONAL) ---
+        # Demand ~149,000 Mtkm -> ~17 GW equivalent capacity
+        # Force Diesel/HFO (Oil)
+        'CARGO_LFO': {'f_min': 15.0, 'fmin_perc': 0.95}, 
+        'CARGO_LNG': {'fmax_perc': 0.05},
+        'CARGO_METHANOL': {'f_max': 0},
+        'CARGO_AMMONIA':  {'f_max': 0},
+        
+        # --- TRANSPORT: DOMESTIC BOAT ---
+        'BOAT_FREIGHT_DIESEL': {'fmin_perc': 0.95},
+        'BOAT_FREIGHT_NG':     {'fmax_perc': 0.05},
+        'BOAT_FREIGHT_METHANOL': {'f_max': 0},
     }
+
+    # 4. Apply Constraints
+    print(f"Applying constraints for {len(constraints)} technologies...")
     
-    # 3. Apply Constraints
-    print("Applying calibration constraints...")
-    for tech, bounds in constraints.items():
+    # We need to know the columns to add new rows properly
+    cols = df.columns.tolist()
+    
+    for tech, params in constraints.items():
+        # A. Check existence
         if tech not in df.index:
-            # We must assume the tech exists in the Global definitions.
-            # Esmc uses this file to OVERRIDE. So we can add any valid tech name.
-            # Default values (0, 100000) or similar (NaN?)
-            # The CSV has f_min, f_max columns.
-            pass
+            print(f"  [+] Adding/Overriding missing tech: {tech}")
+            # Add with wide open defaults first
+            new_row = {c: (0.0 if 'min' in c else 1 if 'perc' in c else 100000.0) for c in cols}
+            if 'fmax_perc' in new_row: new_row['fmax_perc'] = 1.0
+                
+            df.loc[tech] = pd.Series(new_row)
             
-        if 'f_min' in bounds:
-            if tech not in df.index: df.loc[tech] = [0.0, 100000.0]
-            df.loc[tech, 'f_min'] = bounds['f_min']
-            
-        if 'f_max' in bounds:
-            if tech not in df.index: df.loc[tech] = [0.0, 100000.0]
-            df.loc[tech, 'f_max'] = bounds['f_max']
+        # B. Update values
+        for param, value in params.items():
+            if param in df.columns:
+                df.at[tech, param] = value
+            else:
+                print(f"  [!] Column '{param}' missing. Cannot set for {tech}")
 
-    # Save
-    print(f"Saving calibrated Tech file to {tech_file}")
-    df.to_csv(tech_file)
-    
-    # 4. Run Model
-    case_study = 'calib_2017_finland'
-    print(f"Running Case: {case_study}")
-
-    config = {
-        'case_study': case_study,
-        'comment': 'Finland 2017 Calibration with f_min/f_max constraints',
-        'regions_names': ['FI'],
-        'gwp_limit_overall': None,
-        're_share_primary': None,
-        'f_perc': False,
-        'year': 2017
-    }
-
-    try:
-        my_model = Esmc(config, nbr_td=12)
-        my_model.read_data_indep()
-        my_model.init_regions()
-        my_model.init_ta(algo='read') 
-        my_model.print_td_data()
-        my_model.print_data(indep=True)
-        
-        print("Solving constrained model...")
-        my_model.set_esom()
-        try:
-            my_model.solve_esom()
-        except Exception as e:
-            print(f"AMPL Execution Warning/Error: {e}")
-            print("Attempting to proceed with result extraction (assuming optimal)...")
-        
-        my_model.get_year_results(save_hourly=['Resources', 'Exchanges', 'Assets', 'Storage', 'Curt'])
-        print("Saving results to CSV...")
-        my_model.prints_esom(solve_info=True)
-        print(f"Run complete. Check {my_model.cs_dir}")
-        
-    except Exception as e:
-        print(f"Run failed: {e}")
-        # Restore backup? Maybe better to leave it for debugging
-        # shutil.copy(backup_file, tech_file)
+    # 5. Save
+    print(f"Saving modified file to {tech_file_path}")
+    df.to_csv(tech_file_path)
+    print("Calibration setup complete.")
 
 if __name__ == "__main__":
     run_calib()
