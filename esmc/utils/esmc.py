@@ -743,10 +743,10 @@ class Esmc:
             # logging info
             logging.info('Finished run')
             # print in log main outputs
-            self.esom.ampl.eval('print "TotalGWP_global", sum{c in REGIONS} (TotalGWP[c]);')
-            self.esom.ampl.eval('print "GWP_op_global", sum{c in REGIONS, r in RESOURCES} (GWP_op[c,r]);')
-            self.esom.ampl.eval('print "CO2_net_global", sum{c in REGIONS, r in RESOURCES} (CO2_net[c,r]);')
-            self.esom.ampl.eval('print "TotalCost_global", sum{c in REGIONS} (TotalCost[c]);')
+            # self.esom.ampl.eval('print "TotalGWP_global", sum{c in REGIONS} (TotalGWP[c]);')
+            # self.esom.ampl.eval('print "GWP_op_global", sum{c in REGIONS, r in RESOURCES} (GWP_op[c,r]);')
+            # self.esom.ampl.eval('print "CO2_net_global", sum{c in REGIONS, r in RESOURCES} (CO2_net[c,r]);')
+            # self.esom.ampl.eval('print "TotalCost_global", sum{c in REGIONS} (TotalCost[c]);')
         return
 
     def prints_esom(self, inputs=True, outputs=True, solve_info=False, save_hourly:list=[]):

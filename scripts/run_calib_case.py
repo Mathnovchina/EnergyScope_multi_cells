@@ -12,8 +12,8 @@ def run_finland_calibration():
     # Configuration for Finland 2017 Calibration
     
     config = {
-        'case_study': 'calib_2017_finland_v9', # Using v9 as agreed
-        'comment': 'Calibration for Finland 2017 with specific technology constraints',
+        'case_study': 'calib_2017_finland_v11_heat_fix', # Using v11 for heat constraints
+        'comment': 'Calibration for Finland 2017 with revised Heat constraints (50% CHP Wood)',
         'regions_names': ['FI'],
         'gwp_limit_overall': None, 
         'f_perc': True, 

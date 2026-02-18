@@ -7,10 +7,10 @@ import os
 
 # Set up paths
 SECTION = 'FI'
-CASE_STUDY = 'calib_2017_finland_v8_no_coal_us'
+CASE_STUDY = 'calib_2017_finland_v11_heat_fix'
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = PROJECT_ROOT / 'case_studies' / SECTION / CASE_STUDY / 'outputs'
-PLOTS_DIR = PROJECT_ROOT / 'plots' / 'calibration_v8_no_coal_us'
+PLOTS_DIR = PROJECT_ROOT / 'plots' / 'calibration_v11_heat_fix'
 
 # Ensure plots directory exists and is empty (erase old)
 import shutil
@@ -96,8 +96,11 @@ def analyze_primary_energy():
     model_sum['WOOD'] = model_val
     
     # Oil Group
-    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL', 'DIESEL_RE', 'GASOLINE_RE', 'LFO_RE', 'JET_FUEL_RE']
-    model_sum['OIL'] = resources[resources['item'].isin(oil_cols)]['Yearly'].sum() * SCALER
+    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL', 'DIESEL_RE', 'GASOLINE_RE', 'LFO_RE', 'JET_FUEL_RE', 'HFO', 'HFO_RE']
+    found_oil = resources[resources['item'].isin(oil_cols)]
+    oil_sum = found_oil['Yearly'].sum() * SCALER
+    print(f"DEBUG: Found Oil items: {found_oil['item'].unique()} Sum: {oil_sum}")
+    model_sum['OIL'] = oil_sum
     
     # Nuclear
     model_sum['NUCLEAR'] = resources[resources['item'] == 'URANIUM']['Yearly'].sum() * SCALER
@@ -183,7 +186,7 @@ def analyze_emissions():
     calculated_emissions += coal_val * factors['COAL']
     
     # Oil
-    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL']
+    oil_cols = ['DIESEL', 'GASOLINE', 'LFO', 'JET_FUEL', 'OIL', 'HFO']
     oil_val = resources[resources['item'].isin(oil_cols)]['Yearly'].sum() * SCALER
     calculated_emissions += oil_val * factors['OIL']
     
@@ -321,5 +324,6 @@ if __name__ == "__main__":
     analyze_primary_energy()
     analyze_electricity()
     analyze_emissions()
-    generate_sankey()
-    print("\nDone. Check plots/validation_2017 folder.")
+    # execute sankey if possible
+    generate_sankey()  
+    print(f"\nDone. Check {PLOTS_DIR} folder.")
