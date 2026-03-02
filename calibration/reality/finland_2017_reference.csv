@@ -1,0 +1,27 @@
+category,metric,value,unit,weight,source,notes
+primary_energy,total,380,TWh,1.0,Statistics Finland,Total primary energy supply
+primary_energy,biomass,100,TWh,1.5,Statistics Finland / IEA,Wood + biowaste + wet biomass
+primary_energy,oil,82,TWh,1.5,Statistics Finland / IEA,All oil products (gasoline + diesel + LFO + jet fuel)
+primary_energy,gas,20,TWh,1.0,Statistics Finland / IEA,Natural gas TPES
+primary_energy,coal_peat,35,TWh,1.5,Statistics Finland / IEA,Coal plus peat (Finnish specificity)
+primary_energy,nuclear,65,TWh,1.0,IAEA,Thermal input (Loviisa 1&2 + Olkiluoto 1&2)
+primary_energy,hydro,15,TWh,0.8,Fingrid,Hydro resource consumption
+primary_energy,wind,5,TWh,0.8,Fingrid,Wind resource consumption
+primary_energy,solar,0.1,TWh,0.3,Fingrid,Very small in 2017
+electricity,generation,65.1,TWh,1.0,Statistics Finland,Total electricity generated
+electricity,nuclear,21.4,TWh,1.5,Wikipedia/Statistics Finland,Nuclear generation (25.2% of total)
+electricity,hydro,14.5,TWh,1.2,Wikipedia/Statistics Finland,Combined dam + river (17.1%)
+electricity,wind,4.8,TWh,1.0,Finnish Wind Power Assoc,Wind generation (5.6%)
+electricity,chp,25.0,TWh,1.2,Statistics Finland,Total CHP electricity production (all fuels: wood biomass gas peat oil)
+electricity,condensation,5.5,TWh,0.8,Statistics Finland,Coal power plants (6.5%)
+electricity,solar,0.09,TWh,0.3,Statistics Finland,Solar PV (0.1% of total)
+electricity,geothermal,0,TWh,0.1,N/A,No geothermal electricity in Finland 2017
+electricity,gas,3.2,TWh,1.0,Statistics Finland,Natural gas power (3.8%)
+electricity,peat,2.6,TWh,0.8,Statistics Finland,Peat power (3.0%)
+electricity,imports,20.3,TWh,1.0,ENTSO-E/Wikipedia,Net electricity imports (23.9%)
+heat,dh_production,36.5,TWh,1.2,Finnish Energy,District heating production
+heat,dh_share,0.45,fraction,1.0,Finnish Energy,Share of space heating from DHN
+emissions,co2,41.2,MtCO2,2.0,Statistics Finland / UNFCCC,Total CO2 emissions (key calibration metric)
+transport,gasoline_car_share,0.60,fraction,0.8,Statistics Finland,~55-65% of car fleet
+transport,diesel_truck_share,0.95,fraction,0.8,Statistics Finland,~90-100% of trucks
+misc,re_share_primary,0.41,fraction,1.0,Statistics Finland,Renewable share of primary energy

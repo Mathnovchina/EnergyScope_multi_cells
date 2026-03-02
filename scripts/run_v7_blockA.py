@@ -1,5 +1,9 @@
+"""
+Run v7 Block A calibration
+===========================
+After disabling 69 future technologies (f_max=0), run model to see impact.
+"""
 import sys
-import pandas as pd
 from pathlib import Path
 
 # Add project root to sys.path
@@ -8,12 +12,10 @@ sys.path.append(str(workspace_root))
 
 from esmc import Esmc
 
-def run_finland_calibration():
-    # Configuration for Finland 2017 Calibration
-    
+def run_v7_blockA():
     config = {
-        'case_study': 'calib_2017_finland_v7', # Using v11 for heat constraints
-        'comment': 'Calibration for Finland 2017 with revised technologies',
+        'case_study': 'calib_2017_finland_v7_blockA',
+        'comment': 'v7 Block A: Disable 69 future technologies (f_max=0)',
         'regions_names': ['FI'],
         'gwp_limit_overall': None, 
         'f_perc': True, 
@@ -21,8 +23,10 @@ def run_finland_calibration():
         're_share_primary': None
     }
     
-    print("Initializing ESMC model for Finland 2017...")
-    # Initialize the model with 12 Typical Days (standard)
+    print("="*60)
+    print("v7 BLOCK A: Disable Future Technologies")
+    print("="*60)
+    print("\nInitializing ESMC model for Finland 2017...")
     my_model = Esmc(config, nbr_td=12)
     
     print("Reading independent data...")
@@ -31,42 +35,33 @@ def run_finland_calibration():
     print("Initializing regions...")
     my_model.init_regions()
     
-    # Corrected method for temporal aggregation initialization
     print("Initializing temporal aggregation...")
     my_model.init_ta(algo='kmedoid') 
     
     print("Printing data files...")
     my_model.print_td_data()
-    my_model.print_data(indep=True) # THIS WAS MISSING OR WRONG ORDER
+    my_model.print_data(indep=True)
 
     print("Setting up AMPL problem...")
-    # Points to the .mod file and prepares the run
-    # Requires ampl executable in path or specified
     my_model.set_esom(solver='cplex') 
     
-    print("Solving...")
+    print("\nSolving...")
     try:
-        # 1. Run the optimization
         my_model.solve_esom()
-        
-        # 2. Retrieve results from AMPL output
-        # Based on esmc.py, we might need to manually extract results or call a method
         print("Extracting results...")
-        
-        # This will populate my_model.results
         my_model.get_year_results()
-        
-        # 3. Save to CSVs
         print("Saving outputs...")
         my_model.prints_esom(inputs=True, outputs=True, solve_info=True)
         
-        print(f"Run completed successfully.")
-        print(f"Results located in: {my_model.cs_dir / 'outputs'}")
+        print("\n" + "="*60)
+        print("v7 BLOCK A RUN COMPLETED")
+        print("="*60)
+        print(f"Results: {my_model.cs_dir / 'outputs'}")
         
     except Exception as e:
-        print(f"Solver failed or AMPL error: {e}")
+        print(f"Solver failed: {e}")
         import traceback
         traceback.print_exc()
         
 if __name__ == "__main__":
-    run_finland_calibration()
+    run_v7_blockA()

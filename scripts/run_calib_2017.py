@@ -111,17 +111,16 @@ def run_calib():
         # --- HEAT GENERATION ---
         # 2017 was dominated by Wood/Biomass and Coal/Peat, with some Gas/Oil.
         # Switch District Heating (DHN) to fmin_perc (Market Share) to force production.
-        'DHN_COGEN_WOOD':  {'fmin_perc': 0.20}, 
-        'DHN_BOILER_WOOD': {'fmin_perc': 0.15}, 
-        'DHN_COGEN_COAL':  {'fmin_perc': 0.25}, 
-        'DHN_BOILER_COAL': {'fmin_perc': 0.05}, 
-        'DHN_BOILER_OIL':  {'fmin_perc': 0.05}, 
+        'DHN_COGEN_WOOD':  {'fmin_perc': 0.02}, 
+        'DHN_BOILER_WOOD': {'fmin_perc': 0.02}, 
+        'DHN_COGEN_COAL':  {'fmin_perc': 0.02}, 
+        'DHN_BOILER_OIL':  {'fmin_perc': 0.02}, 
 
         # Industry: Mix of Capacity and Share
-        'IND_COGEN_WOOD':  {'fmin_perc': 0.50, 'fmax_perc': 1.0}, 
-        'IND_BOILER_WOOD': {'fmin_perc': 0.30}, 
-        'IND_BOILER_OIL':  {'fmin_perc': 0.05}, 
-        'IND_BOILER_COAL': {'fmin_perc': 0.05}, 
+        'IND_COGEN_WOOD':  {'fmin_perc': 0.1, 'fmax_perc': 1.0}, 
+        'IND_BOILER_WOOD': {'fmin_perc': 0.1}, 
+        'IND_BOILER_OIL':  {'fmin_perc': 0.1}, 
+        'IND_BOILER_COAL': {'fmin_perc': 0.1}, 
         'IND_DIRECT_ELEC': {'fmax_perc': 0.1}, 
         
         # Limit Gas to historical low shares
@@ -144,12 +143,12 @@ def run_calib():
         # User request: Force TRUCK_DIESEL to 0.95
         'TRUCK_DIESEL': {'fmin_perc': 0.95, 'fmax_perc': 1.0},
         'TRUCK_NG':     {'fmax_perc': 0.05},
-        'TRUCK_ELEC':   {'f_max': 0},
-        'TRUCK_FUEL_CELL': {'f_max': 0},
+        'TRUCK_ELEC':   {'f_max': 0,'fmin_perc': 0.95},
+        'TRUCK_FUEL_CELL': {'f_max': 0,'fmin_perc': 0.95},
         
         # --- TRANSPORT: BUSES ---
         # User request: Force BUS_COACH_DIESEL to 0.95
-        'BUS_COACH_DIESEL': {'fmin_perc': 0.95},
+        'BUS_COACH_DIESEL': {'fmin_perc': 0.5},
         'BUS_COACH_FC_HYBRIDH2': {'f_max': 0},
 
         # --- SYNTHETIC FUELS (PtL) ---
@@ -165,7 +164,6 @@ def run_calib():
         'BIOMASS_TO_GASOLINE': {'f_max': 0}, # If exists
         'BIOMASS_TO_DIESEL':   {'f_max': 0}, # If exists
         'SYN_METHANATION':     {'f_max': 0}, # Force Methanation to 0
-        'SMR':                 {'f_max': 0}, # Force SMR to 0 if needed
 
 
         # Prevent Ammonia/H2 power cycles from exploding
@@ -183,7 +181,7 @@ def run_calib():
         'CARGO_AMMONIA':  {'f_max': 0},
         
         # --- TRANSPORT: DOMESTIC BOAT ---
-        'BOAT_FREIGHT_DIESEL': {'fmin_perc': 0.95},
+        'BOAT_FREIGHT_DIESEL': {'fmin_perc': 0.6},
         'BOAT_FREIGHT_NG':     {'fmax_perc': 0.05},
         'BOAT_FREIGHT_METHANOL': {'f_max': 0},
         

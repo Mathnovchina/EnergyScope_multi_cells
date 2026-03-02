@@ -7,10 +7,10 @@ import os
 
 # Set up paths
 SECTION = 'FI'
-CASE_STUDY = 'calib_2017_finland_v11_heat_fix'
+CASE_STUDY = 'calib_2017_finland'
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = PROJECT_ROOT / 'case_studies' / SECTION / CASE_STUDY / 'outputs'
-PLOTS_DIR = PROJECT_ROOT / 'plots' / 'calibration_v11_heat_fix'
+PLOTS_DIR = PROJECT_ROOT / 'plots' / 'validation_2017'
 
 # Ensure plots directory exists and is empty (erase old)
 import shutil
@@ -40,7 +40,10 @@ REALITY = {
         'Coal': 9.0, # Coal + Peat approx
         'Wind': 4.8,
         'Gas': 3.7,
-        'Solar': 0.1
+        'Solar': 0.04,
+        'Geothermal': 0.0,
+        'CHP Oil': 0.0, # Included elsewhere in stats
+        'Ammonia': 0.0  # Should not exist in 2017
     },
     'CO2 Emissions': 42.0 # MtCO2 (approx Energy Sector)
 }
@@ -232,10 +235,12 @@ def analyze_electricity():
         'Nuclear': ['NUCLEAR'],
         'Hydro': ['HYDRO_DAM', 'HYDRO_RIVER'],
         'Biomass': ['IND_BOILER_WOOD', 'DEC_BOILER_WOOD', 'DHN_COGEN_WOOD', 'IND_COGEN_WOOD'], 
-        'Coal': ['IND_BOILER_COAL', 'DHN_COGEN_COAL'],
+        'Coal': ['IND_BOILER_COAL', 'DHN_COGEN_COAL', 'COAL_US', 'COAL_IGCC'],
         'Wind': ['WIND_ONSHORE', 'WIND_OFFSHORE'],
-        'Gas': ['CCGT', 'OCGT', 'IND_COGEN_GAS', 'DHN_COGEN_GAS', 'DEC_COGEN_GAS'],
+        'Gas': ['CCGT', 'OCGT', 'IND_COGEN_GAS', 'DHN_COGEN_GAS', 'DEC_COGEN_GAS', 'DEC_ADVCOGEN_GAS'],
         'Solar': ['PV_ROOFTOP', 'PV_UTILITY'],
+        'Geothermal': ['GEOTHERMAL'],
+        'CHP Oil': ['DEC_COGEN_OIL'],
         'Ammonia': ['CCGT_AMMONIA'] # Catching the anomaly
     }
     

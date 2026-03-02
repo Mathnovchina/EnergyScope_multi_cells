@@ -1,0 +1,15 @@
+Category,Metric,2017_Actual,Model,Delta,Rel_Error_%,Unit
+Primary Energy,Biomass,100.0,66.87,-33.13,-33.1,TWh
+Primary Energy,Oil products,82.0,165.45,83.45,101.8,TWh
+Primary Energy,Natural Gas,20.0,28.0,8.0,40.0,TWh
+Primary Energy,Coal + Peat,35.0,0.0,-35.0,-100.0,TWh
+Primary Energy,Nuclear,65.0,61.03,-3.97,-6.1,TWh
+Primary Energy,Hydro,15.0,26.69,11.69,77.9,TWh
+Primary Energy,Wind,5.0,6.65,1.65,32.9,TWh
+Electricity,Nuclear,21.4,22.58,1.18,5.5,TWh
+Electricity,Hydro,14.5,26.69,12.19,84.0,TWh
+Electricity,Wind,4.8,6.65,1.85,38.5,TWh
+Electricity,CHP,10.5,55.92,45.42,432.6,TWh
+Electricity,Gas power,3.2,16.24,13.04,407.5,TWh
+Electricity,Imports,20.3,25.0,4.7,23.2,TWh
+Emissions,CO2,41.2,0.04,-41.16,-99.9,MtCO2

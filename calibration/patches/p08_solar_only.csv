@@ -1,0 +1,3 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_max,PT_POWER_BLOCK,0
+Technologies.csv,f_max,ST_POWER_BLOCK,0
