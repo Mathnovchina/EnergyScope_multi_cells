@@ -99,6 +99,12 @@ Examples:
         help="Solver to use (default: cplex)"
     )
     
+    parser.add_argument(
+        "--reuse-dat",
+        action="store_true",
+        help="Use existing .dat files from baseline without regenerating (ignores patches)"
+    )
+    
     return parser.parse_args()
 
 
@@ -278,9 +284,187 @@ def clone_baseline(baseline_name: str, new_run_name: str) -> Path:
     return new_dir
 
 
-def run_model(run_dir: Path, solver: str = "cplex") -> int:
+def apply_patch_to_dat(run_dir: Path, patch_file: Path) -> dict:
+    """Apply a patch directly to .dat files (for --reuse-dat mode)."""
+    patch_log = {"file": str(patch_file), "changes": []}
+    
+    df = pd.read_csv(patch_file)
+    
+    # Column mapping for reg_technologies.dat
+    # Format: Region Tech c_inv c_maint gwp_constr lifetime c_p fmin_perc fmax_perc f_min f_max
+    tech_col_map = {
+        'c_inv': 2, 'c_maint': 3, 'gwp_constr': 4, 'lifetime': 5,
+        'c_p': 6, 'fmin_perc': 7, 'fmax_perc': 8, 'f_min': 9, 'f_max': 10
+    }
+    
+    # Group patches by target file
+    for _, row in df.iterrows():
+        target_file = row["file"]
+        param = row["parameter"]
+        entity = str(row["technology_or_resource"]).strip()
+        new_val = row["value"]
+        
+        if target_file == "Technologies.csv":
+            # Map to reg_technologies.dat
+            dat_file = run_dir / "reg_technologies.dat"
+            if not dat_file.exists():
+                print(f"  WARNING: {dat_file.name} not found, skipping")
+                continue
+            
+            if param not in tech_col_map:
+                print(f"  WARNING: Unknown parameter {param} for Technologies, skipping")
+                continue
+            
+            col_idx = tech_col_map[param]
+            
+            # Read and modify dat file
+            lines = dat_file.read_text().split('\n')
+            modified = False
+            
+            for i, line in enumerate(lines):
+                parts = line.split()
+                if len(parts) > col_idx and parts[1] == entity:
+                    old_val = parts[col_idx]
+                    parts[col_idx] = str(new_val)
+                    lines[i] = '\t'.join(parts)
+                    modified = True
+                    
+                    patch_log["changes"].append({
+                        "file": dat_file.name,
+                        "entity": entity,
+                        "parameter": param,
+                        "old_value": old_val,
+                        "new_value": new_val
+                    })
+                    print(f"  {entity}.{param}: {old_val} -> {new_val} (in {dat_file.name})")
+                    break
+            
+            if modified:
+                dat_file.write_text('\n'.join(lines))
+            else:
+                print(f"  WARNING: {entity} not found in {dat_file.name}")
+        else:
+            print(f"  WARNING: Direct .dat patching for {target_file} not implemented")
+    
+    return patch_log
+
+
+def run_model_direct(run_dir: Path, solver: str = "cplex") -> int:
+    """Run AMPL directly on existing .dat files without regenerating."""
+    print("  Running in DIRECT mode (reusing existing .dat files)...")
+    
+    try:
+        sys.path.insert(0, str(REPO_ROOT))
+        from esmc.utils.opti_probl import OptiProbl
+        
+        # Clear old outputs directory to ensure fresh results
+        outputs_dir = run_dir / "outputs"
+        if outputs_dir.exists():
+            print("  Clearing old outputs directory...")
+            shutil.rmtree(outputs_dir)
+        outputs_dir.mkdir(exist_ok=True)
+        
+        # Find mod and dat files
+        mod_files = list(run_dir.glob("*.mod"))
+        dat_files = list(run_dir.glob("*.dat"))
+        
+        if not mod_files:
+            print("  ERROR: No .mod files found in run directory")
+            return 1
+        if not dat_files:
+            print("  ERROR: No .dat files found in run directory")
+            return 1
+        
+        print(f"  Found {len(mod_files)} .mod files, {len(dat_files)} .dat files")
+        
+        # Default CPLEX options (matching v10)
+        cplex_options = ['baropt', 'predual=-1', 'barstart=4', 'comptol=1e-5',
+                         'crossover=0', 'timelimit 172800', 'bardisplay=1', 'display=2']
+        
+        ampl_options = {
+            'show_stats': 3,
+            'log_file': str(run_dir / 'log.txt'),
+            'presolve': 200,
+            'times': 1,
+            'gentimes': 1,
+            'cplex_options': ' '.join(cplex_options)
+        }
+        
+        # Create OptiProbl directly
+        print("  Creating optimization problem...")
+        esom = OptiProbl(mod_path=mod_files, data_path=dat_files, 
+                         options=ampl_options, solver=solver)
+        
+        # Solve
+        print("  Solving...")
+        esom.run_ampl()
+        
+        # Get solve info
+        solve_time = esom.ampl.get_value("_solve_elapsed_time")
+        solve_result = esom.ampl.get_value("solve_result_num")
+        obj_value = esom.ampl.get_value("TotalCost")
+        
+        # Convert obj_value to float if needed
+        try:
+            obj_value = float(obj_value)
+        except (ValueError, TypeError):
+            obj_value = 0.0
+        
+        print(f"  Solve time: {solve_time:.1f}s")
+        print(f"  Solve result: {solve_result}")
+        print(f"  TotalCost: {obj_value:,.2f}")
+        
+        # Save outputs
+        outputs_dir = run_dir / "outputs"
+        outputs_dir.mkdir(exist_ok=True)
+        
+        # Save TotalCost
+        pd.DataFrame({'TotalCost': [obj_value]}).to_csv(outputs_dir / 'TotalCost.csv', index=False)
+        
+        # Save Solve_info
+        pd.DataFrame({
+            'solve_time': [solve_time],
+            'solve_result': [solve_result],
+            'TotalCost': [obj_value]
+        }).to_csv(outputs_dir / 'Solve_info.csv', index=False)
+        
+        # Get F variable (installed capacity per technology)
+        try:
+            F = esom.ampl.get_variable("F")
+            if F:
+                f_df = F.get_values().to_pandas()
+                f_df.to_csv(outputs_dir / "F_capacity.csv")
+                print(f"  Saved F_capacity.csv ({len(f_df)} rows)")
+                
+                # Show key technologies
+                print("  Key capacities [GW]:")
+                for tech in ['NUCLEAR', 'DEC_ADVCOGEN_GAS', 'IND_COGEN_WOOD', 'DHN_COGEN_WOOD']:
+                    try:
+                        val = f_df.loc[f_df.index.get_level_values(1) == tech, 'F.val'].sum()
+                        print(f"    {tech}: {val:.2f}")
+                    except:
+                        pass
+        except Exception as e:
+            print(f"  Warning: Could not extract F: {e}")
+        
+        # Close AMPL
+        esom.ampl.close()
+        
+        return 0 if solve_result == 0 else 1
+        
+    except Exception as e:
+        import traceback
+        print(f"  ERROR: {e}")
+        traceback.print_exc()
+        return 1
+
+
+def run_model(run_dir: Path, solver: str = "cplex", reuse_dat: bool = False) -> int:
     """Run the EnergyScope AMPL model using the Esmc framework."""
     print(f"\nRunning model with {solver}...")
+    
+    if reuse_dat:
+        return run_model_direct(run_dir, solver)
     
     try:
         # Import the Esmc framework
@@ -300,9 +484,9 @@ def run_model(run_dir: Path, solver: str = "cplex") -> int:
                 'case_study': str(run_dir.name),
                 'comment': 'calibration run',
                 'regions_names': ['FI'],
-                'gwp_limit_overall': 1.0e10,  # No GWP limit for calibration
-                're_share_primary': 0.0,
-                'f_perc': False,  # Disable fmin_perc/fmax_perc for now
+                'gwp_limit_overall': None,  # No GWP limit for calibration
+                're_share_primary': None,
+                'f_perc': False,  # Disable fmin_perc/fmax_perc for stability
                 'year': 2017
             }
         
@@ -339,8 +523,10 @@ def run_model(run_dir: Path, solver: str = "cplex") -> int:
         print("  Printing data (CSV -> DAT)...")
         my_model.print_data(indep=True)
         
-        # Set up ESOM
+        # Set up ESOM with DEFAULT CPLEX options (matching original v10)
         print("  Setting up ESOM...")
+        
+        # Use framework defaults (crossover=0) which v10 used successfully
         my_model.set_esom()
         
         # Solve
@@ -461,7 +647,7 @@ def main():
     # 1. Clone baseline (creates run directory structure)
     run_dir = clone_baseline(args.from_baseline, run_name)
     
-    # 2. Apply patches (with backup/restore for shared files)
+    # 2. Apply patches
     patch_logs = []
     for patch_file in args.patch:
         patch_path = Path(patch_file)
@@ -470,7 +656,12 @@ def main():
         
         if patch_path.exists():
             print(f"\nApplying patch: {patch_path.name}")
-            log = apply_patch(run_dir, patch_path, dry_run=args.dry_run)
+            if args.reuse_dat:
+                # Directly edit .dat files when using --reuse-dat
+                log = apply_patch_to_dat(run_dir, patch_path)
+            else:
+                # Standard CSV patch with backup/restore
+                log = apply_patch(run_dir, patch_path, dry_run=args.dry_run)
             patch_logs.append(log)
         else:
             print(f"WARNING: Patch file not found: {patch_file}")
@@ -486,14 +677,14 @@ def main():
     # 3. Run model with try/finally to ensure restore happens
     return_code = -1
     try:
-        return_code = run_model(run_dir, args.solver)
+        return_code = run_model(run_dir, args.solver, reuse_dat=args.reuse_dat)
         
         if return_code != 0:
             print(f"\nWARNING: Model returned non-zero exit code: {return_code}")
     finally:
-        # ALWAYS restore baseline files after model run
-        # This ensures shared Data/ files are reverted even if model crashes
-        restore_from_backups(run_dir, patch_logs)
+        # Restore baseline files after model run (only if not using --reuse-dat)
+        if not args.reuse_dat:
+            restore_from_backups(run_dir, patch_logs)
     
     # 4. Generate plots
     if not args.skip_plots:
