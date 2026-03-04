@@ -373,7 +373,7 @@ def append_to_rankings(run_name, run_dir, score, errors):
 # Metadata
 # ===================================================================
 
-def save_metadata(run_dir, args, patch_logs, score=None):
+def save_metadata(run_dir, args, patch_logs, score=None, solve_status=None):
     """Save a JSON metadata file for reproducibility."""
     meta = {
         "run_name": args.run_name,
@@ -388,6 +388,7 @@ def save_metadata(run_dir, args, patch_logs, score=None):
         },
         "patches": patch_logs,
         "score": score,
+        "solve_status": solve_status or "OK",
         "command": " ".join(sys.argv),
         "git": get_git_info(),
     }
@@ -464,7 +465,10 @@ def main():
         if p.exists():
             patch_files.append(p)
         else:
-            print(f"  WARNING: patch not found: {pf}")
+            print(f"  ERROR: patch not found: {pf}")
+            print(f"         Tried: {REPO_ROOT / pf}")
+            print(f"         Tried: {CALIBRATION_DIR / 'patches' / pf}")
+            sys.exit(1)
     
     patch_logs = []
     if patch_files:
@@ -491,6 +495,36 @@ def main():
     print("\n[6/7] Setting up and solving ESOM...")
     my_model.set_esom(ampl_path=ampl_path_arg)
     my_model.solve_esom()
+
+    # ---- Check solve status ----
+    my_model.esom.get_solve_info()
+    solve_result_num = my_model.esom.t[2]
+    if solve_result_num != 0:
+        status_map = {
+            -1: "unknown (barrier failed, likely infeasible)",
+        }
+        if 0 < solve_result_num < 100:
+            desc = "solved (non-zero sub-status)"
+        elif 100 <= solve_result_num < 200:
+            desc = "uncertain (solved but optimality not guaranteed)"
+        elif 200 <= solve_result_num < 300:
+            desc = "INFEASIBLE (constraints are contradictory)"
+        elif 300 <= solve_result_num < 400:
+            desc = "UNBOUNDED"
+        elif 400 <= solve_result_num < 500:
+            desc = "LIMIT (time/iteration limit reached)"
+        else:
+            desc = status_map.get(solve_result_num, f"FAILURE (code {solve_result_num})")
+        print(f"\n  {'=' * 60}")
+        print(f"  SOLVE FAILED — solve_result_num = {solve_result_num}")
+        print(f"  Meaning: {desc}")
+        print(f"  The outputs from this run are UNRELIABLE.")
+        print(f"  Check {run_dir.name}/log.txt for details.")
+        print(f"  {'=' * 60}")
+        # Still save metadata so user can see what was attempted
+        save_metadata(run_dir, args, patch_logs, score=None,
+                      solve_status=f"FAILED ({solve_result_num}: {desc})")
+        sys.exit(1)
     
     # ---- Results ----
     print("\n[7/7] Collecting results...")
