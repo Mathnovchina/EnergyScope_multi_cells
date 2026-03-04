@@ -1,3 +1,10 @@
+# ** DEPRECATED — Use validate_run.py instead. **
+# This script is superseded by scripts/validate_run.py which provides:
+#   - Corrected Statistics Finland 2017 electricity values
+#   - CHP + condensation fuel-breakdown diagnostic plots
+#   - Batch mode for all baselines (--batch)
+# Run:  python validate_run.py --batch
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np

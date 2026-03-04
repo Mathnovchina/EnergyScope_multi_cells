@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
 """
+** DEPRECATED — Use validate_run.py instead. **
+This script is superseded by scripts/validate_run.py which provides:
+  - Corrected Statistics Finland 2017 electricity values
+  - CHP + condensation fuel-breakdown diagnostic plots
+  - Batch mode for all baselines (--batch)
+  - Consistent reality reference from calibration/reality/finland_2017_reference.csv
+Run:  python validate_run.py --batch
+
+---
+(Original docstring below for historical reference)
+
 Finland 2017 Validation Script.
 
 Generates comprehensive validation plots and reports following the EnergyScope TD

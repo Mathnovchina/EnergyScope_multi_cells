@@ -1,27 +1,91 @@
 #!/usr/bin/env python3
 """
-Manual Calibration Runner for EnergyScope Multi-Cells.
+==========================================================================
+  Manual Calibration Runner for Finland 2017 — ESMC Framework Edition
+==========================================================================
 
-This script provides a structured workflow for manual calibration:
-1. Clone baseline configuration
-2. Apply user-defined patches (CSV overrides)
-3. Run the model
-4. Generate validation plots
-5. Compare against reality targets
-6. Archive run with metadata
+WHAT THIS DOES
+--------------
+Runs the EnergyScope Multi-Cells model for Finland 2017 with optional
+patches applied IN-MEMORY (never modifies Data/ CSV files). Safe to
+Ctrl-C at any time.
 
-Usage:
-    python run_calib_manual.py --run-name my_experiment --patch patches/my_patch.csv
-    python run_calib_manual.py --run-name test_nuclear_cap --from-baseline calib_2017_finland
+HOW IT WORKS
+------------
+1. Creates ESMC model with your run name as case_study
+2. Reads Data/2017 files via the standard ESMC pipeline
+3. Applies patch CSV(s) to in-memory DataFrames before .dat generation
+4. Runs the solver (CPLEX by default)
+5. Saves outputs to case_studies/FI/manual_runs/<timestamp>__<name>/outputs/
+6. Auto-scores against Finland 2017 reality targets (14 metrics)
+7. Generates validation plots (PE, electricity, CO2, CHP breakdown, error chart)
+8. Appends score to calibration/run_rankings.csv
 
-Author: EnergyScope Team
-Date: 2024
+USAGE EXAMPLES
+--------------
+    # Basic run with default config (no patches)
+    python run_calib_manual.py -n baseline_check
+
+    # Apply a patch
+    python run_calib_manual.py -n test_nuclear --patch calibration/patches/p01_disable_futuretechs.csv
+
+    # Stack multiple patches
+    python run_calib_manual.py -n combined --patch patches/p01.csv --patch patches/p02.csv
+
+    # Dry run (shows what patches would do, no model execution)
+    python run_calib_manual.py -n test --patch patches/p01.csv --dry-run
+
+    # Use f_perc=False (disables all fmin_perc/fmax_perc constraints)
+    python run_calib_manual.py -n nofperc --no-fperc
+
+    # Reuse existing TD data (much faster if 00_td_dat already populated)
+    python run_calib_manual.py -n quick --td-algo read
+
+PATCH FORMAT (CSV)
+------------------
+    file,parameter,technology_or_resource,value
+    Technologies.csv,f_max,NUCLEAR,2.8
+    Technologies.csv,f_min,NUCLEAR,2.5
+    Resources.csv,avail_exterior,COAL,30000
+
+DATA SAFETY
+-----------
+- Data/2017/ is NEVER modified.  All patches happen in-memory.
+- Each run gets a timestamped directory so nothing is overwritten.
+- If the solver fails, outputs may be incomplete but nothing is corrupted.
+- After running, check calibration/run_rankings.csv for your score.
+
+REALITY TARGETS
+---------------
+Scoring uses Statistics Finland 2017 official data:
+  - Primary energy: biomass 100, oil 82, gas 20, coal+peat 35, nuclear 65,
+    hydro 15, wind 5 TWh
+  - Electricity (by production mode): nuclear 21.6, hydro 14.6, wind 4.8,
+    CHP 20.735, condensation 3.284, solar 0.044 TWh
+  - CO2: 41.2 MtCO2
+  Source: calibration/reality/finland_2017_reference.csv
+
+The scorer reports a WEIGHTED AVERAGE of absolute percentage errors.
+Lower is better;  <15% is a reasonable calibration target.  The validation
+plotter (validate_run.py) is automatically called after scoring, generating
+PE/electricity/CO2 comparison charts, a CHP+condensation diagnostic, and a
+colour-coded error chart under <run_dir>/validation_plots/.
+
+TYPICAL WORKFLOW
+----------------
+1. Edit/create a patch CSV in calibration/patches/
+2. Run:  python run_calib_manual.py -n my_test --patch patches/my.csv
+3. Check terminal scorecard  →  quick pass/fail
+4. Open validation_plots/error_chart.png  →  per-metric diagnostics
+5. If promising, compare to baselines in calibration/run_rankings.csv
+
+==========================================================================
 """
 
 import argparse
 import json
 import os
-import shutil
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -29,683 +93,448 @@ from pathlib import Path
 
 import pandas as pd
 
-# Repository root
-REPO_ROOT = Path(__file__).parent.parent
-CASE_STUDIES = REPO_ROOT / "case_studies" / "FI"
-DATA_2017 = REPO_ROOT / "Data" / "2017"
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))
+
+from esmc import Esmc
+from esmc.common import CSV_SEPARATOR
+
 CALIBRATION_DIR = REPO_ROOT / "calibration"
+RANKINGS_CSV = CALIBRATION_DIR / "run_rankings.csv"
 REALITY_REF = CALIBRATION_DIR / "reality" / "finland_2017_reference.csv"
 
+# ---------------------------------------------------------------------------
+# Reality targets for scoring (same as score_all_fi_runs.py)
+# ---------------------------------------------------------------------------
+REALITY_TARGETS = {
+    "PE_BIOMASS":    (100.0, 1.5),
+    "PE_OIL":        (82.0,  1.5),
+    "PE_GAS":        (20.0,  1.0),
+    "PE_COAL":       (35.0,  1.5),
+    "PE_NUCLEAR":    (65.0,  1.0),
+    "PE_HYDRO":      (15.0,  0.8),
+    "PE_WIND":       (5.0,   0.8),
+    "ELEC_NUCLEAR":      (21.6,   1.5),
+    "ELEC_HYDRO":        (14.6,   1.2),
+    "ELEC_WIND":         (4.8,    1.0),
+    "ELEC_CHP":          (20.735, 1.2),
+    "ELEC_CONDENSATION": (3.284,  0.8),
+    "ELEC_SOLAR":        (0.044,  0.3),
+    "CO2":               (41.2,   2.0),
+}
+
+
+# ===================================================================
+# CLI
+# ===================================================================
 
 def parse_args():
-    """Parse command-line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Manual calibration runner for Finland 2017",
+    p = argparse.ArgumentParser(
+        description="Manual calibration runner — Finland 2017",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-    # Run with a patch file
-    python run_calib_manual.py --run-name test_biomass --patch patches/increase_biomass.csv
-    
-    # Clone from existing baseline and run
-    python run_calib_manual.py --run-name v12_test --from-baseline calib_2017_finland_v9
-    
-    # Dry run (prepare but don't execute)
-    python run_calib_manual.py --run-name v12_test --dry-run
-        """
+        epilog="See script header for detailed usage examples and patch format.",
     )
-    
-    parser.add_argument(
-        "--run-name", "-n",
-        required=True,
-        help="Name for this calibration run (will be prefixed with calib_2017_finland_)"
-    )
-    
-    parser.add_argument(
-        "--from-baseline", "-b",
-        default="calib_2017_finland",
-        help="Baseline run to clone from (default: calib_2017_finland)"
-    )
-    
-    parser.add_argument(
-        "--patch", "-p",
-        action="append",
-        default=[],
-        help="CSV patch file(s) to apply (can specify multiple)"
-    )
-    
-    parser.add_argument(
-        "--description", "-d",
-        default="",
-        help="Description of this calibration run"
-    )
-    
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Prepare run but don't execute AMPL"
-    )
-    
-    parser.add_argument(
-        "--skip-plots",
-        action="store_true",
-        help="Skip validation plot generation after run"
-    )
-    
-    parser.add_argument(
-        "--solver",
-        default="cplex",
-        choices=["cplex", "gurobi", "highs"],
-        help="Solver to use (default: cplex)"
-    )
-    
-    parser.add_argument(
-        "--reuse-dat",
-        action="store_true",
-        help="Use existing .dat files from baseline without regenerating (ignores patches)"
-    )
-    
-    return parser.parse_args()
+    p.add_argument("-n", "--run-name", required=True,
+                   help="Short name for this run (e.g. test_nuclear)")
+    p.add_argument("-p", "--patch", action="append", default=[],
+                   help="CSV patch file(s) to apply in-memory (repeatable)")
+    p.add_argument("-d", "--description", default="",
+                   help="Human-readable description of this run")
+    p.add_argument("--dry-run", action="store_true",
+                   help="Show patch effects without running the model")
+    p.add_argument("--no-fperc", action="store_true",
+                   help="Set f_perc=False (disables fmin_perc/fmax_perc constraints)")
+    p.add_argument("--gwp-limit", type=float, default=None,
+                   help="GWP limit in ktCO2/y (default: None = no limit)")
+    p.add_argument("--re-share", type=float, default=None,
+                   help="Minimum RE share of primary energy (default: None = no constraint)")
+    p.add_argument("--nbr-td", type=int, default=12,
+                   help="Number of typical days (default: 12)")
+    p.add_argument("--td-algo", default="read", choices=["read", "kmedoid"],
+                   help="TD algorithm: 'read' (reuse existing) or 'kmedoid' (recompute)")
+    p.add_argument("--ampl-path", default=None,
+                   help="Path to ampl executable (default: use PATH)")
+    p.add_argument("--skip-score", action="store_true",
+                   help="Skip auto-scoring after run")
+    return p.parse_args()
 
 
-def load_reality_targets():
-    """Load reality targets from reference CSV."""
-    if REALITY_REF.exists():
-        return pd.read_csv(REALITY_REF)
-    return None
+# ===================================================================
+# Patch application (in-memory)
+# ===================================================================
 
-
-def apply_patch(run_dir: Path, patch_file: Path, dry_run: bool = False) -> dict:
+def apply_patches_in_memory(model, patch_files, dry_run=False):
     """
-    Apply a CSV patch to the DATA files (at repo root Data/2017/).
+    Apply CSV patch files by modifying region.data DataFrames in-memory.
     
-    Patch format:
-        file,parameter,technology_or_resource,value,[old_value]
-        
-    Example:
-        Technologies.csv,f_max,NUCLEAR,2.8
-        Resources.csv,avail_exterior,COAL,30000
+    This is safe: Data/2017/ CSV files are NEVER touched.
     
-    NOTE: Patches are applied to shared Data/2017/ files.
-    Original files are backed up and restored after model run.
-    Patched copies are saved in run_dir for audit.
-    
-    If dry_run=True, only shows what would be changed without modifying files.
+    Returns list of patch logs for metadata.
     """
-    patch_log = {"file": str(patch_file), "changes": [], "backups": []}
+    patch_logs = []
     
-    df = pd.read_csv(patch_file)
-    
-    # Group changes by target file for efficiency
-    files_to_patch = {}
-    
-    for _, row in df.iterrows():
-        target_file = row["file"]
-        param = row["parameter"]
-        entity = str(row["technology_or_resource"]).strip()
-        new_val = row["value"]
-        
-        # Look in shared Data folder at repo root (FI overrides first, then REF_REGION)
-        target_path = DATA_2017 / "FI" / target_file
-        if not target_path.exists():
-            target_path = DATA_2017 / "02_REF_REGION" / target_file
-        
-        if not target_path.exists():
-            print(f"  WARNING: {target_file} not found, skipping patch for {entity}")
-            continue
-        
-        if str(target_path) not in files_to_patch:
-            files_to_patch[str(target_path)] = {
-                "path": target_path,
-                "df": pd.read_csv(target_path),
-                "changes": []
-            }
-        
-        files_to_patch[str(target_path)]["changes"].append({
-            "param": param,
-            "entity": entity,
-            "new_val": new_val
-        })
-    
-    # Apply changes to each file
-    for file_key, file_data in files_to_patch.items():
-        target_path = file_data["path"]
-        target_df = file_data["df"]
-        
-        # Create backup directory in run_dir
-        backup_dir = run_dir / "data_backup"
-        backup_dir.mkdir(exist_ok=True)
-        
-        # Save original file as backup
-        backup_path = backup_dir / f"{target_path.parent.name}_{target_path.name}"
-        if not dry_run:
-            shutil.copy(target_path, backup_path)
-            patch_log["backups"].append({
-                "original": str(target_path),
-                "backup": str(backup_path)
-            })
-        
-        # Identify entity column
-        entity_col = None
-        for col in ["Name", "Technologies", "Technologies param", "Resources"]:
-            if col in target_df.columns:
-                entity_col = col
-                break
-        
-        if not entity_col:
-            print(f"  WARNING: Cannot identify entity column in {target_path.name}")
-            print(f"  Available columns: {list(target_df.columns)}")
-            continue
-        
-        # Apply each change
-        for change in file_data["changes"]:
-            param = change["param"]
-            entity = change["entity"]
-            new_val = change["new_val"]
-            
-            idx = target_df[target_df[entity_col].astype(str).str.strip() == entity].index
-            
-            if len(idx) == 0:
-                print(f"  WARNING: Entity {entity} not found in {target_path.name}")
-                continue
-            
-            old_val = target_df.loc[idx[0], param]
-            
-            if not dry_run:
-                target_df.loc[idx[0], param] = new_val
-            
-            change_record = {
-                "file": target_path.name,
-                "file_path": str(target_path),
-                "entity": entity,
-                "parameter": param,
-                "old_value": old_val,
-                "new_value": new_val
-            }
-            patch_log["changes"].append(change_record)
-            
-            prefix = "[DRY RUN] " if dry_run else ""
-            print(f"  {prefix}{entity}.{param}: {old_val} -> {new_val}")
-        
-        # Save modified file (only if not dry run)
-        if not dry_run:
-            target_df.to_csv(target_path, index=False)
-            
-            # Also save patched copy in run_dir for audit
-            patched_dir = run_dir / "data_patched"
-            patched_dir.mkdir(exist_ok=True)
-            patched_path = patched_dir / f"{target_path.parent.name}_{target_path.name}"
-            target_df.to_csv(patched_path, index=False)
-    
-    return patch_log
-
-
-def restore_from_backups(run_dir: Path, patch_logs: list):
-    """Restore original files from backups after model run."""
-    print("\nRestoring baseline files from backups...")
-    
-    total_restored = 0
-    for patch_log in patch_logs:
-        backups = patch_log.get("backups", [])
-        
-        for backup in backups:
-            original = Path(backup["original"])
-            backup_path = Path(backup["backup"])
-            
-            if backup_path.exists():
-                shutil.copy(backup_path, original)
-                print(f"  Restored: {original.name}")
-                total_restored += 1
-    
-    print(f"  Total: Restored {total_restored} files to original state")
-
-
-def clone_baseline(baseline_name: str, new_run_name: str) -> Path:
-    """Clone a baseline run directory."""
-    baseline_dir = CASE_STUDIES / baseline_name
-    new_dir = CASE_STUDIES / new_run_name
-    
-    if new_dir.exists():
-        print(f"ERROR: Run directory already exists: {new_dir}")
-        print("  Use a different --run-name or delete existing directory first")
-        sys.exit(1)
-    
-    if not baseline_dir.exists():
-        print(f"ERROR: Baseline not found: {baseline_dir}")
-        print(f"  Available baselines:")
-        for d in CASE_STUDIES.iterdir():
-            if d.is_dir() and d.name.startswith("calib_2017"):
-                print(f"    - {d.name}")
-        sys.exit(1)
-    
-    print(f"Cloning {baseline_name} -> {new_run_name}...")
-    shutil.copytree(baseline_dir, new_dir)
-    
-    return new_dir
-
-
-def apply_patch_to_dat(run_dir: Path, patch_file: Path) -> dict:
-    """Apply a patch directly to .dat files (for --reuse-dat mode)."""
-    patch_log = {"file": str(patch_file), "changes": []}
-    
-    df = pd.read_csv(patch_file)
-    
-    # Column mapping for reg_technologies.dat
-    # Format: Region Tech c_inv c_maint gwp_constr lifetime c_p fmin_perc fmax_perc f_min f_max
-    tech_col_map = {
-        'c_inv': 2, 'c_maint': 3, 'gwp_constr': 4, 'lifetime': 5,
-        'c_p': 6, 'fmin_perc': 7, 'fmax_perc': 8, 'f_min': 9, 'f_max': 10
+    # After init_regions(), region DataFrames are index-based:
+    #   Technologies: index = "Technologies param" (e.g. NUCLEAR, CCGT)
+    #   Resources:    index = "parameter name" (e.g. GASOLINE, COAL)
+    #   Demands:      index = "parameter name" (e.g. ELECTRICITY)
+    #   Misc:         dict-like (keys in index)
+    # Map from CSV filename to data_dict_key
+    FILE_MAP = {
+        "Technologies.csv": "Technologies",
+        "Resources.csv":    "Resources",
+        "Demands.csv":      "Demands",
+        "Misc.csv":         "Misc",
     }
     
-    # Group patches by target file
-    for _, row in df.iterrows():
-        target_file = row["file"]
-        param = row["parameter"]
-        entity = str(row["technology_or_resource"]).strip()
-        new_val = row["value"]
+    for patch_path in patch_files:
+        log = {"file": str(patch_path), "changes": []}
+        df = pd.read_csv(patch_path)
         
-        if target_file == "Technologies.csv":
-            # Map to reg_technologies.dat
-            dat_file = run_dir / "reg_technologies.dat"
-            if not dat_file.exists():
-                print(f"  WARNING: {dat_file.name} not found, skipping")
+        print(f"\n  Patch: {patch_path.name} ({len(df)} changes)")
+        
+        for _, row in df.iterrows():
+            target_file = row["file"].strip()
+            param = row["parameter"].strip()
+            entity = str(row["technology_or_resource"]).strip()
+            new_val = row["value"]
+            
+            if target_file not in FILE_MAP:
+                print(f"    SKIP: unknown file {target_file}")
                 continue
             
-            if param not in tech_col_map:
-                print(f"  WARNING: Unknown parameter {param} for Technologies, skipping")
-                continue
+            data_key = FILE_MAP[target_file]
             
-            col_idx = tech_col_map[param]
-            
-            # Read and modify dat file
-            lines = dat_file.read_text().split('\n')
-            modified = False
-            
-            for i, line in enumerate(lines):
-                parts = line.split()
-                if len(parts) > col_idx and parts[1] == entity:
-                    old_val = parts[col_idx]
-                    parts[col_idx] = str(new_val)
-                    lines[i] = '\t'.join(parts)
-                    modified = True
-                    
-                    patch_log["changes"].append({
-                        "file": dat_file.name,
-                        "entity": entity,
-                        "parameter": param,
-                        "old_value": old_val,
-                        "new_value": new_val
-                    })
-                    print(f"  {entity}.{param}: {old_val} -> {new_val} (in {dat_file.name})")
-                    break
-            
-            if modified:
-                dat_file.write_text('\n'.join(lines))
-            else:
-                print(f"  WARNING: {entity} not found in {dat_file.name}")
-        else:
-            print(f"  WARNING: Direct .dat patching for {target_file} not implemented")
-    
-    return patch_log
-
-
-def run_model_direct(run_dir: Path, solver: str = "cplex") -> int:
-    """Run AMPL directly on existing .dat files without regenerating."""
-    print("  Running in DIRECT mode (reusing existing .dat files)...")
-    
-    try:
-        sys.path.insert(0, str(REPO_ROOT))
-        from esmc.utils.opti_probl import OptiProbl
-        
-        # Clear old outputs directory to ensure fresh results
-        outputs_dir = run_dir / "outputs"
-        if outputs_dir.exists():
-            print("  Clearing old outputs directory...")
-            shutil.rmtree(outputs_dir)
-        outputs_dir.mkdir(exist_ok=True)
-        
-        # Find mod and dat files
-        mod_files = list(run_dir.glob("*.mod"))
-        dat_files = list(run_dir.glob("*.dat"))
-        
-        if not mod_files:
-            print("  ERROR: No .mod files found in run directory")
-            return 1
-        if not dat_files:
-            print("  ERROR: No .dat files found in run directory")
-            return 1
-        
-        print(f"  Found {len(mod_files)} .mod files, {len(dat_files)} .dat files")
-        
-        # Default CPLEX options (matching v10)
-        cplex_options = ['baropt', 'predual=-1', 'barstart=4', 'comptol=1e-5',
-                         'crossover=0', 'timelimit 172800', 'bardisplay=1', 'display=2']
-        
-        ampl_options = {
-            'show_stats': 3,
-            'log_file': str(run_dir / 'log.txt'),
-            'presolve': 200,
-            'times': 1,
-            'gentimes': 1,
-            'cplex_options': ' '.join(cplex_options)
-        }
-        
-        # Create OptiProbl directly
-        print("  Creating optimization problem...")
-        esom = OptiProbl(mod_path=mod_files, data_path=dat_files, 
-                         options=ampl_options, solver=solver)
-        
-        # Solve
-        print("  Solving...")
-        esom.run_ampl()
-        
-        # Get solve info
-        solve_time = esom.ampl.get_value("_solve_elapsed_time")
-        solve_result = esom.ampl.get_value("solve_result_num")
-        obj_value = esom.ampl.get_value("TotalCost")
-        
-        # Convert obj_value to float if needed
-        try:
-            obj_value = float(obj_value)
-        except (ValueError, TypeError):
-            obj_value = 0.0
-        
-        print(f"  Solve time: {solve_time:.1f}s")
-        print(f"  Solve result: {solve_result}")
-        print(f"  TotalCost: {obj_value:,.2f}")
-        
-        # Save outputs
-        outputs_dir = run_dir / "outputs"
-        outputs_dir.mkdir(exist_ok=True)
-        
-        # Save TotalCost
-        pd.DataFrame({'TotalCost': [obj_value]}).to_csv(outputs_dir / 'TotalCost.csv', index=False)
-        
-        # Save Solve_info
-        pd.DataFrame({
-            'solve_time': [solve_time],
-            'solve_result': [solve_result],
-            'TotalCost': [obj_value]
-        }).to_csv(outputs_dir / 'Solve_info.csv', index=False)
-        
-        # Get F variable (installed capacity per technology)
-        try:
-            F = esom.ampl.get_variable("F")
-            if F:
-                f_df = F.get_values().to_pandas()
-                f_df.to_csv(outputs_dir / "F_capacity.csv")
-                print(f"  Saved F_capacity.csv ({len(f_df)} rows)")
+            # Apply to each region (for FI single-country, there's just one)
+            for r_code, region in model.regions.items():
+                if data_key not in region.data or region.data[data_key] is None:
+                    print(f"    SKIP: {data_key} not in region {r_code}")
+                    continue
                 
-                # Show key technologies
-                print("  Key capacities [GW]:")
-                for tech in ['NUCLEAR', 'DEC_ADVCOGEN_GAS', 'IND_COGEN_WOOD', 'DHN_COGEN_WOOD']:
-                    try:
-                        val = f_df.loc[f_df.index.get_level_values(1) == tech, 'F.val'].sum()
-                        print(f"    {tech}: {val:.2f}")
-                    except:
-                        pass
-        except Exception as e:
-            print(f"  Warning: Could not extract F: {e}")
+                rdf = region.data[data_key]
+                
+                # All region DataFrames are indexed by entity name
+                if entity not in rdf.index:
+                    print(f"    SKIP: {entity} not found in {r_code}/{data_key}")
+                    continue
+                
+                if param not in rdf.columns:
+                    print(f"    SKIP: column {param} not in {r_code}/{data_key}")
+                    continue
+                
+                old_val = rdf.loc[entity, param]
+                if not dry_run:
+                    rdf.loc[entity, param] = new_val
+                
+                prefix = "[DRY] " if dry_run else ""
+                print(f"    {prefix}{r_code}/{entity}.{param}: {old_val} -> {new_val}")
+                
+                log["changes"].append({
+                    "region": r_code,
+                    "data_key": data_key,
+                    "entity": entity,
+                    "parameter": param,
+                    "old_value": str(old_val),
+                    "new_value": str(new_val),
+                })
         
-        # Close AMPL
-        esom.ampl.close()
-        
-        return 0 if solve_result == 0 else 1
-        
-    except Exception as e:
-        import traceback
-        print(f"  ERROR: {e}")
-        traceback.print_exc()
-        return 1
+        patch_logs.append(log)
+    
+    return patch_logs
 
 
-def run_model(run_dir: Path, solver: str = "cplex", reuse_dat: bool = False) -> int:
-    """Run the EnergyScope AMPL model using the Esmc framework."""
-    print(f"\nRunning model with {solver}...")
+# ===================================================================
+# Scoring (lightweight, reuses same logic as score_all_fi_runs.py)
+# ===================================================================
+
+def extract_and_score(outputs_dir):
+    """Quick extraction + scoring from a single run's outputs."""
+    metrics = {}
     
-    if reuse_dat:
-        return run_model_direct(run_dir, solver)
+    # Resources
+    res_path = outputs_dir / "Resources.csv"
+    if res_path.exists():
+        df = pd.read_csv(res_path)
+        lookup = {}
+        for _, row in df.iterrows():
+            lookup[row["Resources"]] = row.get("R_year_local", 0) + row.get("R_year_exterior", 0)
+        
+        metrics["PE_BIOMASS"] = sum(lookup.get(r, 0) for r in
+            ["WOOD", "WET_BIOMASS", "BIOWASTE", "BIOMASS_RESIDUES", "ENERGY_CROPS_2"]) / 1000
+        metrics["PE_OIL"] = sum(lookup.get(r, 0) for r in
+            ["GASOLINE", "DIESEL", "LFO", "JET_FUEL"]) / 1000
+        metrics["PE_GAS"]     = lookup.get("GAS", 0) / 1000
+        metrics["PE_COAL"]    = lookup.get("COAL", 0) / 1000
+        metrics["PE_NUCLEAR"] = lookup.get("URANIUM", 0) / 1000
+        metrics["PE_HYDRO"]   = lookup.get("RES_HYDRO", 0) / 1000
+        metrics["PE_WIND"]    = lookup.get("RES_WIND", 0) / 1000
     
-    try:
-        # Import the Esmc framework
-        sys.path.insert(0, str(REPO_ROOT))
-        from esmc import Esmc
-        from esmc.common import CSV_SEPARATOR
-        
-        # Read config from the case study if exists, or use defaults
-        config_file = run_dir / "config.yaml"
-        if config_file.exists():
-            import yaml
-            with open(config_file) as f:
-                config = yaml.safe_load(f)
-        else:
-            # Default configuration for Finland 2017 calibration
-            config = {
-                'case_study': str(run_dir.name),
-                'comment': 'calibration run',
-                'regions_names': ['FI'],
-                'gwp_limit_overall': None,  # No GWP limit for calibration
-                're_share_primary': None,
-                'f_perc': False,  # Disable fmin_perc/fmax_perc for stability
-                'year': 2017
-            }
-        
-        # Override case_study to use our run directory
-        config['case_study'] = str(run_dir.name)
-        
-        # Determine number of typical days
-        nbr_td = 12  # Default for Finland
-        
-        print(f"  Initializing Esmc model for {config['case_study']}...")
-        my_model = Esmc(config, nbr_td=nbr_td)
-        
-        # Read independent data
-        print("  Reading independent data...")
-        my_model.read_data_indep()
-        
-        # Initialize regions
-        print("  Initializing regions...")
-        my_model.init_regions()
-        
-        # Initialize temporal aggregation (use 'read' if already computed, else 'kmedoid')
-        print("  Initializing temporal aggregation...")
-        td_data_dir = my_model.cs_dir / 'td_data'
-        if td_data_dir.exists() and any(td_data_dir.iterdir()):
-            my_model.init_ta(algo='read')
-        else:
-            my_model.init_ta(algo='kmedoid')
-        
-        # Print time-related data
-        print("  Printing TD data...")
-        my_model.print_td_data()
-        
-        # Print all data (generates .dat files from CSVs)
-        print("  Printing data (CSV -> DAT)...")
-        my_model.print_data(indep=True)
-        
-        # Set up ESOM with DEFAULT CPLEX options (matching original v10)
-        print("  Setting up ESOM...")
-        
-        # Use framework defaults (crossover=0) which v10 used successfully
-        my_model.set_esom()
-        
-        # Solve
-        print("  Solving ESOM...")
-        my_model.solve_esom()
-        
-        # Get results
-        print("  Getting year results...")
-        my_model.get_year_results()
-        
-        # Print outputs
-        print("  Printing outputs...")
-        my_model.prints_esom(inputs=True, outputs=True, solve_info=True)
-        
-        # Close AMPL
-        if hasattr(my_model, 'esom') and hasattr(my_model.esom, 'ampl'):
-            my_model.esom.ampl.close()
-        
-        print("  Model run complete!")
-        return 0
-        
-    except Exception as e:
-        import traceback
-        print(f"ERROR: Model run failed: {e}")
-        traceback.print_exc()
-        
-        # Save error to log
-        log_dir = run_dir / "logs"
-        log_dir.mkdir(exist_ok=True)
-        with open(log_dir / "error.log", "w") as f:
-            f.write(f"Error: {e}\n")
-            traceback.print_exc(file=f)
-        
-        return 1
+    # Year_balance
+    yb_path = outputs_dir / "Year_balance.csv"
+    if yb_path.exists():
+        df = pd.read_csv(yb_path, index_col="Elements")
+        if "ELECTRICITY" in df.columns:
+            if "NUCLEAR" in df.index:
+                metrics["ELEC_NUCLEAR"] = max(0.0, float(df.loc["NUCLEAR", "ELECTRICITY"])) / 1000
+            hydro = sum(max(0.0, float(df.loc[t, "ELECTRICITY"])) for t in ["HYDRO_DAM", "HYDRO_RIVER"] if t in df.index)
+            metrics["ELEC_HYDRO"] = hydro / 1000
+            wind = sum(max(0.0, float(df.loc[t, "ELECTRICITY"])) for t in ["WIND_ONSHORE", "WIND_OFFSHORE"] if t in df.index)
+            metrics["ELEC_WIND"] = wind / 1000
+
+            # Solar
+            solar = sum(max(0.0, float(df.loc[t, "ELECTRICITY"])) for t in ["PV_ROOFTOP", "PV_UTILITY"] if t in df.index)
+            metrics["ELEC_SOLAR"] = solar / 1000
+
+            # CHP (all cogeneration)
+            chp_techs = [
+                "DHN_COGEN_GAS", "DHN_COGEN_WOOD", "DHN_COGEN_COAL",
+                "DHN_COGEN_WASTE", "DHN_COGEN_OIL",
+                "IND_COGEN_GAS", "IND_COGEN_WOOD", "IND_COGEN_COAL",
+                "IND_COGEN_WASTE",
+                "DEC_COGEN_GAS", "DEC_COGEN_OIL",
+                "DEC_ADVCOGEN_GAS", "DEC_ADVCOGEN_H2",
+            ]
+            chp = sum(max(0.0, float(df.loc[t, "ELECTRICITY"])) for t in chp_techs if t in df.index)
+            metrics["ELEC_CHP"] = chp / 1000
+
+            # Condensation (electricity-only thermal)
+            cond_techs = ["CCGT", "OCGT", "COAL_US", "COAL_IGCC",
+                          "CCGT_AMMONIA", "BIOMASS_TO_POWER"]
+            cond = sum(max(0.0, float(df.loc[t, "ELECTRICITY"])) for t in cond_techs if t in df.index)
+            metrics["ELEC_CONDENSATION"] = cond / 1000
+    
+    # GWP
+    gwp_path = outputs_dir / "Gwp_breakdown.csv"
+    if gwp_path.exists():
+        df = pd.read_csv(gwp_path)
+        if "CO2_net" in df.columns:
+            metrics["CO2"] = df["CO2_net"].sum() / 1000
+        elif "GWP_op" in df.columns:
+            metrics["CO2"] = df["GWP_op"].sum() / 1000
+    
+    # Score
+    weighted_sum = 0.0
+    weight_sum = 0.0
+    errors = {}
+    for key, (target, weight) in REALITY_TARGETS.items():
+        if key in metrics and target > 0:
+            pct_err = abs(metrics[key] - target) / target * 100
+            errors[key] = {"model": metrics[key], "target": target, "pct_error": pct_err}
+            weighted_sum += pct_err * weight
+            weight_sum += weight
+    
+    score = weighted_sum / weight_sum if weight_sum > 0 else float("inf")
+    return score, errors
 
 
-def generate_validation_plots(run_dir: Path):
-    """Generate validation plots for the run."""
-    print("\nGenerating validation plots...")
+def print_scorecard(score, errors):
+    """Print a readable scorecard."""
+    print(f"\n{'=' * 60}")
+    print(f"  SCORE: {score:.1f}% weighted average error")
+    print(f"{'=' * 60}")
+    print(f"  {'Metric':<15} {'Model':>10} {'Target':>10} {'Error':>10}")
+    print(f"  {'-' * 50}")
+    for key, info in sorted(errors.items()):
+        print(f"  {key:<15} {info['model']:>10.2f} {info['target']:>10.1f} {info['pct_error']:>9.1f}%")
+
+
+def append_to_rankings(run_name, run_dir, score, errors):
+    """Append this run's score to calibration/run_rankings.csv."""
+    row = {
+        "run_name": run_dir.name,
+        "status": "OK",
+        "provenance": "manual",
+        "score": round(score, 2),
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    }
+    for key in REALITY_TARGETS:
+        if key in errors:
+            row[f"{key}_model"] = round(errors[key]["model"], 2)
+            row[f"{key}_err%"] = round(errors[key]["pct_error"], 1)
     
-    plot_script = REPO_ROOT / "scripts" / "plot_validate_2017.py"
+    new_row = pd.DataFrame([row])
     
-    if plot_script.exists():
-        subprocess.run([
-            sys.executable, str(plot_script),
-            "--run-dir", str(run_dir)
-        ], cwd=str(REPO_ROOT))
+    if RANKINGS_CSV.exists():
+        df = pd.read_csv(RANKINGS_CSV)
+        # Remove old entry with same name if exists
+        df = df[df["run_name"] != run_dir.name]
+        df = pd.concat([df, new_row], ignore_index=True)
+        df = df.sort_values("score", ascending=True)
     else:
-        print("  plot_validate_2017.py not found, skipping plots")
+        df = new_row
+    
+    df.to_csv(RANKINGS_CSV, index=False)
+    print(f"  Rankings updated: {RANKINGS_CSV}")
 
 
-def save_metadata(run_dir: Path, args, patch_logs: list, return_code: int):
-    """Save run metadata for reproducibility."""
-    metadata = {
+# ===================================================================
+# Metadata
+# ===================================================================
+
+def save_metadata(run_dir, args, patch_logs, score=None):
+    """Save a JSON metadata file for reproducibility."""
+    meta = {
         "run_name": args.run_name,
-        "baseline": args.from_baseline,
         "description": args.description,
         "timestamp": datetime.now().isoformat(),
-        "solver": args.solver,
-        "return_code": return_code,
-        "patches_applied": patch_logs,
+        "config": {
+            "f_perc": not args.no_fperc,
+            "gwp_limit_overall": args.gwp_limit,
+            "re_share_primary": args.re_share,
+            "nbr_td": args.nbr_td,
+            "td_algo": args.td_algo,
+        },
+        "patches": patch_logs,
+        "score": score,
         "command": " ".join(sys.argv),
-        "git_info": get_git_info()
+        "git": get_git_info(),
     }
-    
-    metadata_path = run_dir / "calibration_metadata.json"
-    with open(metadata_path, "w") as f:
-        json.dump(metadata, f, indent=2)
-    
-    print(f"\nMetadata saved to: {metadata_path}")
+    path = run_dir / "run_metadata.json"
+    with open(path, "w") as f:
+        json.dump(meta, f, indent=2, default=str)
+    print(f"  Metadata: {path}")
 
 
-def get_git_info() -> dict:
-    """Get current git commit info."""
+def get_git_info():
     try:
-        commit = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            capture_output=True, text=True, cwd=str(REPO_ROOT)
-        ).stdout.strip()
-        
-        branch = subprocess.run(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-            capture_output=True, text=True, cwd=str(REPO_ROOT)
-        ).stdout.strip()
-        
+        commit = subprocess.run(["git", "rev-parse", "HEAD"],
+                                capture_output=True, text=True, cwd=str(REPO_ROOT)).stdout.strip()
+        branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                                capture_output=True, text=True, cwd=str(REPO_ROOT)).stdout.strip()
         return {"commit": commit, "branch": branch}
-    except:
-        return {"error": "Could not get git info"}
+    except Exception:
+        return {}
 
 
-def score_run(run_dir: Path) -> dict:
-    """Quick score of run against reality targets."""
-    from score_calib_runs import extract_metrics_from_run, compute_score
-    
-    outputs_dir = run_dir / "outputs"
-    if outputs_dir.exists():
-        metrics = extract_metrics_from_run(outputs_dir)
-        score, errors = compute_score(metrics)
-        return {"score": score, "errors": errors}
-    return None
-
+# ===================================================================
+# Main
+# ===================================================================
 
 def main():
     args = parse_args()
     
-    # Normalize run name
-    run_name = args.run_name
-    if not run_name.startswith("calib_2017_finland_"):
-        run_name = f"calib_2017_finland_{run_name}"
+    # Build timestamped run directory name
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # Use manual_runs/ subdirectory for clean separation
+    case_study_name = f"manual_runs/{ts}__{args.run_name}"
     
     print("=" * 70)
-    print(f"MANUAL CALIBRATION RUN: {run_name}")
+    print(f"  MANUAL CALIBRATION RUN: {args.run_name}")
+    print(f"  Output: case_studies/FI/{case_study_name}/")
     print("=" * 70)
     
-    if args.dry_run:
-        print("[DRY RUN MODE - No files will be modified]")
+    # ---- Config ----
+    f_perc = not args.no_fperc
+    config = {
+        "case_study": case_study_name,
+        "comment": args.description or f"manual run {args.run_name}",
+        "regions_names": ["FI"],
+        "gwp_limit_overall": args.gwp_limit,
+        "re_share_primary": args.re_share,
+        "f_perc": f_perc,
+        "year": 2017,
+    }
     
-    # 1. Clone baseline (creates run directory structure)
-    run_dir = clone_baseline(args.from_baseline, run_name)
+    print(f"\n  Config: f_perc={f_perc}, gwp_limit={args.gwp_limit}, "
+          f"re_share={args.re_share}, nbr_td={args.nbr_td}")
     
-    # 2. Apply patches
-    patch_logs = []
-    for patch_file in args.patch:
-        patch_path = Path(patch_file)
-        if not patch_path.exists():
-            patch_path = REPO_ROOT / patch_file
-        
-        if patch_path.exists():
-            print(f"\nApplying patch: {patch_path.name}")
-            if args.reuse_dat:
-                # Directly edit .dat files when using --reuse-dat
-                log = apply_patch_to_dat(run_dir, patch_path)
-            else:
-                # Standard CSV patch with backup/restore
-                log = apply_patch(run_dir, patch_path, dry_run=args.dry_run)
-            patch_logs.append(log)
+    # ---- Initialize ESMC ----
+    print("\n[1/7] Initializing ESMC model...")
+    ampl_path_arg = Path(args.ampl_path) if args.ampl_path else None
+    my_model = Esmc(config, nbr_td=args.nbr_td)
+    run_dir = my_model.cs_dir  # case_studies/FI/manual_runs/<ts>__<name>
+    
+    print(f"  Run directory: {run_dir}")
+    
+    # ---- Read data ----
+    print("\n[2/7] Reading data...")
+    my_model.read_data_indep()
+    my_model.init_regions()
+    
+    # ---- Apply patches (in-memory, safe) ----
+    patch_files = []
+    for pf in args.patch:
+        p = Path(pf)
+        if not p.is_absolute():
+            p = REPO_ROOT / pf
+        if not p.exists():
+            p = CALIBRATION_DIR / "patches" / pf
+        if p.exists():
+            patch_files.append(p)
         else:
-            print(f"WARNING: Patch file not found: {patch_file}")
+            print(f"  WARNING: patch not found: {pf}")
     
-    # For dry-run, stop here (no model execution, no restore needed since nothing changed)
+    patch_logs = []
+    if patch_files:
+        print(f"\n[3/7] Applying {len(patch_files)} patch(es) in-memory...")
+        patch_logs = apply_patches_in_memory(my_model, patch_files, dry_run=args.dry_run)
+    else:
+        print("\n[3/7] No patches — running with default Data/2017 inputs")
+    
     if args.dry_run:
-        print("\n[DRY RUN] Skipping model execution")
-        print("\n" + "=" * 70)
-        print(f"Dry run complete. Run directory prepared: {run_dir}")
-        print("=" * 70)
+        print("\n[DRY RUN] Stopping here. No model execution, no files modified.")
+        save_metadata(run_dir, args, patch_logs)
         return
     
-    # 3. Run model with try/finally to ensure restore happens
-    return_code = -1
+    # ---- Temporal aggregation ----
+    print(f"\n[4/7] Temporal aggregation (algo={args.td_algo})...")
+    my_model.init_ta(algo=args.td_algo, ampl_path=ampl_path_arg)
+    
+    # ---- Print data (.dat generation from in-memory DataFrames) ----
+    print("\n[5/7] Generating .dat files...")
+    my_model.print_td_data()
+    my_model.print_data(indep=True)
+    
+    # ---- Solve ----
+    print("\n[6/7] Setting up and solving ESOM...")
+    my_model.set_esom(ampl_path=ampl_path_arg)
+    my_model.solve_esom()
+    
+    # ---- Results ----
+    print("\n[7/7] Collecting results...")
+    my_model.get_year_results()
+    my_model.prints_esom(inputs=True, outputs=True, solve_info=True)
+    
+    # Close AMPL
     try:
-        return_code = run_model(run_dir, args.solver, reuse_dat=args.reuse_dat)
-        
-        if return_code != 0:
-            print(f"\nWARNING: Model returned non-zero exit code: {return_code}")
-    finally:
-        # Restore baseline files after model run (only if not using --reuse-dat)
-        if not args.reuse_dat:
-            restore_from_backups(run_dir, patch_logs)
+        my_model.esom.ampl.close()
+    except Exception:
+        pass
     
-    # 4. Generate plots
-    if not args.skip_plots:
-        generate_validation_plots(run_dir)
+    # ---- Auto-score ----
+    outputs_dir = run_dir / "outputs"
+    score = None
+    if not args.skip_score and outputs_dir.exists():
+        score, errors = extract_and_score(outputs_dir)
+        if score != float("inf"):
+            print_scorecard(score, errors)
+            append_to_rankings(args.run_name, run_dir, score, errors)
+        else:
+            print("\n  Could not compute score (missing output files)")
     
-    # 5. Save metadata
-    save_metadata(run_dir, args, patch_logs, return_code)
+    # ---- Validation plots (via validate_run.py logic) ----
+    if not args.skip_score and outputs_dir.exists():
+        try:
+            from validate_run import load_reality, validate_one as _validate_one
+            reality = load_reality()
+            _validate_one(run_dir, reality)
+            print(f"  Validation plots: {run_dir / 'validation_plots'}")
+        except ImportError:
+            print("  WARNING: validate_run.py not importable — skipping plots")
+        except Exception as e:
+            print(f"  WARNING: validation plots failed: {e}")
+
+    # ---- Metadata ----
+    save_metadata(run_dir, args, patch_logs, score=score)
     
-    # 6. Quick score
-    try:
-        sys.path.insert(0, str(REPO_ROOT / "scripts"))
-        result = score_run(run_dir)
-        if result:
-            print(f"\nWeighted Error Score: {result['score']:.1f}%")
-    except Exception as e:
-        print(f"\nCould not compute score: {e}")
-    
-    print("\n" + "=" * 70)
-    print(f"Run complete: {run_dir}")
-    print("Patched versions saved in: {run_dir}/data_patched/")
-    print("=" * 70)
+    print(f"\n{'=' * 70}")
+    print(f"  RUN COMPLETE: {run_dir.name}")
+    if score is not None and score != float("inf"):
+        print(f"  Score: {score:.1f}% weighted error")
+    print(f"  Outputs: {outputs_dir}")
+    print(f"{'=' * 70}")
 
 
 if __name__ == "__main__":

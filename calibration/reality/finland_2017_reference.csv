@@ -1,27 +1,27 @@
-category,metric,value,unit,weight,source,notes
-primary_energy,total,380,TWh,1.0,Statistics Finland,Total primary energy supply
-primary_energy,biomass,100,TWh,1.5,Statistics Finland / IEA,Wood + biowaste + wet biomass
-primary_energy,oil,82,TWh,1.5,Statistics Finland / IEA,All oil products (gasoline + diesel + LFO + jet fuel)
-primary_energy,gas,20,TWh,1.0,Statistics Finland / IEA,Natural gas TPES
-primary_energy,coal_peat,35,TWh,1.5,Statistics Finland / IEA,Coal plus peat (Finnish specificity)
-primary_energy,nuclear,65,TWh,1.0,IAEA,Thermal input (Loviisa 1&2 + Olkiluoto 1&2)
-primary_energy,hydro,15,TWh,0.8,Fingrid,Hydro resource consumption
-primary_energy,wind,5,TWh,0.8,Fingrid,Wind resource consumption
-primary_energy,solar,0.1,TWh,0.3,Fingrid,Very small in 2017
-electricity,generation,65.1,TWh,1.0,Statistics Finland,Total electricity generated
-electricity,nuclear,21.4,TWh,1.5,Wikipedia/Statistics Finland,Nuclear generation (25.2% of total)
-electricity,hydro,14.5,TWh,1.2,Wikipedia/Statistics Finland,Combined dam + river (17.1%)
-electricity,wind,4.8,TWh,1.0,Finnish Wind Power Assoc,Wind generation (5.6%)
-electricity,chp,25.0,TWh,1.2,Statistics Finland,Total CHP electricity production (all fuels: wood biomass gas peat oil)
-electricity,condensation,5.5,TWh,0.8,Statistics Finland,Coal power plants (6.5%)
-electricity,solar,0.09,TWh,0.3,Statistics Finland,Solar PV (0.1% of total)
-electricity,geothermal,0,TWh,0.1,N/A,No geothermal electricity in Finland 2017
-electricity,gas,3.2,TWh,1.0,Statistics Finland,Natural gas power (3.8%)
-electricity,peat,2.6,TWh,0.8,Statistics Finland,Peat power (3.0%)
-electricity,imports,20.3,TWh,1.0,ENTSO-E/Wikipedia,Net electricity imports (23.9%)
-heat,dh_production,36.5,TWh,1.2,Finnish Energy,District heating production
-heat,dh_share,0.45,fraction,1.0,Finnish Energy,Share of space heating from DHN
-emissions,co2,41.2,MtCO2,2.0,Statistics Finland / UNFCCC,Total CO2 emissions (key calibration metric)
-transport,gasoline_car_share,0.60,fraction,0.8,Statistics Finland,~55-65% of car fleet
-transport,diesel_truck_share,0.95,fraction,0.8,Statistics Finland,~90-100% of trucks
-misc,re_share_primary,0.41,fraction,1.0,Statistics Finland,Renewable share of primary energy
+category,metric,value,unit,weight,source,model_key,model_mapping,notes
+primary_energy,total,380,TWh,1.0,Statistics Finland,,sum of all PE_* keys,Total primary energy supply (TPES)
+primary_energy,biomass,100,TWh,1.5,Statistics Finland / IEA,PE_BIOMASS,WOOD+WET_BIOMASS+BIOWASTE+BIOMASS_RESIDUES+ENERGY_CROPS_2 from Resources.csv (R_year_local+R_year_exterior) GWh->TWh,Wood + biowaste + wet biomass
+primary_energy,oil,82,TWh,1.5,Statistics Finland / IEA,PE_OIL,GASOLINE+DIESEL+LFO+JET_FUEL from Resources.csv,All oil products (fossil only — excludes *_RE)
+primary_energy,gas,20,TWh,1.0,Statistics Finland / IEA,PE_GAS,GAS from Resources.csv,Natural gas TPES
+primary_energy,coal_peat,35,TWh,1.5,Statistics Finland / IEA,PE_COAL,COAL from Resources.csv — model has no separate PEAT resource so COAL is proxy for coal+peat,Coal plus peat (Finnish specificity). Model lumps peat into COAL.
+primary_energy,nuclear,65,TWh,1.0,IAEA,PE_NUCLEAR,URANIUM from Resources.csv,Thermal input (Loviisa 1&2 + Olkiluoto 1&2)
+primary_energy,hydro,15,TWh,0.8,Fingrid,PE_HYDRO,RES_HYDRO from Resources.csv,Hydro resource consumption
+primary_energy,wind,5,TWh,0.8,Fingrid,PE_WIND,RES_WIND from Resources.csv,Wind resource consumption
+primary_energy,solar,0.1,TWh,0.3,Fingrid,PE_SOLAR,RES_SOLAR from Resources.csv,Very small in 2017
+electricity,generation,65.042,TWh,1.0,Statistics Finland (2017 official),ELEC_TOTAL,sum of all ELEC_* production-mode keys (excl imports),Total domestic electricity generation. PRODUCTION MODE category.
+electricity,nuclear,21.6,TWh,1.5,Statistics Finland (2017 official),ELEC_NUCLEAR,NUCLEAR from Year_balance ELECTRICITY col max(0) GWh->TWh,Nuclear generation. PRODUCTION MODE category.
+electricity,hydro,14.6,TWh,1.2,Statistics Finland (2017 official),ELEC_HYDRO,HYDRO_DAM+HYDRO_RIVER from Year_balance ELECTRICITY col,Combined dam + river. PRODUCTION MODE category.
+electricity,wind,4.8,TWh,1.0,Statistics Finland (2017 official),ELEC_WIND,WIND_ONSHORE+WIND_OFFSHORE from Year_balance ELECTRICITY col,Wind generation. PRODUCTION MODE category.
+electricity,chp,20.735,TWh,1.2,Statistics Finland (2017 official),ELEC_CHP,DHN_COGEN_*+IND_COGEN_*+DEC_COGEN_*+DEC_ADVCOGEN_* from Year_balance ELECTRICITY col,Total CHP electricity (all fuels). PRODUCTION MODE category.
+electricity,condensation,3.284,TWh,0.8,Statistics Finland (2017 official),ELEC_CONDENSATION,CCGT+OCGT+COAL_US+COAL_IGCC+CCGT_AMMONIA+BIOMASS_TO_POWER from Year_balance,Condensing power plants (electricity-only). PRODUCTION MODE category.
+electricity,solar,0.044,TWh,0.3,Statistics Finland (2017 official),ELEC_SOLAR,PV_ROOFTOP+PV_UTILITY from Year_balance,Solar PV. PRODUCTION MODE category.
+electricity,geothermal,0,TWh,0.1,N/A,ELEC_GEOTHERMAL,GEOTHERMAL from Year_balance,No geothermal electricity in Finland 2017. PRODUCTION MODE category.
+electricity,gas,3.2,TWh,0.5,Statistics Finland (fuel breakdown),ELEC_GAS,DHN_COGEN_GAS+IND_COGEN_GAS+DEC_COGEN_GAS+DEC_ADVCOGEN_GAS+CCGT+OCGT from Year_balance,FUEL BREAKDOWN (cross-cuts CHP+condensation). Not a production mode.
+electricity,peat,2.6,TWh,0.3,Statistics Finland (fuel breakdown),,no model mapping — peat is lumped into COAL resource,FUEL BREAKDOWN (cross-cuts CHP+condensation). Cannot be extracted from model.
+electricity,imports,20.426,TWh,1.0,Statistics Finland (2017 official),ELEC_IMPORTS,ELECTRICITY from Resources.csv R_year_exterior,Net electricity imports. Separate from production modes.
+heat,dh_production,36.5,TWh,1.2,Finnish Energy,HEAT_DHN,DHN_COGEN_*+DHN_BOILER_*+DHN_HP_ELEC+DHN_DEEP_GEO+DHN_SOLAR from Year_balance HEAT_LOW_T_DHN col,District heating production
+heat,dh_share,0.45,fraction,1.0,Finnish Energy,,requires Demands data — DH demand / total heat demand,Share of space heating from DHN
+emissions,co2,41.2,MtCO2,2.0,Statistics Finland / UNFCCC,CO2,sum of CO2_net from Gwp_breakdown.csv ktCO2->MtCO2,Total CO2 emissions (key calibration metric)
+transport,gasoline_car_share,0.60,fraction,0.8,Statistics Finland,,CAR_GASOLINE MOB_PRIVATE / total MOB_PRIVATE from Year_balance,~55-65% of car fleet
+transport,diesel_truck_share,0.95,fraction,0.8,Statistics Finland,,TRUCK_DIESEL MOB_FREIGHT_ROAD / total MOB_FREIGHT_ROAD from Year_balance,~90-100% of trucks
+misc,re_share_primary,0.41,fraction,1.0,Statistics Finland,,computed: (PE_BIOMASS+PE_HYDRO+PE_WIND+PE_SOLAR)/PE_TOTAL,Renewable share of primary energy
