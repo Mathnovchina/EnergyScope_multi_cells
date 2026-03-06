@@ -95,6 +95,11 @@ def parse_solve_info(outputs_dir: Path) -> dict:
     return info
 
 
+# Threshold: objective above this with code=0 signals tolerance violations
+# Normal runs have objectives ~40K-60K; anything above 500K is suspicious
+INVALID_TOL_THRESHOLD = 500_000
+
+
 def determine_status(run_dir: Path) -> str:
     """
     Determine solve status:
@@ -102,7 +107,8 @@ def determine_status(run_dir: Path) -> str:
       NO_SOLVE    – outputs exist but no Solve_info.csv
       FAILED      – solve_result_num not in {0, 100}
       INFEASIBLE  – solve_result_num == 200
-      OK          – solve_result_num in {0, 100}
+      INVALID_TOL – solve_result_num in {0,100} but TotalCost > 1e10
+      OK          – solve_result_num in {0, 100} and TotalCost reasonable
       UNKNOWN     – can't determine
     """
     outputs = run_dir / "outputs"
@@ -121,6 +127,17 @@ def determine_status(run_dir: Path) -> str:
         return "UNKNOWN"
     srn = int(srn)
     if srn in (0, 100):
+        # Check Objective.csv for tolerance violations
+        obj_path = outputs / "Objective.csv"
+        if obj_path.exists():
+            try:
+                with open(obj_path) as f:
+                    lines = f.read().strip().split("\n")
+                    obj_val = float(lines[-1].split(",")[-1].strip())
+                    if obj_val > INVALID_TOL_THRESHOLD:
+                        return "INVALID_TOL"
+            except Exception:
+                pass
         return "OK"
     if srn == 200:
         return "INFEASIBLE"
@@ -286,7 +303,7 @@ def get_run_timestamp(run_dir: Path) -> str:
 # Main
 # ---------------------------------------------------------------------------
 
-def scan_all_runs() -> list[dict]:
+def scan_all_runs(include_archive: bool = False) -> list[dict]:
     """Scan all run directories and produce scored results."""
     results = []
     
@@ -294,22 +311,36 @@ def scan_all_runs() -> list[dict]:
         print(f"ERROR: {CASE_STUDIES_FI} not found")
         sys.exit(1)
     
+    # Collect all run directories to scan
+    run_dirs = []
     for d in sorted(CASE_STUDIES_FI.iterdir()):
         if not d.is_dir():
             continue
-        # Skip known non-run directories
-        if d.name in ("_archive", "__pycache__", ".ipynb_checkpoints"):
+        if d.name in ("__pycache__", ".ipynb_checkpoints", "00_td_dat"):
             continue
-        # Skip archive directories
         if d.name.startswith("_archive"):
+            if include_archive:
+                # Recurse into archive subdirectories
+                for sub in sorted(d.iterdir()):
+                    if sub.is_dir():
+                        run_dirs.append((sub, f"archive/{sub.name}"))
             continue
+        if d.name == "manual_runs":
+            # Recurse into manual_runs subdirectories
+            for sub in sorted(d.iterdir()):
+                if sub.is_dir():
+                    run_dirs.append((sub, f"manual_runs/{sub.name}"))
+            continue
+        run_dirs.append((d, d.name))
+    
+    for d, display_name in run_dirs:
         
         status = determine_status(d)
         provenance = classify_provenance(d.name)
         timestamp = get_run_timestamp(d)
         
         row = {
-            "run_name": d.name,
+            "run_name": display_name,
             "status": status,
             "provenance": provenance,
             "timestamp": timestamp,
@@ -317,8 +348,8 @@ def scan_all_runs() -> list[dict]:
             "notes": "",
         }
         
-        # Extract metrics and score only for OK runs
-        if status == "OK":
+        # Extract metrics and score for OK and INVALID_TOL runs
+        if status in ("OK", "INVALID_TOL"):
             metrics = extract_metrics(d / "outputs")
             score, errors = compute_score(metrics)
             row["score"] = round(score, 2) if score != float("inf") else float("inf")
@@ -380,11 +411,12 @@ def print_summary(df: pd.DataFrame, top_n: int = 5, verbose: bool = False):
     total = len(df)
     ok = len(df[df["status"] == "OK"])
     empty = len(df[df["status"] == "EMPTY"])
-    failed = len(df[~df["status"].isin(["OK", "EMPTY"])])
+    inv_tol = len(df[df["status"] == "INVALID_TOL"])
+    failed = len(df[~df["status"].isin(["OK", "EMPTY", "INVALID_TOL"])])
     
     print(f"\n{'=' * 80}")
     print(f"FINLAND 2017 RUN SCORING — {total} runs scanned")
-    print(f"  OK: {ok}   EMPTY: {empty}   FAILED/OTHER: {failed}")
+    print(f"  OK: {ok}   INVALID_TOL: {inv_tol}   EMPTY: {empty}   FAILED/OTHER: {failed}")
     print(f"{'=' * 80}\n")
     
     # Rankings table
@@ -430,9 +462,11 @@ def main():
     parser = argparse.ArgumentParser(description="Score all Finland 2017 calibration runs")
     parser.add_argument("--verbose", "-v", action="store_true", help="Show per-metric breakdowns")
     parser.add_argument("--top", "-t", type=int, default=5, help="Number of top runs to detail (default: 5)")
+    parser.add_argument("--include-archive", action="store_true",
+                        help="Also scan _archive_*/ directories")
     args = parser.parse_args()
     
-    results = scan_all_runs()
+    results = scan_all_runs(include_archive=args.include_archive)
     df = write_rankings(results)
     print_summary(df, top_n=args.top, verbose=args.verbose)
 
