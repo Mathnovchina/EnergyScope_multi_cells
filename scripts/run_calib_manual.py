@@ -116,22 +116,17 @@ REALITY_TARGETS = {
 # ===================================================================
 
 def _barrier_crossover_opts(log_path: Path) -> dict:
-    """Strategy A: barrier with crossover enabled (crossover=1).
+    """Strategy A: barrier — stock ESMC CPLEX options from esmc.py.
 
-    crossover=0 (the old ESMC default) leaves the solution interior to
-    the feasible polytope.  For large constraints like fmin_perc (which
-    reference total sector output ~1e5 GWh), a 0.01% barrier tolerance
-    translates to ~10 GWh violation -> solve_result_num = -1.
-
-    crossover=1 runs simplex crossover after barrier to find a vertex
-    solution that satisfies all constraints exactly.
+    Uses crossover=0 (the ESMC default).  Both calib_2017_finland and
+    ref_2017_finland solved to code=0 with these exact options.
     """
     cplex_options = [
         'baropt',
         'predual=-1',
         'barstart=4',
         'comptol=1e-5',
-        'crossover=1',          # THE FIX — was 0 in old default
+        'crossover=0',          # stock ESMC default (esmc.py)
         'timelimit 172800',
         'bardisplay=1',
         'display=2',
@@ -153,7 +148,7 @@ def _dual_simplex_opts(log_path: Path) -> dict:
     cplex_options = [
         'dual',                 # CPLEX dual simplex
         'predual=-1',
-        'timelimit 172800',
+        'timelimit 1800',       # 30 min cap — don't burn hours
         'display=2',
     ]
     return {
@@ -197,6 +192,8 @@ def parse_args():
                         "e.g. Data/2017_alt_from2035tech)")
     p.add_argument("--ampl-path", default=None,
                    help="Path to ampl executable (default: use PATH)")
+    p.add_argument("--kmedoid", action="store_true",
+                   help="Run kmedoid TD clustering instead of reading frozen TDs")
     p.add_argument("--skip-plots", action="store_true",
                    help="Skip validation plots (still scores)")
     p.add_argument("--solver", default="barrier",
@@ -722,8 +719,9 @@ def main():
         return
 
     # ---- [4] Temporal aggregation ----
-    print(f"\n[4/7] Temporal aggregation (algo=read, nbr_td={args.nbr_td})...")
-    my_model.init_ta(algo="read", ampl_path=ampl_path)
+    td_algo = "kmedoid" if args.kmedoid else "read"
+    print(f"\n[4/7] Temporal aggregation (algo={td_algo}, nbr_td={args.nbr_td})...")
+    my_model.init_ta(algo=td_algo, ampl_path=ampl_path)
 
     # ---- [5] Generate .dat files + snapshot ----
     print("[5/7] Generating .dat files...")
