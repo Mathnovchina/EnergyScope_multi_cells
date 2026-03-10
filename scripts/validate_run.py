@@ -529,7 +529,7 @@ def validate_one(run_dir: Path, reality: pd.DataFrame):
     write_report(model, reality, name, out)
     write_csv(model, reality, out)
 
-    print(f"    → {out}")
+    print(f"    -> {out}")
     return True
 
 

@@ -309,10 +309,54 @@ class Esmc:
         # Logging
         logging.info('Printing regional data into ' + str(self.cs_dir))
 
+        # Temporary diagnostics: print FI region Technologies values for PV_UTILITY and PV_ROOFTOP
+        print("\n[DEBUG] FI region Technologies before concat_reg_data:")
+        fi_tech = self.regions['FI'].data['Technologies']
+        for tech in ['PV_UTILITY', 'PV_ROOFTOP']:
+            if tech in fi_tech.index:
+                print(f"  FI {tech} f_max: {fi_tech.loc[tech, 'f_max']}")
+            else:
+                print(f"  FI {tech} not found in Technologies index")
+
         # Concatenate data across regions
         self.data_reg['Demands'], self.data_reg['Resources'], \
             self.data_reg['Technologies'], self.data_reg['Storage_power_to_energy'], self.data_reg['Misc'] = \
             self.concat_reg_data(to_concat=['Demands', 'Resources', 'Technologies', 'Storage_power_to_energy', 'Misc'])
+
+        # Temporary diagnostics: print concatenated Technologies values for PV_UTILITY and PV_ROOFTOP
+        print("\n[DEBUG] data_reg['Technologies'] after concat_reg_data:")
+        for tech in ['PV_UTILITY', 'PV_ROOFTOP']:
+            try:
+                val = self.data_reg['Technologies'].loc[('FI', tech), 'f_max']
+                print(f"  data_reg FI {tech} f_max: {val}")
+            except Exception as e:
+                print(f"  data_reg FI {tech} not found: {e}")
+
+        # Print demands, resources, technologies and storage power to energy
+        for n in ['Demands', 'Resources', 'Technologies', 'Storage_power_to_energy']:
+            df = self.data_reg[n].drop(columns=['Category', 'Subcategory', 'Technologies name', 'Units', 'Comment']
+                                       , errors='ignore')
+            df = df.mask(df > 1e14, 'Infinity')
+
+            if n == 'Demands':
+                name = 'param end_uses_demand_year : '
+            else:
+                name = 'param : '
+
+            # Temporary diagnostics: print Technologies values before print_df
+            if n == 'Technologies':
+                print("\n[DEBUG] Technologies dataframe before print_df:")
+                for tech in ['PV_UTILITY', 'PV_ROOFTOP']:
+                    try:
+                        val = df.loc[('FI', tech), 'f_max']
+                        print(f"  df FI {tech} f_max: {val}")
+                    except Exception as e:
+                        print(f"  df FI {tech} not found: {e}")
+
+            dp.print_df(df=dp.ampl_syntax(df),
+                        out_path=self.cs_dir / ('reg_' + n.lower() + '.dat'),
+                        name=name,
+                        mode='w')
 
         # Print demands, resources, technologies and storage power to energy
         for n in ['Demands', 'Resources', 'Technologies', 'Storage_power_to_energy']:
