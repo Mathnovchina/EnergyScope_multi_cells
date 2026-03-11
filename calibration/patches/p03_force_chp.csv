@@ -1,8 +1,0 @@
-file,parameter,technology_or_resource,value
-Technologies.csv,f_max,DEC_COGEN_OIL,0
-Technologies.csv,f_max,WIND_OFFSHORE,0
-Technologies.csv,f_max,GEOTHERMAL,0
-Technologies.csv,f_max,DHN_DEEP_GEO,0
-Technologies.csv,f_min,IND_COGEN_WOOD,0.5
-Technologies.csv,f_min,DHN_COGEN_WOOD,0.5
-Technologies.csv,f_min,DHN_COGEN_GAS,0.3

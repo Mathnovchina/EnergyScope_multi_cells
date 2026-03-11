@@ -1,0 +1,24 @@
+{
+    "patch_id": "fix_fi_2017_share_ned",
+    "description": "Set share_ned to 100% HVC for Finland 2017 calibration",
+    "date": "2026-03-02",
+    "justification": "METHANOL and AMMONIA producers are disabled (f_max=0) making the original share_ned infeasible. Finland 2017 petrochemical feedstock was oil-based (naphtha cracking).",
+    "file": "Data/2017/FI/Misc.json",
+    "changes": [
+        {
+            "parameter": "share_ned.HVC",
+            "old_value": 0.779,
+            "new_value": 1.0
+        },
+        {
+            "parameter": "share_ned.METHANOL", 
+            "old_value": 0.029,
+            "new_value": 0.0
+        },
+        {
+            "parameter": "share_ned.AMMONIA",
+            "old_value": 0.192,
+            "new_value": 0.0
+        }
+    ]
+}

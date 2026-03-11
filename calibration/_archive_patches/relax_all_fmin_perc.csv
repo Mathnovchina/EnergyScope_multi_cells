@@ -1,0 +1,13 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,fmin_perc,CAR_DIESEL,0
+Technologies.csv,fmin_perc,CAR_GASOLINE,0
+Technologies.csv,fmin_perc,DEC_BOILER_WOOD,0
+Technologies.csv,fmin_perc,DEC_DIRECT_ELEC,0
+Technologies.csv,fmin_perc,DHN_COGEN_COAL,0
+Technologies.csv,fmin_perc,DHN_COGEN_GAS,0
+Technologies.csv,fmin_perc,DHN_COGEN_WOOD,0
+Technologies.csv,fmin_perc,IND_BOILER_COAL,0
+Technologies.csv,fmin_perc,IND_BOILER_GAS,0
+Technologies.csv,fmin_perc,IND_BOILER_WOOD,0
+Technologies.csv,fmin_perc,IND_COGEN_WOOD,0
+Technologies.csv,fmin_perc,TRUCK_DIESEL,0

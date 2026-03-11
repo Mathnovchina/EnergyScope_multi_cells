@@ -683,22 +683,6 @@ class Esmc:
                              'crossover=0',
                              'timelimit 172800',
                              'bardisplay=1',
-   for m in mod_path:
-                n = self.project_dir / 'esmc' / 'energy_model' / m.relative_to(self.cs_dir)
-                mod_ref.append(n)
-                # copy the files from ref_dir to case_study directory
-                shutil.copyfile(n, m)
-
-        # default ampl_options
-        if ampl_options is None:
-            logging.info('Using default ampl_options')
-            cplex_options = ['baropt',
-                             'predual=-1',
-                             'barstart=4',
-                             'comptol=1e-5',
-                             'crossover=0',
-                             'timelimit 172800',
-                             'bardisplay=1',
                              'display=2']
             cplex_options_str = ' '.join(cplex_options)
             ampl_options = {'show_stats': 3,
@@ -738,11 +722,18 @@ class Esmc:
         run
 
         Returns
-        --            # self.esom.ampl.eval('print "TotalGWP_global", sum{c in REGIONS} (TotalGWP[c]);')
-            # self.esom.ampl.eval('print "GWP_op_global", sum{c in REGIONS, r in RESOURCES} (GWP_op[c,r]);')
-            # self.esom.ampl.eval('print "CO2_net_global", sum{c in REGIONS, r in RESOURCES} (CO2_net[c,r]);')
-            # self.esom.ampl.eval('print "TotalCost_global", sum{c in REGIONS} (TotalCost[c]);')
-AL_DAYS);	')
+        -------
+
+        """
+        # TODO
+        # Add possibility to choose options
+        # Add possibility to print things into the log
+
+        # update version tracking json file
+        self.update_version()
+        # print in log emission limit
+        self.esom.ampl.eval('print "gwp_limit_overall [ktCO2eq/y]", gwp_limit_overall;')
+        self.esom.ampl.eval('print "Number of TDs", last(TYPICAL_DAYS);	')
 
         if run:
             # logging info
@@ -752,10 +743,10 @@ AL_DAYS);	')
             # logging info
             logging.info('Finished run')
             # print in log main outputs
-            self.esom.ampl.eval('print "TotalGWP_global", sum{c in REGIONS} (TotalGWP[c]);')
-            self.esom.ampl.eval('print "GWP_op_global", sum{c in REGIONS, r in RESOURCES} (GWP_op[c,r]);')
-            self.esom.ampl.eval('print "CO2_net_global", sum{c in REGIONS, r in RESOURCES} (CO2_net[c,r]);')
-            self.esom.ampl.eval('print "TotalCost_global", sum{c in REGIONS} (TotalCost[c]);')
+            # self.esom.ampl.eval('print "TotalGWP_global", sum{c in REGIONS} (TotalGWP[c]);')
+            # self.esom.ampl.eval('print "GWP_op_global", sum{c in REGIONS, r in RESOURCES} (GWP_op[c,r]);')
+            # self.esom.ampl.eval('print "CO2_net_global", sum{c in REGIONS, r in RESOURCES} (CO2_net[c,r]);')
+            # self.esom.ampl.eval('print "TotalCost_global", sum{c in REGIONS} (TotalCost[c]);')
         return
 
     def prints_esom(self, inputs=True, outputs=True, solve_info=False, save_hourly:list=[]):
