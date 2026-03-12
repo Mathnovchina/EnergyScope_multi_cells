@@ -1,0 +1,3 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_max,SYN_METHANATION,0
+Resources.csv,avail_exterior,GAS,22000

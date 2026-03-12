@@ -1,0 +1,5 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_max,POWER_TO_DIESEL,0.001
+Technologies.csv,f_max,POWER_TO_JET_FUEL,0.001
+Technologies.csv,f_max,POWER_TO_GASOLINE,0.001
+Technologies.csv,f_max,POWER_TO_LFO,0.001
