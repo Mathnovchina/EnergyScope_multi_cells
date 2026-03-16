@@ -1,0 +1,3 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_min,NUCLEAR,2.9
+Technologies.csv,f_max,NUCLEAR,3.0

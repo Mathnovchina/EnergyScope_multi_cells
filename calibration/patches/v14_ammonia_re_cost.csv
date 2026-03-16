@@ -1,0 +1,6 @@
+file,parameter,technology_or_resource,value
+Resources.csv,avail_exterior,AMMONIA_RE,0
+Resources.csv,avail_exterior,AMMONIA,0
+Resources.csv,avail_exterior,H2,0
+Resources.csv,avail_exterior,H2_RE,0
+Resources.csv,avail_exterior,METHANOL_RE,0

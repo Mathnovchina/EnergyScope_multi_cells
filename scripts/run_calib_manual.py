@@ -126,7 +126,7 @@ def _barrier_crossover_opts(log_path: Path) -> dict:
         'predual=-1',
         'barstart=4',
         'comptol=1e-5',
-        'crossover=0',          # stock ESMC default (esmc.py)
+        'crossover=0',         
         'timelimit 172800',
         'bardisplay=1',
         'display=2',
@@ -199,6 +199,10 @@ def parse_args():
     p.add_argument("--solver", default="barrier",
                    choices=["barrier", "simplex"],
                    help="Primary solver strategy (default: barrier+crossover)")
+    p.add_argument("--relax-co2", action="store_true",
+                   help="Add CO2_INDUSTRY and CO2_CAPTURED to NOT_LAYERS "
+                        "(removes the implicit carbon-neutral constraint "
+                        "that forces CCS on all point-source combustion)")
     return p.parse_args()
 
 
@@ -517,6 +521,7 @@ def save_metadata(run_dir, args, patch_logs, score=None, solve_info=None):
             "nbr_td": args.nbr_td,
             "data_dir": args.data_dir,
             "solver_strategy": args.solver,
+            "relax_co2": args.relax_co2,
         },
         "patches": patch_logs,
         "score": score,
@@ -692,6 +697,28 @@ def main():
     # ---- [2] Read data ----
     print("[2/7] Reading data...")
     my_model.read_data_indep()
+
+    # Optionally relax CO2 layer balances for historical calibration.
+    # Zero out CO2_INDUSTRY and CO2_CAPTURED columns in layers_in_out
+    # and storage efficiency matrices so the layer_balance constraints
+    # become trivially satisfied (0 = 0).  This removes the implicit
+    # carbon-neutral constraint that forces CCS on all point-source
+    # combustion, allowing the model to freely emit CO2.
+    if args.relax_co2:
+        _co2_cols = ["CO2_INDUSTRY", "CO2_CAPTURED"]
+        _lio = my_model.data_indep["Layers_in_out"]
+        _lio.columns = [c.strip() for c in _lio.columns]
+        for col in _co2_cols:
+            if col in _lio.columns:
+                _lio[col] = 0.0
+                print(f"  --relax-co2: zeroed Layers_in_out[{col}]")
+        for mat_key in ("Storage_eff_in", "Storage_eff_out"):
+            _mat = my_model.data_indep[mat_key]
+            _mat.columns = [c.strip() for c in _mat.columns]
+            for col in _co2_cols:
+                if col in _mat.columns:
+                    _mat[col] = 0.0
+                    print(f"  --relax-co2: zeroed {mat_key}[{col}]")
 
     if args.data_dir:
         alt_dir = REPO_ROOT / args.data_dir
