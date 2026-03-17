@@ -1,0 +1,3 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,fmax_perc,DEC_BOILER_GAS,0.18
+Technologies.csv,f_min,DHN_COGEN_GAS,1.29

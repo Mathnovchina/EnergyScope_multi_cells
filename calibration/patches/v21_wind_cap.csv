@@ -1,0 +1,3 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_min,WIND_ONSHORE,1.4
+Technologies.csv,f_max,WIND_ONSHORE,1.59
