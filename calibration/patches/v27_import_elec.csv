@@ -1,0 +1,5 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_min,DHN_COGEN_GAS,0.9
+Technologies.csv,f_min,COAL_US,1.8
+Technologies.csv,f_min,CCGT,0.1
+Technologies.csv,f_max,CCGT,0.15

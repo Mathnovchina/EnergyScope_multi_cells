@@ -705,7 +705,7 @@ def main():
     # carbon-neutral constraint that forces CCS on all point-source
     # combustion, allowing the model to freely emit CO2.
     if args.relax_co2:
-        _co2_cols = ["CO2_INDUSTRY", "CO2_CAPTURED"]
+        _co2_cols = ["CO2_ATM", "CO2_INDUSTRY", "CO2_CAPTURED"]
         _lio = my_model.data_indep["Layers_in_out"]
         _lio.columns = [c.strip() for c in _lio.columns]
         for col in _co2_cols:

@@ -1,0 +1,6 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_max,CCGT_AMMONIA,0
+Technologies.csv,f_max,DEC_ADVCOGEN_H2,0
+Technologies.csv,fmax_perc,DEC_COGEN_OIL,0.01
+Technologies.csv,fmax_perc,DEC_ADVCOGEN_GAS,0.01
+Technologies.csv,fmax_perc,DEC_COGEN_GAS,0.01

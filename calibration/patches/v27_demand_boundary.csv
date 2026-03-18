@@ -1,0 +1,41 @@
+# v27 demand boundary correction — documentation patch
+#
+# WHAT WAS DONE (base file edits, not patchable via this mechanism):
+#
+# 1. Data/2017/FI/Demands.csv — IND electricity reclassified (Stats Finland boundary):
+#    - IND ELECTRICITY:  23424.866 → 44524.866 GWh  (+21100.000 GWh)
+#    - IND HEAT_HIGH_T:  59820.733 → 38720.733 GWh  (−21100.000 GWh)
+#    Total IND energy preserved: 83245.600 GWh  ✓
+#    Rationale: JRC-IDEES end-use boundary classifies Finnish pulp/paper/steel
+#    motor+process electricity as HEAT_HIGH_T.  Stats Finland records it as
+#    ELECTRICITY (commodity-flow accounting).  Δ=21.1 TWh aligns with Stats
+#    Finland 2017 IND FEC electricity ≈ 44.5 TWh vs JRC-IDEES 23.4 TWh.
+#    For the full forensic audit see: Docs/finland2017_demand_boundary_audit.md
+#
+# 2. Data/2017/FI/Technologies.csv — IND_BOILER f_min scaled (factor 38720/59820=0.647):
+#    - IND_BOILER_WOOD  f_min:  5.0 → 3.2 GW   (old value exceeded new demand avg 4.42 GW)
+#    - IND_BOILER_COAL  f_min:  0.5 → 0.3 GW   (proportional)
+#
+# PENDING RECALIBRATION AFTER v27 RUN:
+#
+# 3. IND_COGEN_WOOD fmin_perc — currently 0.44 (via v25_ind_cogen_wood2.csv)
+#    With new HEAT_HIGH_T=38720 GWh:  minimum heat = 0.44 × 38720 = 17037 GWh
+#    → by-product electricity ≈ 5.8 TWh  (vs 8.96 TWh in v26)
+#    ELEC_CHP will drop ~3 TWh below current 21.27 → needs upward fmin_perc adjustment
+#    if ELEC_CHP falls below reference 20.735 TWh by >5%.
+#    Suggested v28 patch range: fmin_perc 0.44 → 0.55–0.65 (to recover ~7–8 TWh IND CHP electricity)
+#
+# 4. ELEC_IMPORTS scoring — currently weight=0.0 in reality/finland_2017_reference.csv
+#    After v27 run: if model ELEC_IMPORTS lands in 10–18 TWh range, re-enable with weight=0.5
+#    Reference value to use: 16.9 TWh (Stats Finland 2017 net imports)
+#
+# 5. PE_BIOMASS — expect large drop (~20 TWh) due to less IND_COGEN_WOOD + BOILER_WOOD
+#    PE_BIOMASS reference = 100 TWh; if model undershoots, check IND_BOILER_WOOD fmin_perc
+#
+# FORMAT NOTE: this file contains no machine-readable patch rows.
+# It is documentation only.  The actual base-file edits were applied directly
+# and are irreversible via the normal patch mechanism.
+#
+# Run: v27   Base: v26 (score 3.15%)   Date: 2025
+file,parameter,technology,value
+# (no machine-readable rows — documentation file only)
