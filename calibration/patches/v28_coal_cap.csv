@@ -1,0 +1,4 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_min,COAL_US,3.0
+Technologies.csv,fmax_perc,COAL_US,0.044
+Technologies.csv,f_max,COAL_IGCC,0.0
