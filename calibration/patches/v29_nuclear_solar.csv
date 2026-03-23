@@ -1,0 +1,5 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_min,NUCLEAR,2.7
+Technologies.csv,f_max,NUCLEAR,2.8
+Technologies.csv,f_max,DEC_SOLAR,0.1
+Technologies.csv,f_min,PV_ROOFTOP,0.05

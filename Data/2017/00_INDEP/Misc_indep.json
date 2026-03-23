@@ -6,7 +6,7 @@
     "sm_max": 4,
     "c_grid_extra": 367.8,
     "loss_network": {
-        "ELECTRICITY": 0.0864,
+        "ELECTRICITY": 0.05,
         "HEAT_LOW_T_DHN": 0.05
     },
     "vehicule_capacity": {

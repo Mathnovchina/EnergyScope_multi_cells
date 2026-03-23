@@ -89,25 +89,32 @@ RANKINGS_CSV = CALIBRATION_DIR / "run_rankings.csv"
 REALITY_REF = CALIBRATION_DIR / "reality" / "finland_2017_reference.csv"
 
 # ---------------------------------------------------------------------------
-# Reality targets for scoring  (14 metrics, same as score_all_fi_runs.py)
+# Reality targets for scoring
 # Keys  =  metric name
 # Values = (reality_value_TWh_or_MtCO2, weight)
+# weight=0  => informational only: shown in scorecard but not included in
+#              the weighted-average score (structural or unconstrained metrics)
 # ---------------------------------------------------------------------------
 REALITY_TARGETS = {
-    "PE_BIOMASS":        (100.0, 1.5),
-    "PE_OIL":            (82.0,  1.5),
-    "PE_GAS":            (20.0,  1.0),
-    "PE_COAL":           (35.0,  1.5),
-    "PE_NUCLEAR":        (65.0,  1.0),
-    "PE_HYDRO":          (15.0,  0.8),
-    "PE_WIND":           (5.0,   0.8),
-    "ELEC_NUCLEAR":      (21.6,  1.5),
-    "ELEC_HYDRO":        (14.6,  1.2),
-    "ELEC_WIND":         (4.8,   1.0),
+    # --- 14 core calibration metrics ---
+    "PE_BIOMASS":        (100.0,  1.5),
+    "PE_OIL":            (82.0,   1.5),
+    "PE_GAS":            (20.0,   1.0),
+    "PE_COAL":           (35.0,   1.5),
+    "PE_NUCLEAR":        (65.0,   1.0),
+    "PE_HYDRO":          (15.0,   0.8),
+    "PE_WIND":           (5.0,    0.8),
+    "ELEC_NUCLEAR":      (21.6,   1.5),
+    "ELEC_HYDRO":        (14.6,   1.2),
+    "ELEC_WIND":         (4.8,    1.0),
     "ELEC_CHP":          (20.735, 1.2),
-    "ELEC_CONDENSATION": (3.284, 0.8),
-    "ELEC_SOLAR":        (0.044, 0.3),
-    "CO2":               (41.2,  2.0),
+    "ELEC_CONDENSATION": (3.284,  0.8),
+    "ELEC_SOLAR":        (0.044,  0.3),
+    "CO2":               (41.2,   2.0),
+    # --- extended metrics (academic dashboard) ---
+    "ELEC_GAS":          (3.2,    0.0),   # informational: gas electricity — structurally over-produced (model maximises CHP); 20 TWh gas cap forces all gas through elec techs
+    "ELEC_IMPORTS":      (20.426, 0.0),   # informational: net electricity imports
+    "HEAT_DHN":          (36.5,   0.0),   # informational: DHN/DEC split not optimised
 }
 
 
@@ -366,6 +373,10 @@ def extract_metrics(outputs_dir: Path) -> dict:
         m["PE_HYDRO"]   = lookup.get("RES_HYDRO", 0) / 1000
         m["PE_WIND"]    = lookup.get("RES_WIND", 0) / 1000
 
+        # Net electricity imports (R_year_exterior for ELECTRICITY resource)
+        elec_ext = df.loc[df["Resources"] == "ELECTRICITY", "R_year_exterior"]
+        m["ELEC_IMPORTS"] = float(elec_ext.iloc[0]) / 1000 if not elec_ext.empty else 0.0
+
     # ---- Year_balance.csv -> Electricity ----
     yb_path = outputs_dir / "Year_balance.csv"
     if yb_path.exists():
@@ -397,6 +408,18 @@ def extract_metrics(outputs_dir: Path) -> dict:
                 "CCGT_AMMONIA", "BIOMASS_TO_POWER",
             ]
             m["ELEC_CONDENSATION"] = elec(cond_techs)
+
+            # Gas electricity: all gas-fuelled technologies
+            gas_elec_techs = [
+                "DHN_COGEN_GAS", "IND_COGEN_GAS", "DEC_COGEN_GAS",
+                "DEC_ADVCOGEN_GAS", "CCGT", "OCGT",
+            ]
+            m["ELEC_GAS"] = elec(gas_elec_techs)
+
+        # District heating production (HEAT_LOW_T_DHN column)
+        if "HEAT_LOW_T_DHN" in yb.columns:
+            dhn_col = yb["HEAT_LOW_T_DHN"]
+            m["HEAT_DHN"] = float(dhn_col[dhn_col > 0].sum()) / 1000
 
     # ---- Gwp_breakdown.csv -> CO2 ----
     gwp_path = outputs_dir / "Gwp_breakdown.csv"
@@ -433,15 +456,29 @@ def compute_score(metrics: dict):
 
 
 def print_scorecard(score, errors):
-    print(f"\n{'=' * 60}")
-    print(f"  SCORE: {score:.1f}% weighted average error")
-    print(f"{'=' * 60}")
-    print(f"  {'Metric':<20} {'Model':>8} {'Target':>8} {'Error':>8}")
-    print(f"  {'-' * 50}")
+    # Separate scored vs informational (weight=0) metrics
+    info_keys = {k for k, (_, w) in REALITY_TARGETS.items() if w == 0}
+
+    print(f"\n{'=' * 62}")
+    print(f"  SCORE: {score:.1f}% weighted average error  "
+          f"({len(REALITY_TARGETS) - len(info_keys)} scored metrics)")
+    print(f"{'=' * 62}")
+    print(f"  {'Metric':<22} {'Model':>8} {'Target':>8} {'Error':>8}")
+    print(f"  {'-' * 52}")
     for key in sorted(errors):
+        if key in info_keys:
+            continue
         info = errors[key]
-        print(f"  {key:<20} {info['model']:>8.2f} "
+        print(f"  {key:<22} {info['model']:>8.2f} "
               f"{info['target']:>8.1f} {info['pct_error']:>7.1f}%")
+    # Print informational metrics separately
+    info_in_errors = [k for k in sorted(errors) if k in info_keys]
+    if info_in_errors:
+        print(f"  {'- informational (not scored) -':^52}")
+        for key in info_in_errors:
+            info = errors[key]
+            print(f"  {key:<22} {info['model']:>8.2f} "
+                  f"{info['target']:>8.1f} {info['pct_error']:>7.1f}%  [info]")
 
 
 def append_to_rankings(run_dir, score, errors):

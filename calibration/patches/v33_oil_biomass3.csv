@@ -1,0 +1,4 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,fmax_perc,COAL_US,0.047
+Technologies.csv,fmin_perc,DEC_BOILER_OIL,0.10
+Technologies.csv,fmax_perc,DEC_BOILER_WOOD,0.25

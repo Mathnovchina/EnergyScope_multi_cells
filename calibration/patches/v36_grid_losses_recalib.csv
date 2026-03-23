@@ -1,0 +1,3 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,fmin_perc,DEC_BOILER_WOOD,0.20
+Technologies.csv,f_min,DHN_COGEN_GAS,1.42
