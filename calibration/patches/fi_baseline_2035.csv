@@ -1,0 +1,6 @@
+file,parameter,technology_or_resource,value
+Technologies.csv,f_min,WIND_ONSHORE,6.0
+Technologies.csv,f_min,WIND_OFFSHORE,1.6
+Technologies.csv,f_min,PV_ROOFTOP,0.8
+Technologies.csv,f_min,PV_UTILITY,0.5
+Resources.csv,avail_exterior,ELECTRICITY,25000
