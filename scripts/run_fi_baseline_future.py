@@ -599,6 +599,11 @@ def main():
     if hasattr(model.ta, 'tse') and model.ta.tse is not None:
         print(f"  Time series error: {model.ta.tse:.4f}")
 
+    # ---- Override gwp_limit_overall in data (before .dat generation) ----
+    if args.gwp_limit is not None:
+        model.data_indep['Misc_indep']['gwp_limit_overall'] = args.gwp_limit
+        print(f"  GWP limit override: gwp_limit_overall = {args.gwp_limit} ktCO2/y")
+
     # ---- Generate .dat files ----
     print("[6/7] Generating .dat files ...")
     model.print_td_data()
