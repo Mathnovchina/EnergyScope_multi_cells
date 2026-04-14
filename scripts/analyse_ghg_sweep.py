@@ -70,6 +70,50 @@ NED_COLOURS = {
     "Waste for NED":     "#8c564b",
 }
 
+ELEC_MIX_COLOURS = {
+    "Nuclear":                              "#f4d44d",
+    "Wind onshore":                         "#7fbfdf",
+    "Wind offshore":                        "#1a72b5",
+    "Solar PV":                             "#ff9f0e",
+    "Hydro":                                "#1f77b4",
+    "Gas turbines":                         "#BDB76B",
+    "Gas CHP":                              "#8B8A00",
+    "Biomass CHP/power":                    "#8B6914",
+    "Biomass (conversion co-product)":      "#c49a3c",
+    "Electricity import":                   "#bcbd22",
+    "Other":                                "#7f7f7f",
+}
+
+# Maps technology names → electricity generation category
+ELEC_TECH_MAP = {
+    "NUCLEAR":                  "Nuclear",
+    "WIND_ONSHORE":             "Wind onshore",
+    "WIND_OFFSHORE":            "Wind offshore",
+    "PV_ROOFTOP":               "Solar PV",
+    "PV_UTILITY":               "Solar PV",
+    "HYDRO_RIVER":              "Hydro",
+    "HYDRO_DAM":                "Hydro",
+    "CCGT":                     "Gas turbines",
+    "OCGT":                     "Gas turbines",
+    "IND_COGEN_GAS":            "Gas CHP",
+    "DHN_COGEN_GAS":            "Gas CHP",
+    "DEC_COGEN_GAS":            "Gas CHP",
+    "DEC_ADVCOGEN_GAS":         "Gas CHP",
+    "IND_COGEN_WOOD":           "Biomass CHP/power",
+    "DHN_COGEN_WOOD":           "Biomass CHP/power",
+    "DHN_COGEN_WASTE":          "Biomass CHP/power",
+    "IND_COGEN_WASTE":          "Biomass CHP/power",
+    "BIOMASS_TO_POWER":         "Biomass CHP/power",
+    "BIOMASS_TO_DIESEL":        "Biomass (conversion co-product)",
+    "BIOMASS_TO_JET_FUEL":      "Biomass (conversion co-product)",
+    "BIOMASS_TO_METHANOL":      "Biomass (conversion co-product)",
+    "BIOMASS_TO_GASOLINE":      "Biomass (conversion co-product)",
+    "BIOMASS_TO_LFO":           "Biomass (conversion co-product)",
+    "BIOMASS_TO_METHANE":       "Biomass (conversion co-product)",
+    "BIOWASTE_TO_DIESEL":       "Biomass (conversion co-product)",
+    "BIOWASTE_TO_JET_FUEL":     "Biomass (conversion co-product)",
+}
+
 BIOMASS_USE_COLOURS = {
     "HT heat -- boilers (wood)":   "#1f4e79",
     "HT heat -- boilers (waste)":  "#5b9bd5",
@@ -319,8 +363,40 @@ GAS_CONSUMER_MAP = {
 }
 
 
+def extract_electricity_mix(yb: pd.DataFrame, res: pd.DataFrame) -> dict:
+    """
+    Compute electricity production by technology category (GWh/y).
+    Uses the ELECTRICITY column from Year_balance (positive = producer).
+    Also adds electricity imports from Resources.csv.
+
+    Returns: {category: GWh_produced}
+    """
+    result = {}
+    unmapped = {}
+
+    if not yb.empty and "ELECTRICITY" in yb.columns:
+        for tech in yb.index:
+            val = float(yb.loc[tech, "ELECTRICITY"])
+            if val > 0.5:
+                cat = ELEC_TECH_MAP.get(tech.strip(), None)
+                if cat is None:
+                    unmapped[tech] = val
+                    cat = "Other"
+                result[cat] = result.get(cat, 0.0) + val
+
+    # Electricity imports
+    if not res.empty and "ELECTRICITY" in res.index:
+        imp = float(res.loc["ELECTRICITY"].get("R_year_exterior", 0))
+        if imp > 0.5:
+            result["Electricity import"] = result.get("Electricity import", 0.0) + imp
+
+    if unmapped:
+        print(f"  WARNING: Unmapped electricity producers: {unmapped}")
+
+    return result
+
+
 def extract_gas_breakdown(yb: pd.DataFrame) -> dict:
-    """Gas consumption by end-use (GWh). Also includes synthetic gas production."""
     if yb.empty or "GAS" not in yb.columns:
         return {}
     result = {}
@@ -437,10 +513,10 @@ def find_sweep_runs(manifest_path: Path = None,
 
 
 def _find_run_dir(name_fragment: str) -> Path:
-    """Find the most recent run directory containing name_fragment."""
+    """Find the most recent run directory whose run-name (after '__') equals name_fragment exactly."""
     candidates = sorted(
         [d for d in MANUAL_RUNS.iterdir()
-         if d.is_dir() and name_fragment in d.name
+         if d.is_dir() and d.name.endswith(f"__{name_fragment}")
          and (d / "outputs" / "Year_balance.csv").exists()],
         reverse=True,
     )
@@ -460,6 +536,7 @@ def build_master_table(runs: list) -> pd.DataFrame:
     all_bio_cats = set()
     all_ned_cats = set()
     all_gas_cats = set()
+    all_elec_cats = set()
 
     for run in runs:
         print(f"  Loading: {run['label']} -- {run['run_dir'].name}")
@@ -475,6 +552,7 @@ def build_master_table(runs: list) -> pd.DataFrame:
         bio = extract_biomass_allocation(yb)
         ned = extract_ned_feedstock(yb)
         gas_bk = extract_gas_breakdown(yb)
+        elec_mix = extract_electricity_mix(yb, res)
         gwp_t = extract_gwp_totals(gwp)
         co2_res = extract_co2_from_resources(res)
 
@@ -512,6 +590,12 @@ def build_master_table(runs: list) -> pd.DataFrame:
             row[f"GAS_{cat}_GWh"] = val
             all_gas_cats.add(cat)
 
+        # Electricity mix columns
+        for cat, val in elec_mix.items():
+            row[f"ELECMIX_{cat}_GWh"] = val
+            all_elec_cats.add(cat)
+        row["ELECMIX_total_GWh"] = sum(elec_mix.values())
+
         rows.append(row)
 
     df = pd.DataFrame(rows)
@@ -534,6 +618,11 @@ def build_master_table(runs: list) -> pd.DataFrame:
         df[col] = df[col].fillna(0.0)
     for cat in all_gas_cats:
         col = f"GAS_{cat}_GWh"
+        if col not in df.columns:
+            df[col] = 0.0
+        df[col] = df[col].fillna(0.0)
+    for cat in all_elec_cats:
+        col = f"ELECMIX_{cat}_GWh"
         if col not in df.columns:
             df[col] = 0.0
         df[col] = df[col].fillna(0.0)
@@ -856,6 +945,83 @@ def plot_gas_breakdown(df: pd.DataFrame, out: Path):
     print(f"  -> {fname}")
 
 
+def plot_electricity_mix_sweep(df: pd.DataFrame, out: Path):
+    """
+    New plot (Fig 6): Electricity production mix (GWh/y) across GHG savings cases,
+    stacked by generation category, with total annotated above each bar.
+
+    Shows how the electricity portfolio shifts as GHG constraints tighten:
+    nuclear is constant (brownfield floor), wind grows, gas declines.
+    """
+    elec_order = [
+        "Nuclear", "Hydro", "Wind onshore", "Wind offshore", "Solar PV",
+        "Gas turbines", "Gas CHP",
+        "Biomass CHP/power", "Biomass (conversion co-product)",
+        "Electricity import", "Other",
+    ]
+    active = [(cat, f"ELECMIX_{cat}_GWh") for cat in elec_order
+              if f"ELECMIX_{cat}_GWh" in df.columns
+              and df[f"ELECMIX_{cat}_GWh"].sum() > 0.1]
+
+    if not active:
+        print("  -> (no electricity mix data, skipping electricity mix plot)")
+        return
+
+    x = np.arange(len(df))
+    labels = _case_labels(df)
+    bar_width = 0.7
+
+    fig, ax1 = plt.subplots(figsize=(15, 8))
+    bottoms = np.zeros(len(df))
+
+    for cat, col in active:
+        vals = df[col].values
+        color = ELEC_MIX_COLOURS.get(cat, "#cccccc")
+        ax1.bar(x, vals, bottom=bottoms, label=cat, color=color,
+                edgecolor="white", linewidth=0.5, width=bar_width)
+        bottoms += vals
+
+    # Annotate total electricity (TWh)
+    for i in range(len(df)):
+        if bottoms[i] > 100:
+            ax1.text(i, bottoms[i] + bottoms.max() * 0.01,
+                     f"{bottoms[i]/1000:.1f} TWh",
+                     ha="center", va="bottom", fontsize=7, fontweight="bold")
+
+    # Right axis: system cost
+    ax2 = ax1.twinx()
+    costs_MEur = df["system_cost_MEur"].values
+    ax2.plot(x, costs_MEur, "s-", color="#1f4e79", markersize=8,
+             linewidth=1.5, markerfacecolor="#1f4e79",
+             label="System cost (right axis)", zorder=10)
+    ax2.set_ylabel("System yearly costs (M€/year)", fontsize=11, color="#1f4e79")
+    ax2.tick_params(axis="y", labelcolor="#1f4e79")
+    cost_min = np.nanmin(costs_MEur) if len(costs_MEur) > 0 else 0
+    cost_max = np.nanmax(costs_MEur) if len(costs_MEur) > 0 else 1
+    margin = (cost_max - cost_min) * 0.3 if cost_max > cost_min else 500
+    ax2.set_ylim(cost_min - margin * 5, cost_max + margin)
+
+    ax1.set_xticks(x)
+    ax1.set_xticklabels(labels, fontsize=10)
+    ax1.set_xlabel("GHG savings vs 2017 baseline (41.2 MtCO$_2$)", fontsize=11)
+    ax1.set_ylabel("Electricity production (GWh/year)", fontsize=11)
+    ax1.set_title("Finland 2035 -- Electricity Production Mix vs GHG Savings",
+                  fontsize=13)
+    ax1.set_ylim(bottom=0)
+    ax1.grid(axis="y", alpha=0.2)
+
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(h1 + h2, l1 + l2, loc="upper right", fontsize=8, ncol=2,
+               framealpha=0.9)
+
+    plt.tight_layout()
+    fname = out / "fig6_electricity_mix_vs_ghg.png"
+    plt.savefig(fname, dpi=200)
+    plt.close()
+    print(f"  -> {fname}")
+
+
 # ============================================================================
 # MAIN
 # ============================================================================
@@ -966,6 +1132,7 @@ def main():
     plot_cost_vs_ghg(df_plot, out_dir)
     plot_co2_actual_vs_limit(df_plot, out_dir)
     plot_gas_breakdown(df_plot, out_dir)
+    plot_electricity_mix_sweep(df_plot, out_dir)
 
     # Write analysis summary
     summary_path = out_dir / "analysis_summary.md"

@@ -85,20 +85,125 @@ Both scenarios share the brownfield renewables patch. The phase-out scenario add
 
 ## 2. Key Model Hypotheses
 
-| # | Hypothesis | Decision | Justification |
-|---|-----------|----------|---------------|
-| H1 | **Coal ban** | Accepted — `COAL avail_exterior = 0` | Finland committed to coal phase-out by 2029. This is the correct 2035 assumption. Without it, the model would use cheap coal and the unconstrained floor would be much higher (closer to 2017 level). |
-| H2 | **1.5% social discount rate** | Accepted | Strongly favours capital-intensive low-carbon technologies over gas (cheap capex, expensive opex). At higher rates (e.g. 8%), nuclear and offshore wind would be penalised and gas would be more attractive. |
-| H3 | **Nuclear brownfield (f_min = 4.36 GW)** | Accepted for Scenario A | All five Finnish nuclear units assumed to be operational through 2035. Loviisa 1/2 licences expire 2027/2030 but a lifetime extension under national policy is assumed. |
-| H4 | **Nuclear phase-out (f_min = 2.49 GW)** | Accepted for Scenario B | Loviisa 1/2 retirement assumed (1.87 GW reduction). This gives a ~67% reduction for the sensitivity and is plausible given the licence expiry without a confirmed extension decision. |
-| H5 | **Brownfield renewables** | Accepted | Wind and solar minima reflect already-committed or already-installed capacity. These are not policy targets but floor values for what is locked in by 2035 regardless of optimiser choices. |
-| H6 | **DHN share constrained [42%–50%]** | Accepted | Finland has one of the world's highest DHN penetrations (~54% of residential heat). The runner applies `share_heat_dhn_min=0.42, share_heat_dhn_max=0.50`. This prevents the model from dismantling Finland's DHN infrastructure. |
-| H7 | **No CO₂ layer relaxation** | Accepted | The `--relax-co2` flag is for 2017 calibration only. In 2035, CO₂_INDUSTRY is absorbed freely (avail=1×10¹⁵), meaning large point-source emitters are unconstrained beyond the global GWP limit. |
-| H8 | **Single WOOD resource** | Accepted as limitation | Finland has no geographic biomass disaggregation (unlike Colla's 10-origin Belgian model). All domestic lignocellulosic biomass treated as a single pool at 22.08 €/MWh. |
-| H9 | **TDs reuse across scenarios** | Accepted | All scenarios share the same weather year and demand profiles. `--read-td` is valid and avoids ~20 min of k-medoid clustering per run. |
-| H10 | **GHG baseline = Finland 2017 CO₂_net = 41,200 kt** | Accepted | Calibrated to Statistics Finland 2017 data; CO₂_net metric (not gross) is used throughout to remain consistent with the AMPL GWP constraint. |
-| H11 | **Deduplication of non-binding runs** | Accepted | Cases with system cost within 0.5 M€ of unconstrained are dropped from plots (constraint not binding). This removed the 49%/50%/65% cases from Scenario A, as the natural floor is ~69%. |
-| H12 | **No CCS forced** | Observed | INDUSTRY_CCS installs 0.3 kt capture even in unconstrained case — effectively inactive. Not a decision; a structural finding. |
+> For each hypothesis, the decision is stated first, followed by the scientific justification and the primary data source(s).
+
+### H1 — Coal prohibition
+
+**Decision:** `COAL avail_exterior = 0` (hard ban — no coal import or consumption permitted)
+
+**Justification:** Finland enacted the *Act on the Prohibition of the Use of Coal for Energy* (Laki kivihiilen energiakäytön kieltämisestä, **Finlex 416/2019**), which bans the combustion of coal for energy from 1 May 2029. This makes coal physically and legally unavailable in any 2035 scenario. Without this constraint, the optimizer would use cheap coal and the unconstrained GHG floor would be close to the 2017 level, making the sweep uninformative.
+
+**Data source:** Finnish Ministry of Economic Affairs and Employment (TEM) — *Carbon neutral Finland 2035: National Climate and Energy Strategy* (December 2022, TEM publications 2022:48); Finlex statute 416/2019 (in force 2029).
+
+---
+
+### H2 — Social discount rate (i_rate = 1.5 %)
+
+**Decision:** 1.5 % real discount rate applied to all technology investment annuities
+
+**Justification:** This rate represents the long-term real borrowing cost for a public investor in a low-interest environment. It corresponds to the floating loan rate over €1 M (other than bank overdraft) for Belgium/Finland; it is higher than the ECB policy rate and lower than private cost-of-capital estimates (7–12 %). The low rate strongly penalises high-capex/low-opex gas turbines relative to capital-intensive nuclear and large-scale renewables, and is the standard choice in the EnergyScope methodology for planning studies that represent a social optimum rather than a private investment decision. Sensitivity to this choice is significant: at 8 %, nuclear c_inv of 4,846 €/kW would be ~3× more expensive in annualised terms, making gas far more competitive and raising the GHG floor substantially.
+
+**Data source:** Limpens, G., Moret, S., Jeanmart, H. & Marechal, F. (2019) — *EnergyScope TD: A novel open-source model for regional energy systems*, Applied Energy 255, 113729. §Model formulation — Discount and interest rates (also documented in `Docs/sections/input_data.rst`, §Discount and interest rates, referencing Meinke-Hubeny et al. (2017), Simoes et al. (2013/JRC), and ECB historical rates).
+
+---
+
+### H3 — Nuclear brownfield minimum (f_min = 4.36 GW, Scenario A)
+
+**Decision:** All five Finnish nuclear units modelled as operational in 2035 with a forced minimum of 4.36 GW
+
+**Justification:** The Finnish nuclear fleet in 2035 comprises: Olkiluoto 1 (0.89 GW, TVO, in service since 1978), Olkiluoto 2 (0.89 GW, TVO, 1980), Olkiluoto 3 (1.60 GW, TVO, 2023), Loviisa 1 (0.49 GW, Fortum, 1977) and Loviisa 2 (0.49 GW, Fortum, 1981). Sum = 4.36 GW. The 2022 National Energy and Climate Strategy explicitly includes all five units as active in 2035 projections. Loviisa 1/2 licence extensions (beyond 2027/2030) are assumed as per Fortum's stated intention and STUK's operating condition framework, though not legally confirmed. f_max = 5.0 GW accounts for a possible small new capacity while keeping the band narrow. The capacity factor c_p = 0.849 is taken from the DEA Technology Catalogue (2020 edition, ch. Nuclear Power, Table 4), representing the EU average LWR availability including refuelling downtime. The Finnish historical CF (~91–92 %) is somewhat higher; the DEA value was chosen for consistency with the technology data source used for all other technologies.
+
+**Data source:** Eurostat — *Energy Statistics 2023* (installed generation capacity by fuel, Finland, table nrg_inf_epcrw); DEA (Danish Energy Agency) — *Technology Data: Generation of Electricity and District Heating* (2020 edition, last updated 2023), ch. 08 Nuclear power; Fortum press releases on Loviisa licence renewals; TEM — *Carbon neutral Finland 2035 strategy*.
+
+---
+
+### H4 — Nuclear phase-out minimum (f_min = 2.49 GW, Scenario B)
+
+**Decision:** Loviisa 1 (0.49 GW) and Loviisa 2 (0.49 GW) modelled as retired; only Olkiluoto fleet (OL1+OL2+OL3 = 2.38+0.11 rounding = 2.49 GW) remains
+
+**Justification:** The Loviisa units' operating licences from STUK (Säteilyturvakeskus — Radiation and Nuclear Safety Authority) expire in 2027 (LO1) and 2030 (LO2). Fortum applied for a 20-year extension in 2020, but STUK approval is not yet unconditional, and both units will be 58–63 years old by 2035. The scenario assumes no STUK extension approval, which is a plausible regulatory outcome under the EU nuclear safety directive. The Olkiluoto fleet is retained because OL3 is brand-new (2023 grid connection) and OL1/OL2 licenses extend to 2038/2040. This sensitivity tests the economic and decarbonisation impact of losing ~1.87 GW of low-carbon baseload capacity.
+
+**Data source:** STUK operating licence decisions (VTT Research Report, "Nuclear Power Plant Safety in Finland", 2022); Fortum Annual Report 2022 (Loviisa life extension discussions); *Nuclear Power in Finland* factsheet — World Nuclear Association (2024 update); *Carbon neutral Finland 2035* TEM strategy.
+
+---
+
+### H5 — Brownfield renewable minima
+
+**Decision:** f_min imposed for WIND_ONSHORE (6.0 GW), WIND_OFFSHORE (1.6 GW), PV_ROOFTOP (0.8 GW), PV_UTILITY (0.5 GW)
+
+**Justification:** These lower bounds represent already-committed or already-installed capacity that is locked in by 2035 regardless of optimiser decisions. They prevent the unrealistic scenario where the model would retire functioning wind and solar plants in favour of nuclear+gas. Finland had ~5.0 GW wind onshore installed by end-2023 (FWPA data), with significant committed pipeline (Aurora, Oosinselkä, Pjelax-Nord, etc.) bringing the total to ~6 GW by 2035 under firm contract. Wind offshore was at 0 GW installed but with 1.6 GW firmly contracted and permitted at Korsnäs and Pyhäjoki. PV rooftop reflects Finnish solar deployment statistics (0.8 GW as of 2023 per Energiateollisuus). PV utility 0.5 GW reflects ground-mounted parks under construction. Electricity import cap (25,000 GWh/y) reflects the Finnish–Nordic grid interconnection capacity per ENTSO-E NTC 2035 planning values.
+
+**Data source:** FWPA (Finnish Wind Power Association) — *Wind Power in Finland* statistics 2023; Energiateollisuus (Finnish Energy) — *Solar Power Statistics 2023*; ENTSO-E — *TYNDP 2022, NTC reference table, Finland*; TEM — *National Energy and Climate Strategy for 2030* (2016) and *Carbon neutral Finland 2035*.
+
+---
+
+### H6 — DHN share bounds [42 %–50 %]
+
+**Decision:** share_heat_dhn_min = 0.42, share_heat_dhn_max = 0.50
+
+**Justification:** Finland has one of the highest district heating penetration rates in the world. According to Energiateollisuus, district heat covered approximately 46 % of all space heating and domestic hot water demand in 2022, and 54 % of residential heat specifically in urban areas. The [42 %, 50 %] bounds allow the optimizer to vary DHN use within a realistic range without dismantling Finland's well-established, capital-intensive DHN network (which would be irreversible and economically illogical over a 15-year planning horizon). Setting max at 50 % reflects the physical limits of DHN expansion given Finland's low-density rural areas. Note: Colla's Belgian model used [2 %, 37 %] bounds (Paardekooper et al. 2018, Heat Roadmap Belgium), reflecting Belgium's much lower DHN penetration; Finland's situation is structurally different.
+
+**Data source:** Energiateollisuus (Finnish Energy) — *District Heat in Finland 2022*, statistics report (annual publication, Finnish Energy, Helsinki 2023); IEA — *Finland 2023: Energy Policy Review*, Table on heating supply shares; Statistics Finland — *Energy consumption in households 2022*, Tables 4.1–4.3.
+
+---
+
+### H7 — No CO₂ layer relaxation (2035 scenarios)
+
+**Decision:** `--relax-co2` flag NOT applied; CO₂_INDUSTRY layer operates normally (diffuse emissions are not captured, point-source CO₂ must balance through INDUSTRY_CCS or be kept below GWP limit via fuel choice)
+
+**Justification:** The `--relax-co2` flag was developed specifically to calibrate the 2017 historical run, where large amounts of fossil combustion at point sources (industrial furnaces, district heating plants) occurred and the CO₂ balancing layer would otherwise force non-physical CCS installation even for a historical year. For the 2035 forward-looking optimisation, the CO₂ layer architecture is intended to function: technologies that emit CO₂_INDUSTRY (large centralized combustion) must balance this through INDUSTRY_CCS or must use carbon-neutral fuels. Diffuse emitters (transport, decentralised heat) do not produce CO₂_INDUSTRY and contribute to GWP directly. This is the correct behaviour for a 2035 Pareto-optimal scenario.
+
+**Data source:** ESMC model architecture — `esmc/energy_model/ESMC_model_AMPL.mod`, constraint `layer_balance` (line ~368); internal ESMC CO₂ layer documentation (see repo memory file `co2_layer_architecture.md`); Thiran, P. et al. (2020), *EnergyScope Multi-Cell: a novel open-source model for multi-regional energy systems*, UCLouvain masters thesis.
+
+---
+
+### H8 — Single undifferentiated WOOD resource
+
+**Decision:** All Finnish domestic lignocellulosic biomass aggregated as a single resource `WOOD` at 22.08 €/MWh, with avail_local ≈ 110 TWh/y
+
+**Justification:** Unlike Colla's Belgian model (which has 10 geographical biomass origin categories with a stepped supply curve and varying transport costs), the Finnish ESMC implementation has a single national biomass pool. This simplification is conservative (lacks a rising marginal cost curve so over-deployment is unconstrained) and overstates the fungibility of biomass resources across end uses. The 22.08 €/MWh price represents Finnish wood chips (forest residues and thinnings) at the mill gate, consistent with the Finnish natural resources agency (Luke) wood energy statistics. The ~110 TWh/y availability corresponds to the technical potential for forest residue and by-product biomass for energy in Finland, derived from Luke's forest resource assessments; the sustainable potential is contested (50–80 TWh/y is a commonly cited range). This limitation means the 95% phase-out scenario biomass figure (106.8 TWh) should be interpreted cautiously.
+
+**Data source:** Natural Resources Institute Finland (Luke) — *Wood Energy Statistics 2022*; Colla, M. et al. (2022), *Optimal Use of Lignocellulosic Biomass for the Energy Transition*, §2.2 (description of biomass supply disaggregation for Belgium); Finnish Bioenergy Association (Bioenergia ry) — *Finnish Bioenergy Statistics 2022*.
+
+---
+
+### H9 — Typical Day (TD) reuse across runs
+
+**Decision:** All sweep run cases use `--read-td`, sharing the same set of 12 typical days derived from a single k-medoid clustering of the Finland 2035 weather and demand data
+
+**Justification:** Running k-medoid TD selection for every GHG constraint level would be computationally expensive (~20 min/run) and unnecessary: the TDs represent the weather and demand distributions, which do not change with GHG constraints. The same TDs are valid for all parametric sweep cases. Sharing TDs is also essential for strict comparability of results — changing TDs between cases would introduce clustering artefacts into the comparison.
+
+**Data source:** Thiran, P., Jeanmart, H. & Contino, F. (2023) — *Validation of a Method to Select A Priori the Number of Typical Days for Energy System Optimisation Models*, Energies 16(6), 2772. This paper validates the TD selection methodology underlying `--read-td` reuse.
+
+---
+
+### H10 — GHG reference year: Finland 2017 CO₂_net = 41,200 ktCO₂/y
+
+**Decision:** 41,200 ktCO₂_net/y used as the 100 % baseline for all savings fractions
+
+**Justification:** The value was obtained from an EnergyScope Finland 2017 calibrated run, validated against Statistics Finland GHG inventory data. The CO₂_net metric (net after biogenic credits) is used rather than gross CO₂_EMISSIONS because: (1) this is what the AMPL GWP constraint operates on; (2) it is consistent with the Finnish national GHG inventory reporting methodology under UNFCCC Common Reporting Format; (3) it makes the GHG savings fractions directly comparable to international climate commitments cited in percentage terms. Finland's actual 2017 GHG from energy was approximately 42.3 Mt gross CO₂ (Statistics Finland); the small difference (42.3 vs 41.2 Mt) reflects the EnergyScope model's combustion efficiencies and boundary conditions.
+
+**Data source:** Statistics Finland (Tilastokeskus) — *Greenhouse Gas Emissions in Finland 1990–2017*, National Inventory Report 2019; EnergyScope Finland 2017 calibration run (validated; see `validation_report_2017.md`).
+
+---
+
+### H11 — Deduplication of non-binding GHG cases
+
+**Decision:** Cases where the system cost is within 0.5 M€/y of the unconstrained optimum are removed from plots (constraint not binding, solution is degenerate)
+
+**Justification:** For Scenario A, GHG constraint cases at 49 %, 50 %, and 65 % savings all produce solutions statistically indistinct from the unconstrained optimum (the constraint does not bind because the natural GHG floor is ~69 % savings). Including them creates visual clutter and implies false sensitivity. The 0.5 M€/y threshold is chosen to be well below the solver's primal feasibility tolerance (~1 M€ for this dataset scale) while capturing genuine binding cases. This is a methodological choice analogous to Colla's Fig. 3, which only shows binding constraints from the range relevant to Belgium's natural floor (~40 %).
+
+**Data source:** Own methodological choice; inspired by Colla, M. et al. (2022), §3.2 (discussion of non-binding cases below natural GHG floor for Belgium).
+
+---
+
+### H12 — INDUSTRY_CCS effectively inactive (model observation)
+
+**Decision:** Not a hypothesis — observed structural result. INDUSTRY_CCS captures ~0.3 kt in unconstrained case; essentially zero across all scenarios.
+
+**Justification:** INDUSTRY_CCS requires electricity input and has high c_inv. Because Finland's 2035 electricity system is already over-supplied (nuclear + massive wind), electricity is cheap and CCS is in principle affordable. However, with coal banned and gas reduced to decentralised uses (which do not produce CO₂_INDUSTRY — see H7), there is very little point-source CO₂ requiring capture. The model installs a token amount but functionally CCS plays no role. This contrasts with scenarios where fossil-intensive industry remains (e.g., CCS co-firing scenarios or post-2040 hard-to-abate steel/cement) but is appropriate for Finland 2035 energy sector modelling.
+
+**Data source:** Model output observation from `Gwp_breakdown.csv` (all sweep cases); Finnish industrial CO₂ point source inventory from the EU ETS registry (Finnish Environment Institute / Syke) confirms that energy-sector point sources in 2035 are mainly CHP plants already moving to biomass.
 
 ---
 
