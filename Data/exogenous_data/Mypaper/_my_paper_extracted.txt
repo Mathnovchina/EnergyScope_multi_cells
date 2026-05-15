@@ -1,0 +1,1045 @@
+Role of forest biomass in the Finnish decarbonization∗†‡
+Matthieu Bordenave
+May 15, 2026
+Abstract
+Woody biomass plays a central role in many deep decarbonization narratives for Finland,
+where high forest cover and an established forest industry make lignocellulosic resources a
+key option for heat, power, fuels, and non-energy demand. At the same time, the contri-
+bution of forest biomass is deeply uncertain because it depends on biodiversity protection
+rules, carbon sink objectives, and exposure to forest physical risks such as storms, wildfires,
+and pests, which can generate both availability shocks and market price disruptions. This
+article develops a preliminary, first-stage modelling framework to explore these tensions us-
+ing EnergyScope TD, a whole-energy system optimisation model based on a reduced set of
+representative typical days. Building on the EnergyScope Multi-Cells dataset for Finland
+(hourly reference year 2017, UTC), the paper documents the end-use demand mapping in
+energy services, the time-series inputs used for typical-day selection, and a Finland-specific
+calibration workflow. For biomass, the first stage reproduces the modelling base proposed
+by Colla et al. for lignocellulosic supply representation, conversion pathways, costs, and im-
+port segmentation, in order to ensure comparability and to focus the analysis on allocation
+across competing end-uses under a binding greenhouse-gas constraint. The second stage,
+introduced as a scenario design, translates alternative policy and risk narratives into trans-
+parent shifts of biomass supply-curve availability and marginal costs. Simulation results are
+currently under production; this version therefore emphasises the modelling architecture,
+calibration choices, and scenario logic that will support a systematic assessment of the role
+and limits of forest biomass in Finnish decarbonization pathways.
+Keywords:
+JEL classification codes:
+∗PhD student at University of Pisa
+†mail. m.bordenave@student.unisi.it
+‡https://orcid.org/0000-0002-5571-5877
+1
+Introduction
+Finland’s pathway to deep decarbonisation sits at the intersection of three system constraints:
+electrifying end uses at scale, integrating high shares of variable renewables with adequate
+storage and flexibility, and managing a uniquely large forest biomass resource under increasing
+scrutiny about carbon accounting and biodiversity impacts. In this context, energy planning
+tools are not only asked to identify least-cost technology mixes, but also to make explicit cross-
+sector trade-offs between electricity, heat and mobility, and the role of renewable fuels and
+carbon capture options where direct electrification is difficult.
+This paper develops a first national application of EnergyScope TD to the Finnish energy
+system. EnergyScope TD is an open-source, linear programming, whole-energy system model
+that optimises both investment and operation for a target year, with an hourly representation
+through a typical-days reduction. This makes it suitable for scenarios with high penetration of
+intermittent renewables and storage (Limpens et al., 2019, 2024). By construction, it provides
+an open source and computationally efficient framework for exploring alternative transition
+constraints.
+Methodologically, the first contribution is to build and document a Finland-specific dataset
+and calibration for a 2050 snapshot analysis, consistent with EnergyScope TD requirements
+(end-use demands, technology portfolio, resource potentials, and time series for key variables).
+The second contribution is model verification through historical reproduction. Following the
+approach used for Switzerland and Belgium, we constrain the model with observed end-use
+demands and technology shares for a past reference year and compare model outputs to reported
+energy balances and emissions, as a practical test of the model’s ability to represent a national
+system (Moret et al., 2017; Thiran, 2025; Limpens, 2021).
+The core research question is: what will be the role of forest biomass in the Finnish energy
+transition by 2050, and how does this role change when carbon capture and storage (CCS)
+technologies are available? This question is particularly important because many whole-energy
+system models wrongly treat biomass as carbon neutral, which can strongly shape optimal
+outcomes. Building on the scenario-analysis tradition in EnergyScope applications, we examine
+contrasting biomass potential assumptions, including conservative and biodiversity-protective
+availability constraints, and test how these constraints interact with electrification, hydrogen,
+and renewable fuel pathways.
+1. Model credibility: To what extent can a constrained EnergyScope TD setup repro-
+duce Finland’s observed energy balances and combustion emissions for a past reference
+year (within acceptable error margins), providing confidence for forward-looking scenario
+analysis?
+2. Biomass role: Under a 2050 decarbonisation target, how much forest biomass is allocated
+across heat, power, industry and transport, and what are the implied system costs and
+technology choices under alternative biomass availability constraints?
+3. CCS interaction: How do CCS and BECCS options reshape the optimal use of biomass
+(for example, as a scarce fuel for hard-to-electrify sectors versus a feedstock for negative
+emissions), and what trade-offs emerge with other flexibility options and renewable fuels?
+1
+Model description: EnergyScope TD
+1.1
+Positioning in the energy system modelling literature
+EnergyScope TD is a whole-energy system optimisation model designed for scenario analysis
+of regional or national energy transitions with high temporal resolution while keeping com-
+putational times compatible with extensive sensitivity and uncertainty analyses. In contrast
+with power-only optimization tools, EnergyScope TD represents power, heating, and mobility
+(and, depending on the implementation, non-energy demand, e.g amonium) within a single,
+2
+Model
+Multi-sector
+Open-source
+Optimisation
+Comp. time
+Calliope
+✓
+✓
+✓
+mins
+COMPOSE
+✓
+✗
+✓
+-
+DESSTinEE
+✓
+✓
+✗
+s
+DIETER
+✗
+✓
+✓
+mins
+EnergyPLAN
+✓
+✗
+operation only
+s
+MARKAL/TIMES
+✓
+✗
+investment only
+5-35 min
+oemof
+✓
+✓
+✓
+mins
+OSeMOSYS
+✓
+✓
+✓
+mins
+PyPSA
+✓
+✓
+✓
+mins
+STREAM
+✓
+✗
+✗
+-
+Switch
+✗
+✓
+✓
+10-60 min
+URBS
+✗
+✓
+✓
+20 min
+EnergyScope TD
+✓
+✓
+✓
+∼1 min
+Table 1: Indicative comparison of large-scale energy planning models along four criteria
+commonly used in the energy optimisation model literature: multi-sector scope, open-source
+status, optimisation of both design and operation, and order-of-magnitude runtime per
+scenario. Adapted from the comparison reported in Limpens et al. (2019).
+demand-driven energy balance framework. A central design choice is the use of a limited set of
+representative "typical days" (TDs) to approximate intra-annual variability, combined with a
+reconstruction mechanism that preserves inter-day storage dynamics.
+This modeling choice responds to a broader pattern identified in the deep decarbonisation
+literature. Based on a review of European decarbonisation scenario studies, Borasio and Moret
+(2022) highlight both the diversity of modelling practices and a recurrent trade-off between
+scope and tractability: many studies rely either on top-down approaches or on tools primarily
+centered on the power sector, while fewer frameworks represent sector coupling across power,
+heat and mobility in a consistent optimisation setting. This motivates the use of whole-energy
+system models that can capture cross-sectoral substitutions and flexibility needs while remaining
+sufficiently lightweight for systematic scenario exploration.
+A key motivation for EnergyScope TD is therefore that combining (i) multi-sector coverage,
+(ii) open-source availability, (iii) endogenous system design and operation, and (iv) short run-
+times is uncommon in large-scale energy planning practice. Table 1 summarises this positioning
+using the comparative criteria reported in Limpens et al. (2019).
+EnergyScope TD is part of a broader open modeling family. Historically, EnergyScope was
+first developed with coarser temporal aggregation and later extended toward hourly resolution
+with TDs and seasonality in EnergyScope TD, and further toward multi-regional representations
+in EnergyScope Multi-Cell (Hernandez et al., 2021; Thiran, 2025; Borasio and Moret, 2022).
+A common critique of EnergyScope TD, also emphasised in reviews of deep decarbonisation
+modelling, concerns spatial representation.
+Single-node national models may abstract from
+intra-country congestion, regional renewable heterogeneity, and the location of flexible demand,
+which can matter when electrification and variable renewables expand rapidly (Borasio and
+Moret, 2022; Limpens et al., 2024). In the Finnish case, however, a first-order single-region
+representation is arguably more defensible than in countries with multiple dense load centers,
+because population, most energy demand, and the bulk of industrial activity are concentrated in
+the South, where the main transmission backbone and urban heat loads are also located. This
+motivates using EnergyScope TD for the purpose of our research interests.
+In climate-mitigation narratives, biomass is often framed as a renewable and flexible re-
+source, yet estimates of its future contribution remain highly uncertain because they depend
+3
+on the constraint set adopted, including sustainability rules, technical feasibility, land and bio-
+diversity limits, and economic conditions. Under sustainability-oriented assumptions, Beringer
+et al. (2011) report a wide global range for bioenergy in 2050 (126–216 EJ), broadly consistent
+with other assessments that apply different constraint sets and therefore obtain markedly dif-
+ferent potentials (Haberl et al., 2010; Schueler et al., 2013; Searle and Malins, 2015; Strapasson
+et al., 2017; IEA, 2023). At present, biomass already constitutes a substantial fraction of re-
+newable energy supply and is used predominantly for heat (IEA, 2020, 2023). Looking forward,
+deep decarbonisation implies defossilising multiple sectors simultaneously, which can increase
+competition for lignocellulosic resources as they are called upon to provide not only heat and
+power but also transport fuels and carbon-based feedstocks for industry and chemicals (WWF,
+2011; Daioglou et al., 2015). Hence, the key transition question is not only how much biomass
+can be mobilised, but also where it should be allocated across final needs once economy-wide
+greenhouse-gas constraints bind (Colla et al., 2022).
+A central theme in the biomass literature is that pathway comparisons should be made at
+the level of delivered services rather than solely at the level of produced fuels. Substitution
+logics distinguish fuel-level substitution from energy-service substitution, where the avoided
+emissions depend jointly on conversion efficiencies and on the demand-side technologies that
+ultimately use the energy carrier (Wahlund et al., 2004).
+In this view, conversion losses in
+biofuel production may be compensated if the carrier enables substantially more efficient end-use
+devices (Steubing et al., 2012). This mechanism becomes visible in whole-system optimisation:
+Codina Gironès et al. (2017) compare woody-biomass conversion routes inside a national energy-
+system optimisation and show that biofuel pathways can outperform direct biomass combustion
+in avoided CO2 only when accompanied by a broader shift toward efficient end-use options (for
+instance heat pumps or battery electric vehicles).
+Taken together, these insights motivate the use of whole-energy system optimisation frame-
+works that decide endogenously both (i) how much biomass to use and (ii) how to distribute it
+across heat, electricity, mobility fuels, and material uses, conditional on the rest of the energy
+system and on emissions constraints. In that spirit, Colla et al. (2022) implement a detailed
+lignocellulosic biomass representation in EnergyScope TD and analyse how optimal allocations
+shift as GHG constraints tighten, providing a documented modelling base that can be transferred
+to new country contexts.
+1.2
+Two-step methodology and data flow
+EnergyScope TD is typically implemented as a two-step workflow: (i) a temporal aggregation
+step that selects a small set of TDs (and their weights and sequence), and (ii) a linear program-
+ming (LP) optimisation step that determines the least-cost (or otherwise constrained) energy
+system configuration for a target year under the TD representation (Limpens, 2021).
+1.3
+Step 1: Selecting typical days
+In the EnergyScope framework, Step 1 is dedicated to the selection of a subset of representative
+days, known as typical days (TDs), to overcome the "curse of dimensionality" and reduce the
+computational time of the energy system optimisation from over 19 hours to approximately one
+minute.
+1.3.1
+Inputs and preprocessing
+Step 1 starts from hourly time series intended to represent the main drivers of intra-annual
+variability in supply and demand. In the EnergyScope TD applications discussed by Limpens
+(2021), the TD selection is built from a small set of demand and weather series, including
+electricity demand, heat demand, solar irradiance, and wind (onshore and offshore) profiles
+(See Table 2). The series are normalised and weighted to ensure that the TD set captures the
+most decision-relevant variability for system design (for instance, by giving more emphasis to
+electricity and heating profiles when studying flexibility and storage).
+4
+Figure 1: Schematic overview of the two-step EnergyScope TD workflow: Step 1 selects typical
+days and reconstructs a year; Step 2 solves the energy system optimisation problem on the
+reduced time basis. Based on the framework presented in Limpens et al. (2019).
+For Finland, we rely first on the pre-compiled hourly profiles distributed with the Ener-
+gyScope Multi-Cells database Thiran (2025). All time series are provided on a common histori-
+cal reference year (2017) to ensure synchronicity across demand drivers and weather-dependent
+renewable availability. These inputs are used both to construct the typical days and to drive
+the hourly constraints of the optimisation model.
+Demand-side series are expressed as normalised hourly profiles (shares over the year), which
+makes the typical-day selection focus on temporal patterns rather than absolute annual levels.
+Weather-dependent renewable series are expressed as capacity factors, preserving intra-day and
+seasonal variability in PV, wind, and hydro. For Finland, this implies that space heating drives
+strong winter seasonality, while PV adds a pronounced day-night and summer-winter structure,
+and wind contributes irregular day-to-day variability.
+To document the typical-day construction step, Figures 2–5 display the pre-compiled hourly
+time series used as inputs in EnergyScope Multi-Cells for Finland (reference year 2017, UTC).
+Demand drivers are expressed as normalised hourly profiles (shares of annual totals), while
+renewable availability is expressed as capacity-factor type profiles.
+The electricity profile exhibits both intra-day structure (systematic daily cycles) and a
+marked seasonal component, with higher intensities during the cold season. Low-temperature
+space-heating demand is strongly seasonal, with a pronounced winter concentration and near-
+zero levels in summer, reflecting its degree-hour construction. Space-cooling appears as a sparse
+summer phenomenon, indicating that cooling is a minor driver in the Finnish context and con-
+tributes limited discriminatory information outside the warmest weeks. Because all demand
+series are normalised, the colour intensity should be read as the relative allocation of annual
+demand across hours rather than absolute load levels.
+5
+Table 2: Hourly time series used in EnergyScope Multi-Cells for Finland to build typical days
+(TDs) and to drive the optimisation model (Thiran, 2025). All profiles are synchronous and
+based on a common reference year (2017, UTC).
+Series (file column)
+Meaning in the model
+Main data source and processing
+ELECTRICITY
+Specific
+electricity
+hourly
+share
+(nor-
+malised)
+ENTSO-E
+Transparency
+load
+(via
+OPSD),
+subtract
+electric
+heating
+and
+cooling
+(HRE4-based
+dispatch),
+then
+normalise.
+HEAT_LOW_T_SH
+Space heating hourly share (normalised)
+OPSD
+country
+temperature
+from
+MERRA-2;
+compute
+heating-degree-
+hours with 14◦C threshold; apply 24h
+moving average; normalise.
+SPACE_COOLING
+Space cooling hourly share (normalised)
+OPSD
+country
+temperature
+from
+MERRA-2;
+compute
+cooling-degree-
+hours with 20◦C threshold; apply 24h
+moving average; normalise.
+MOBILITY_PASSENG.
+Passenger mobility hourly share
+NHTS-based hourly profile, kept as in En-
+ergyScope TD Belgium.
+MOBILITY_FREIGHT
+Freight mobility hourly share
+In the released dataset this profile is flat
+over the year (no temporal structure).
+PV
+PV capacity factor (GW/GWp)
+Renewable.ninja country-aggregated pro-
+files (via OPSD); used for rooftop and
+utility PV.
+WIND_ONSHORE
+Onshore wind capacity factor
+Renewable.ninja country-aggregated pro-
+files (via OPSD).
+WIND_OFFSHORE
+Offshore wind capacity factor
+Renewable.ninja
+profiles
+(via
+OPSD),
+with reconstruction or proxy rules for
+missing historical series.
+SOLAR
+Solar thermal proxy capacity factor
+Derived from GHI using OPSD weather
+data computed from MERRA-2.
+CSP
+CSP thermal output proxy
+DNI from PVGIS (via pvlib) and ther-
+mal output computed with Oemof ther-
+mal; representative plant location.
+HYDRO_RIVER
+Run-of-river capacity factor
+Daily run-of-river generation (JRC-EFAS,
+completed by ENTSOE-PECD), interpo-
+lated to hourly and normalised.
+HYDRO_DAM
+Hydropower inflow proxy capacity factor
+Weekly inflow (JRC-EFAS, completed by
+ENTSOE-PECD), interpolated to hourly
+and normalised.
+TIDAL
+Tidal capacity factor
+Literature-based tidal profile, rescaled to
+match an average capacity factor assump-
+tion.
+Figure 3: Passenger mobility daily profile used in EnergyScope Multi-Cells (Finland
+application, 2017, UTC). The profile is adopted from the EnergyScope TD Belgium setup,
+itself based on a generic household travel survey hourly pattern, and repeated identically for
+each day of the year (time-zone mapped).
+6
+Figure 2: Finland (2017, UTC): demand-driver heatmaps used in the typical-day
+preprocessing. Each panel shows the distribution of hourly demand over the year (normalised
+profiles), with months on the x-axis and hour of day on the y-axis.
+The passenger mobility profile is characterised by a morning ramp-up and a broad daytime
+plateau, followed by a steady decline in the evening. In this modelling framework, the curve is
+exogenous and does not vary across days, so it does not drive the identification of representative
+days in clustering. Its role is instead to provide within-day structure for mobility demand once
+typical days have been selected, ensuring consistent diurnal timing of transport services across
+scenarios.
+7
+Figure 4: Finland (2017, UTC): renewable availability heatmaps used as TD inputs. Panels
+report capacity-factor type hourly profiles for wind (onshore and offshore), solar (thermal
+proxy) and PV, plus hydropower proxies (dam inflow and run-of-river), and tidal but
+negligeable so not plotted
+Solar and PV exhibit the expected joint diurnal and seasonal structure: near-zero availabil-
+ity during winter and night-time, with sustained daytime generation during summer months.
+Wind availability shows substantial hour-to-hour and day-to-day variability across the full year,
+providing strong discriminatory power for typical-day selection. Hydropower proxies are com-
+paratively smoother, with changes that are more seasonal than diurnal, consistent with inflow-
+driven dynamics and the aggregation procedure used to derive normalised profiles. Together,
+these patterns motivate including multiple supply-side drivers in the clustering so that typical
+days reflect both short-term intermittency (wind) and seasonal solar scarcity.
+Figure 5: Finland (2017, UTC): load duration curves for normalised demand drivers. Curves
+show the ordered distribution of hourly values (descending), highlighting peakiness and the
+weight of extreme hours in annual demand profiles.
+The electricity duration curve is relatively smooth, indicating that a large portion of annual
+8
+electricity demand is spread across many hours, with limited reliance on extreme peaks. By
+contrast, the low-temperature space-heating curve displays a steeper tail, consistent with winter-
+driven peaks that can materially affect capacity sizing and adequacy constraints. Passenger
+mobility exhibits a stepped structure because the same diurnal pattern is repeated throughout
+the year, while freight is flat in the compiled dataset and therefore appears as a constant line.
+These duration curves provide a compact diagnostic for the extent to which typical days must
+preserve peak and near-peak hours in order to reproduce sizing-relevant extremes.
+As an additional diagnostic, Figure 6 reports daily-mean co-variation between selected de-
+mand and renewable drivers. While typical-day clustering operates on 24-hour vectors rather
+than daily averages, these scatter plots clarify cross-variable seasonal structure and motivate
+retaining multiple drivers in the clustering space.
+Figure 6: Finland (2017, UTC): daily-mean co-variation between selected TD drivers (colour
+indicates day of year). Demand variables are shown in per-mille of annual total per hour.
+Reported r are Pearson correlations across daily means.
+Heating and solar availability are strongly anti-correlated (r = −0.693), reflecting a seasonal
+mismatch in which high space-heating needs coincide with low solar resources. Electricity de-
+mand and PV availability display a weaker positive association (r = 0.330), consistent with both
+being higher during brighter months while remaining dispersed due to day-to-day weather and
+non-climatic electricity drivers. Heating and onshore wind show near-independence (r = 0.175),
+indicating that wind intermittency is largely orthogonal to heating seasonality; this supports
+retaining both heating and wind in the feature set so that typical days capture jointly stressful
+configurations (e.g., cold days with low wind).
+In the typical-day construction, we prioritise the most informative drivers of hourly system
+constraints, namely electricity demand, low-temperature space-heating demand, space-cooling
+demand (when present), and the main weather-dependent renewable capacity factors (PV and
+wind, plus run-of-river hydro when available).
+By contrast, profiles that are flat or nearly
+invariant across days (for example freight demand in the compiled dataset) provide little dis-
+criminatory power for day selection and are therefore not used as primary clustering attributes.
+9
+1.3.2
+Clustering and representative-day selection
+Let xk,d,h denote the value of time series k at hour h of day d. A clustering procedure parti-
+tions the D = 365 days into N clusters, each represented by one TD. In the EnergyScope TD
+literature, several clustering and representative-day selection strategies are compared, including
+k-medoids and alternative heuristics; their relative performance depends on the trade-off be-
+tween computational effort and approximation accuracy (??). The output of this stage is: (i) a
+set of TDs, (ii) a mapping td(d) assigning each original day to a TD, and (iii) weights wtd (the
+number of original days represented by each TD).
+1.3.3
+Chronological reconstruction and storage coupling
+A limitation of TD-based representations is that they can break chronology, which is problematic
+for storage technologies whose optimal operation depends on sequences of days rather than
+isolated daily shapes. EnergyScope TD addresses this issue by coupling TD operation with
+a chronological reconstruction of the year, so that storage state variables evolve over the full
+horizon while most operational decisions remain defined on the reduced TD set (Domínguez-
+Muñoz et al., 2011; Limpens et al., 2019).
+Figure 7 illustrates the underlying idea over a week. The sequence of calendar days (Monday
+to Sunday) is represented as an ordered list of TD labels (for example, TD 1 on Monday, TD 2
+on Tuesday and Wednesday, etc.). For a given TD, the intra-day charging and discharging power
+profile is repeated each time that TD appears in the sequence (top panel). In the example, TD 1
+can be interpreted as a cloudy weekday, TD 2 as a sunny weekday, and TD 3 as sunny weekend
+days. While the power profile depends solely on the TD assigned to each day, the stored-energy
+level is not repeated day-by-day. Instead, the state of charge is tracked continuously across
+the entire week (bottom panel), and is optimised over the full 168 h chronology, linking the
+end-of-day storage level to the start-of-next-day level even when successive days correspond to
+different TDs. In practice, this coupling allows the model to exploit TDs to capture typical
+within-day patterns while still representing inter-day and seasonal storage strategies, such as
+progressively building reserves across sequences of surplus days and drawing them down during
+extended deficit periods.
+Figure 7: Storage charging and discharging power (top) follows the typical-day profiles
+associated with each day in the chronological sequence, while stored energy (bottom) evolves
+continuously across days, enabling inter-day and seasonal storage behaviour under a reduced
+TD representation (Limpens et al., 2019).
+10
+1.3.4
+Optimising the TD set: error metrics and MILP formulation
+EnergyScope TD formalises TD selection using an optimisation-based procedure (MILP) that
+aims to reduce the approximation error of the reduced time representation. Two complementary
+error notions are commonly used:
+• Clustering (chronological-shape) error, measuring how well each day is represented
+hour-by-hour by its assigned TD.
+• Duration-curve error, measuring how well the reduced representation reproduces the
+sorted distribution of hourly values (important for peaks and scarcity periods).
+A generic formulation (notation adapted from Limpens et al. (2019)) is:
+Eclust =
+X
+k∈K
+αk
+D
+X
+d=1
+24
+X
+h=1
+ xk,d,h −˜xk,td(d),h
+2 ,
+(1)
+Edc =
+X
+k∈K
+βk
+8760
+X
+t=1
+
+DCk(t) −g
+DCk(t)
+2
+,
+(2)
+where DCk(·) is the duration curve (sorted hourly values) of series k, and tildes denote the recon-
+structed values from the TD representation. The MILP chooses the TD set (and assignments)
+to minimise a weighted combination of these errors subject to selecting exactly N representative
+days.
+Previous EnergyScope TD applications commonly rely on 12 typical days, which has been
+identified as a robust compromise between temporal accuracy and computational tractability. In
+the original EnergyScope TD validation, moving from a full 8,760-hour representation to 12 TDs
+reduces solve times from multi-hour runs to around a minute, making large scenario ensembles
+and sensitivity analyses feasible. At the same time, 12 TDs were shown to reproduce the full-
+year “ground-truth” solution reasonably well for the main key performance indicators used in
+planning exercises, including primary energy use, technology capacity choices, total system cost,
+and aggregate greenhouse-gas emissions. Consistent with this established practice, the present
+Finland application adopts 12 typical days as a baseline; alternative values can be explored later
+as a robustness check once the dataset calibration and historical reproduction are consolidated.
+1.4
+Step 2: EnergyScope TD optimisation model
+1.4.1
+LP problem: resources, layers, and technologies
+EnergyScope TD represents the energy system as a network of energy layers that must be
+balanced at each time step. Layers include both resources (e.g. natural gas, biomass, solar)
+and end-use demand layers (e.g. low-temperature heat, passenger mobility), and technologies
+connect layers through conversion, storage, or infrastructure. Following the EnergyScope ter-
+minology, three technology types are distinguished: (i) end-use type technologies (producing
+end-use demand layers), (ii) storage technologies (inter-temporal links within a layer), and (iii)
+infrastructure technologies (supporting conversion, networks, and efficiency).
+EnergyScope TD is formulated as an LP problem in which the main design variables are
+installed capacities F(j) for technologies j, and the main operational variables are hourly flows
+(resource uses and technology outputs) defined over hours h and TDs td (Limpens, 2021). This
+structure enables rapid solution times that are compatible with extensive scenario sampling.
+Figure 8 can be read as the graphical equivalent of the LP that EnergyScope TD solves:
+each coloured layer is a balance equation enforced at every hour (and for each typical day), and
+each arrow corresponds to a non-negative flow decision variable constrained by a technology
+capacity and conversion coefficients. The solver jointly chooses (i) design variables, the installed
+sizes of assets (how wide the “pipes” can be), and (ii) operation variables, the hourly routing of
+energy through competing pathways to meet end-use demands at minimum system cost. In this
+11
+Figure 8: Simplified example of EnergyScope LP Problem representation(Limpens et al., 2019).
+network view, storage technologies (e.g. PHS or thermal storage) add inter-temporal coupling
+by shifting flows across hours, while infrastructure (e.g. grids) introduces losses and capacity
+limits, so that the optimum emerges from trading off direct supply, conversion, storage, and
+cross-sector coupling (electricity to heat or mobility) under resource availability and demand
+constraints.
+1.4.2
+End-use demand in energy services (EUD)
+Following Moret (2017), EnergyScope specifies exogenous end-use demand (EUD) in terms of
+energy services rather than final energy consumption (FEC). EUD refers to the useful service de-
+livered to end users (e.g., low-temperature heat, passenger-kilometres, ton-kilometres), whereas
+FEC depends on the chosen conversion pathway and its efficiency. Model inputs are annual
+sectoral EUD values endUsesY ear(eui, s), aggregated into a yearly vector endUsesInput(eui)
+(Eq. (??)). These yearly totals are then allocated to period-specific demands EndUses(eut, t)
+through transparent distribution and split rules (Fig. 10): electricity is distributed uniformly
+over periods and corrected for grid losses Loss(Elec, t); high-temperature heat is also spread
+uniformly; low-temperature heat combines space-heating, shaped by an exogenous profile %sh(t),
+with hot-water demand, then splits into district heating and decentralised supply using %Dhn
+(including DHN losses Loss(HeatLowTDhn, t)); finally, passenger and freight mobility are dis-
+tributed uniformly and partitioned by modal shares %Public and %Rail. Consistent with the
+mapping in Fig. 10, lighting is not represented as a separate end-use and is instead included
+in the aggregate electricity end-use. The allocation and split parameters (e.g., %Public, %Rail,
+%Dhn, and the space-heating profile %sh(t)) are country-specific, as they reflect national pat-
+terns in modal shares, heating infrastructures, and seasonal demand. In the Finnish application,
+these parameters therefore need to be calibrated to Finland using national energy and transport
+statistics to ensure that the mapping from endUsesInput to EndUses(eut, t) matches observed
+end-use structures (see Table 3).
+12
+Figure 9: Finland (2017, UTC): monthly distribution implied by the normalised hourly
+end-use demand profiles used for the typical-day step. Bars show the monthly sums of hourly
+normalised loads for electricity, low-temperature space heating, and mobility demands.
+endUsesInput(eui) = P
+s∈S endUsesY ear(eui, s)
+∀eui ∈EUI
+EndUses(eut, t)
+ELECTRICITY
+HEAT HIGH T
+HEAT LOW T (SH)
+HEAT LOW T (HW)
+MOB. PASSENGER
+MOB. FREIGHT
+ELECTRICITY
+HEAT HIGH T
+HEAT LOW T DHN
+HEAT LOW T DECEN
+MOB. PUBLIC
+MOB. PRIVATE
+MOB. FREIGHT RAIL
+MOB. FREIGHT ROAD
+·
+1
+P
+t′∈T top(t′)
++ Loss(Elec, t)
+·
+1
+P
+t′∈T top(t′)
++
+· %sh(t)
+top(t)
+·
+1
+P
+t′∈T top(t′)
+·%Dhn + Loss(HeatLowT Dhn, t)
+·(1 −%Dhn)
+·
+1
+P
+t′∈T top(t′)
+·%Public
+·(1 −%Public)
+·
+1
+P
+t′∈T top(t′)
+·%Rail
+·(1 −%Rail)
+Figure 10: Mapping from yearly end-use inputs endUsesInput to period-specific demands
+EndUses(eut, t), with lighting aggregated into the electricity end-use. Adapted from Moret
+(2017).
+To make the allocation step transparent, Figure 9 reports the monthly totals obtained by
+summing the compiled hourly profiles used in the typical-day preprocessing (Finland, 2017,
+UTC). Since each series is normalised over the year, monthly sums should be read as the share
+of the annual end-use that is allocated to each month (not as absolute energy levels).
+The plot highlights the strong winter concentration of low-temperature space-heating de-
+mand, which is driven by the exogenous space-heating shaping profile %sh(t) and motivates
+careful calibration for Finland. Electricity demand is comparatively flatter across months, with
+only moderate seasonal variation. Passenger mobility contributes a near-uniform monthly share
+because its diurnal shape is repeated throughout the year in the compiled dataset, while freight
+appears constant here because the freight profile is flat in the Finland time-series file. Overall,
+Figure 9 provides a compact check that the profile-based allocation is consistent with the ex-
+pected Finnish seasonality (heating-driven winter peak), and it clarifies which end-uses provide
+the main seasonal signal that the typical-day selection must preserve.
+1.4.3
+Objective function: total annual cost (and emissions accounting)
+A standard objective is the minimisation of total annualised system cost, decomposed into
+annualised investment costs, fixed operation and maintenance costs, and resource operating
+13
+Table 3: Finland calibration targets for the EUD mapping (baseline year 2020).
+Parameter
+Symbol
+Value
+Source
+District heating share of low-T heata
+%Dhn
+0.45
+Finnish Energy (2024)
+District heating network lossesb
+Loss(HeatLowTDhn)
+0.085
+Finnish Energy (2024)
+Inland public passenger mobility sharec
+%Public
+0.1608
+Statistics Finland (2020), Traffic on
+highways 2019 ; Statistics Finland
+(2020), Railway statistics 2019
+Inland rail freight shared
+%Rail
+0.2761
+Statistics Finland (2020), Railway
+statistics 2019 ; Statistics Finland
+(2020), Goods transport by road 2019
+Electricity grid lossese
+Loss(Elec)
+0.03
+Finnish Energy and Statistics Finland
+(2022), Energy in Finland 2022
+a Proxy for the DHN split: district heating share of heating energy / space-heating market in Finland (year 2020).
+b Implemented as a constant loss factor; Finnish Energy reports typical DH distribution losses of 8–9% of trans-
+mitted energy, hence 0.085 as midpoint.
+c Computed as (pkmbus + pkmrail)/(pkmcar + pkmbus + pkmrail) using pre-COVID 2019 inland passenger-km:
+pkmcar = 66.8 bn and pkmbus = 7.9 bn (Traffic on highways 2019), and pkmrail = 4.9 bn (Railway statistics
+2019). 2019 is used as a structural proxy to avoid pandemic-related distortions in 2020 modal shares.
+d Computed as tkmrail/(tkmrail + tkmroad) using pre-COVID 2019 inland freight tonne-km: tkmrail = 10.3 bn
+(Railway statistics 2019) and tkmroad ≈27.0 bn from domestic road freight performance reported as “close on
+27 million tonne-kilometres” in Goods transport by road 2019 (interpreted as 27,000 million tonne-km).
+e Electricity transmission and distribution losses are set to 0.03 based on the “Losses 3%” entry reported in the
+electricity consumption breakdown in Energy in Finland 2022 (compiled from Finnish Energy and Statistics
+Finland). Used as a constant proxy for baseline year 2020.
+costs (Limpens et al., 2019):
+min Ctot =
+X
+j∈T ECH
+[τ(j) Cinv(j) + Cmaint(j)] +
+X
+i∈RES
+Cop(i),
+(3)
+with τ(j) an annualisation factor that depends on the discount rate and lifetime. In addition,
+annual system-wide GHG emissions are computed with a life cycle assessment approach, ac-
+counting for “cradle-to-grave” emissions from both technologies and energy resources. Climate
+impacts are reported using global warming potential (GWP) in ktCO2-eq per year. Total yearly
+emissions, GWPtot,Fig. 4, are defined as the sum of (i) the construction and end-of-life impacts
+of energy conversion technologies, annualised by their lifetime, and (ii) operational impacts from
+resources, including fuel supply chains (up to combustion) and imported electricity, weighted
+by the operating period.
+Following Limpens et al. (2019):
+GWPtot =
+X
+j∈TECH
+GWPconstr(j)
+lifetime(j)
++
+X
+i∈RES
+GWPop(i)
+(4)
+1.4.4
+Seasonality and long-term storage: coupling typical days
+A known limitation of TD approaches is the difficulty to represent inter-day dynamics and
+seasonal storage. EnergyScope TD implements a reconstruction method in which each day of
+the year is assigned to a TD through a sequence, while the stored-energy state variable is tracked
+across all 8760 hours. Operational variables other than stored energy remain defined on the TD
+basis (Limpens, 2021). This enables modelling of day-to-day and seasonal storage strategies
+without solving the full hourly year.
+Because EnergyScope TD is designed for fast whole-system optimisation, it abstracts from
+some short-term operational details (e.g. unit commitment or detailed ramping constraints)
+that are central in dispatch-focused models. The TD approach is therefore best interpreted
+as a planning-level representation that trades operational detail for tractability, and can be
+complemented by more detailed operational checks when needed (Thiran, 2025).
+14
+1.4.5
+Biomass modelling: feedstocks, supply curves, and Finland-specific calibra-
+tion
+Why biomass calibration is a first-order modelling choice.
+Bioenergy potentials are
+not uniquely defined objects: reported values differ widely because they embed distinct assump-
+tions about sustainability constraints, competing uses (materials, soil functions, circularity),
+land allocation for energy crops, and waste management pathways. Selecting a given “potential”
+is therefore a structural modelling choice that shapes the socio-technical system being repre-
+sented. Colla et al. (2024) illustrate this point by showing that European assessments can imply
+markedly different 2030 bioenergy ranges for a single country (Belgium: 30–90 TWh across
+four studies), with divergences driven primarily by (i) how competing uses are accounted for,
+(ii) land-use rules for energy crops, and (iii) whether waste streams are directed to energy or
+material recovery. At the European scale, they argue that a “realistic” order of magnitude for
+EU27+UK in 2030 lies in the lower part of published ranges (about 2000–2500 TWh), not-
+ing that forestry feedstocks are already relatively exploited while additional mobilisation would
+come mainly from agricultural residues, conditional on collection practices and farm structure
+(Colla et al., 2024). These lessons motivate a transparent, scenario-based calibration strategy
+for Finland rather than reliance on a single headline potential.
+Stage 1:
+adopting the Colla et al. (2022) EnergyScope TD biomass framework.
+In a first stage, we replicate the biomass modelling design proposed by Colla et al. (2022)
+within EnergyScope TD to ensure comparability and to leverage a framework specifically built
+to study lignocellulosic allocation across end uses under stringent decarbonisation constraints.
+This means keeping (i) the set of biomass conversion pathways used in their EnergyScope TD
+implementation, (ii) the cost structure and import segmentation, and (iii) the sustainability-
+related modelling constraints they apply to feedstock quality and origin (Colla et al., 2022).
+Finland-specific adaptations are then introduced in Stage 2 through the calibration of supply
+curves and scenario shocks (see below).
+Feedstock representation: categories, origin, and quality.
+Following Colla et al. (2022),
+lignocellulosic feedstocks are represented through an origin-by-quality decomposition mapped
+to piecewise-linear supply curves:
+• Origin distinguishes domestic resources and several import rings (neighbouring countries,
+broader EU, and long-distance imports), with delivered costs and carbon footprints in-
+creasing with distance (Colla et al., 2022).
+• Quality distinguishes “good” from “low” quality biomass (e.g. higher ash content). A key
+operational constraint is that low-quality biomass cannot exceed a fixed share of total
+lignocellulosic use, reflecting conversion constraints (Colla et al., 2022).
+This representation is particularly useful for Finland because woody biomass availability is
+expected to vary not only in quantity (harvest and residue mobilisation) but also in composition
+(e.g. stemwood vs residues; industrial by-products vs dispersed resources) under biodiversity
+protection, carbon sink objectives, and physical-risk disturbances.
+Supply curves in the linear programme.
+Let b denote a biomass feedstock type (woody
+sub-categories can be introduced as separate b), o the origin class, q ∈{good, low} the quality
+class, and s an index for supply-curve segments. We introduce decision variables xb,o,q,s (energy
+quantity purchased from segment s), with exogenous segment capacities Xb,o,q,s and marginal
+supply costs cb,o,q,s. The standard constraints are:
+0 ≤xb,o,q,s ≤Xb,o,q,s
+∀(b, o, q, s),
+(5)
+X
+b,o,s
+xb,o,low,s ≤αlow
+X
+b,o,q,s
+xb,o,q,s,
+(6)
+15
+Woody biomass
+potentials
+Domestic + imports, rep-
+resented as supply curves
+Scenario levers (Stage 2)
+Policy regimes (biodiversity,
+sinks)
+Physical-risk shocks (storm,
+fire, pests)
+Market shocks (prices, import
+frictions)
+⇒modify Xb,o,q,s, cb,o,q,s
+Feedstock structure
+(Stage 1)
+Origin rings (domestic, neigh-
+bour, EU, RoW)
+Quality classes (good vs low)
+Quality-share constraint αlow
+Embedded GHG factors gb,o,q
+Conversion portfolio
+Stage 1: adopt Colla framework
+Route families (synthetic)
+Direct heat: boilers (LT, DH,
+industrial)
+CHP: heat + power (DH and
+industry)
+Dispatchable biomass power
+Thermochemical gas: gasifica-
+tion →SNG
+Thermochemical liquids: SLF
+(e.g. FT-type)
+Optional upgrading and condi-
+tioning
+Key techno-economic in-
+puts
+Efficiencies and co-products
+CAPEX, OPEX, lifetimes
+Operating constraints
+Compatibility with quality
+classes
+Competing end uses
+Allocation decided endogenously
+Final needs served
+Low-temperature heat (build-
+ings)
+District heating and medium-T
+heat
+High-temperature industrial
+heat
+Electricity (dispatchable)
+Mobility fuels (where relevant)
+Non-energy demand (feedstocks)
+System drivers (common)
+GHG cap and accounting
+Energy service demands (EUD)
+Competing low-carbon options
+Shadow prices reveal scarcity
+supply curves
+energy carriers
+Figure 11: Structure of the woody-biomass module in EnergyScope TD. Stage 1 reproduces
+the biomass modelling base of Colla et al. (conversion portfolio, costs, and import
+segmentation) to ensure internal consistency and comparability. Stage 2 introduces
+Finland-specific biomass potential narratives by shifting supply-curve segment capacities and
+marginal costs, thereby testing how the optimisation reallocates biomass across competing end
+uses under a binding GHG cap.
+where αlow is the maximum admissible share of low-quality biomass (set as in Colla et al. (2022)
+in Stage 1). Total biomass procurement cost enters the objective as:
+Cbio =
+X
+b,o,q,s
+cb,o,q,s xb,o,q,s.
+(7)
+Each origin-quality category carries an associated lifecycle GHG intensity gb,o,q contributing to
+the system-wide GHG accounting, consistent with Colla et al. (2022).
+Reading Figure 11.
+Biomass “potential” enters the optimisation through supply curves,
+so policy constraints and physical-risk narratives translate into explicit shifts in availability
+(Xb,o,q,s) and delivered costs (cb,o,q,s), rather than a single exogenous scalar. Given a conver-
+sion portfolio (Stage 1 baseline), the model allocates lignocellulosic biomass endogenously across
+final needs under system-wide constraints. In stringent GHG settings, shadow prices and se-
+lected routes indicate where biomass becomes most valuable and which end uses are crowded
+out first when availability is tightened or prices increase.
+Biomass conversion technologies and allocation across end uses.
+The Stage 1 conver-
+sion portfolio (Figure 11, middle block) is designed to represent the main lignocellulosic routes
+competing in deep decarbonisation contexts, including direct heat and CHP options as well as
+thermochemical pathways producing gaseous or liquid fuels that can serve high-temperature
+applications and non-energy demand (Colla et al., 2022). This whole-system competition is
+essential for identifying when biomass is used as a bulk energy source versus when it is reserved
+for end uses with fewer low-carbon substitutes.
+16
+Stage 2: what must be adapted for Finland (and why).
+Building on the critical per-
+spective of Colla et al. (2024), Finland-specific calibration should focus on the inputs that drive
+large potential swings and have strong cross-sector implications:
+1. Woody sub-categories and competing uses. Separate at least stemwood, primary residues
+(forest residues), secondary residues (industry by-products), and recovered/post-consumer
+wood where relevant, since forestry potentials are sensitive to competing-use assumptions
+and definitions of residues (Colla et al., 2024).
+2. Consistency with current production and forest-system constraints. Confront potentials
+with current production and structural indicators (e.g. harvest intensity relative to growth,
+forest stock trends) to avoid “paper potentials” that contradict the implied forestry system
+(Colla et al., 2024).
+3. Import rings, distances, and prices. Re-map “neighbouring” and “EU” rings to Finnish
+sourcing and logistics (including maritime transport and seasonal constraints), with con-
+sistent price and GHG intensities per ring.
+4. Risk and shock translation into supply curves. Represent physical-risk events and market
+disruptions as shocks to (i) segment capacities Xb,o,q,s and/or (ii) marginal costs cb,o,q,s,
+enabling both salvage-type surges and scarcity-driven price spikes.
+A practical scenario construction (ongoing)
+We will define a small set of internally
+consistent biomass-supply narratives and map each narrative into supply-curve parameters:
+• Conservative / biodiversity-first: tighter caps on residue extraction and stemwood-
+to-energy; higher competing uses; limited expansion of marginal segments.
+• Reference / policy-consistent: moderate mobilisation improvements; residue recovery
+increases within sustainability rules; stable competing uses.
+• Stress / physical-risk: time-localised shocks to Xb,o,q,s and cb,o,q,s by sub-category to
+reflect damage, salvage flows, and/or supply-chain frictions.
+This keeps the modelling choice explicit: each scenario implies a different forestry and biomass
+system, rather than only “more or less biomass” (Colla et al., 2024).
+Ongoing work and forthcoming simulation results.
+The scenario set defined above is
+currently being implemented and tested in EnergyScope TD for the Finnish application. At this
+stage, model verification focuses on internal consistency checks (energy balances, calibration
+targets, and plausibility of shadow prices), as well as robustness of conclusions to typical-day
+selection and biomass supply-curve parametrisation. The next version of this draft will report the
+full set of optimisation outputs across scenarios, including system costs, technology capacities,
+primary energy and emissions outcomes, and the endogenous allocation of woody biomass across
+heat, power, fuels, and non-energy demand. Particular attention will be paid to identifying
+tipping points where tighter biodiversity or sink constraints, or physical-risk and price shocks,
+reallocate biomass toward sectors with fewer low-carbon substitutes and increase the value of
+flexibility options.
+References
+Tim Beringer, Wolfgang Lucht, and Sibyll Schaphoff.
+Bioenergy production potential
+of global biomass plantations under environmental and agricultural constraints.
+GCB
+Bioenergy, 3(4):299–312, 2011.
+ISSN 1757-1707.
+doi:
+10.1111/j.1757-1707.2010.01088.x.
+URL https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1757-1707.2010.01088.x.
+_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1757-1707.2010.01088.x.
+17
+M. Borasio and S. Moret. Deep decarbonisation of regional energy systems: A novel modelling
+approach and its application to the Italian energy transition.
+Renewable and Sustainable
+Energy Reviews, 153:111730, January 2022. ISSN 13640321. doi: 10.1016/j.rser.2021.111730.
+URL https://linkinghub.elsevier.com/retrieve/pii/S1364032121010030.
+Víctor Codina Gironès, Stefano Moret, Emanuela Peduzzi, Marco Nasato, and François
+Maréchal. Optimal use of biomass in large-scale energy systems: Insights for energy pol-
+icy. Energy, 137:789–797, October 2017. ISSN 03605442. doi: 10.1016/j.energy.2017.05.027.
+URL https://linkinghub.elsevier.com/retrieve/pii/S0360544217307831.
+Martin Colla, Julien Blondeau, and Hervé Jeanmart. Optimal Use of Lignocellulosic Biomass
+for the Energy Transition, Including the Non-Energy Demand:
+The Case of the Bel-
+gian Energy System.
+Frontiers in Energy Research, 10, March 2022.
+ISSN 2296-
+598X.
+doi: 10.3389/fenrg.2022.802327.
+URL https://www.frontiersin.org/journals/
+energy-research/articles/10.3389/fenrg.2022.802327/full. Publisher: Frontiers.
+Martin Colla, Kevin Verleysen, Julien Blondeau, and Hervé Jeanmart. Navigating bioenergy
+horizons: a critical examination of Europe’s potential, with Belgium as a case study. Sustain-
+able Energy Research, 11(1):17, May 2024. ISSN 2731-9237. doi: 10.1186/s40807-024-00108-0.
+URL https://doi.org/10.1186/s40807-024-00108-0.
+Vassilis Daioglou, Birka Wicke, Andre P. C. Faaij, and Detlef P. van Vuuren.
+Competing
+uses of biomass for energy and chemicals: implications for long-term global CO2 mitiga-
+tion potential. GCB Bioenergy, 7(6):1321–1334, 2015. ISSN 1757-1707. doi: 10.1111/gcbb.
+12228. URL https://onlinelibrary.wiley.com/doi/abs/10.1111/gcbb.12228. _eprint:
+https://onlinelibrary.wiley.com/doi/pdf/10.1111/gcbb.12228.
+Fernando Domínguez-Muñoz, José M. Cejudo-López, Antonio Carrillo-Andrés, and Manuel
+Gallardo-Salazar. Selection of typical demand days for CHP optimization. Energy and Build-
+ings, 43(11):3036–3043, November 2011. ISSN 0378-7788. doi: 10.1016/j.enbuild.2011.07.024.
+URL https://www.sciencedirect.com/science/article/pii/S037877881100329X.
+Helmut Haberl, Tim Beringer, Sribas C Bhattacharya, Karl-Heinz Erb, and Monique Hoogwijk.
+The global technical potential of bio-energy in 2050 considering sustainability constraints.
+Current Opinion in Environmental Sustainability, 2(5):394–403, December 2010. ISSN 1877-
+3435. doi: 10.1016/j.cosust.2010.10.007. URL https://www.sciencedirect.com/science/
+article/pii/S1877343510001132.
+Aurélia Hernandez, Paolo Thiran, Hervé Jeanmart, Gauthier Limpens, Emmanuel DE Jaeger,
+and Julien Hendrickx. EnergyScope Multi-Cell : A novel open-source model for multi-regional
+energy systems. 2021.
+IEA. Bioenergy Annual Report 2023. Technical report, IEA Bioenergy, 2023. URL https:
+//www.ieabioenergy.com/wp-content/uploads/2024/06/Annual-Report-2023.pdf.
+International Energy Agency IEA. Key World Energy Statistics 2020. page 81, 2020.
+Gauthier Limpens. Generating energy transition pathways: application to Belgium. 2021. doi:
+10.13140/RG.2.2.25755.18724. URL https://www.researchgate.net/doi/10.13140/RG.2.
+2.25755.18724. Publisher: Unpublished.
+Gauthier Limpens, Stefano Moret, Hervé Jeanmart, and Francois Maréchal.
+EnergyScope
+TD: A novel open-source model for regional energy systems. Applied Energy, 255:113729,
+December 2019.
+ISSN 0306-2619.
+doi:
+10.1016/j.apenergy.2019.113729.
+URL https:
+//www.sciencedirect.com/science/article/pii/S0306261919314163.
+Gauthier Limpens, Xavier Rixhon, Francesco Contino, and Hervé Jeanmart.
+EnergyScope
+Pathway:
+An open-source model to optimise the energy transition pathways of a re-
+gional whole-energy system.
+Applied Energy, 358:122501, March 2024.
+ISSN 0306-2619.
+18
+doi:
+10.1016/j.apenergy.2023.122501.
+URL https://www.sciencedirect.com/science/
+article/pii/S0306261923018652.
+Stefano Moret. Strategic energy planning under uncertainty. École Polytechnique Fédérale de
+Lausanne, 2017. doi: 10.5075/EPFL-THESIS-7961.
+Stefano Moret, Víctor Codina Gironès, Michel Bierlaire, and François Maréchal. Character-
+ization of input uncertainties in strategic energy planning models.
+Applied Energy, 202:
+597–617, September 2017.
+ISSN 03062619.
+doi:
+10.1016/j.apenergy.2017.05.106.
+URL
+https://linkinghub.elsevier.com/retrieve/pii/S0306261917306116.
+Vivian Schueler, Ulf Weddige, Tim Beringer, Liliana Gamba, and Patrick Lamers.
+Global
+biomass potentials under sustainability restrictions defined by the European Renewable En-
+ergy Directive 2009/28/EC.
+GCB Bioenergy, 5(6):652–663, 2013.
+ISSN 1757-1707.
+doi:
+10.1111/gcbb.12036.
+URL https://onlinelibrary.wiley.com/doi/abs/10.1111/gcbb.
+12036. _eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/gcbb.12036.
+Stephanie Searle and Chris Malins.
+A reassessment of global bioenergy potential in
+2050.
+GCB Bioenergy, 7(2):328–336, 2015.
+ISSN 1757-1707.
+doi:
+10.1111/gcbb.
+12141. URL https://onlinelibrary.wiley.com/doi/abs/10.1111/gcbb.12141. _eprint:
+https://onlinelibrary.wiley.com/doi/pdf/10.1111/gcbb.12141.
+Bernhard Steubing, Rainer Zah, and Christian Ludwig. Heat, Electricity, or Transportation?
+The Optimal Use of Residual and Waste Biomass in Europe from an Environmental Perspec-
+tive. Environmental Science & Technology, 46(1):164–171, January 2012. ISSN 0013-936X.
+doi: 10.1021/es202154k. URL https://doi.org/10.1021/es202154k. Publisher: American
+Chemical Society.
+Alexandre Strapasson, Jeremy Woods, Helena Chum, Nicole Kalas, Nilay Shah, and Frank
+Rosillo-Calle.
+On the global limits of bioenergy and land use for climate change miti-
+gation.
+GCB Bioenergy, 9(12):1721–1735, 2017.
+ISSN 1757-1707.
+doi:
+10.1111/gcbb.
+12456. URL https://onlinelibrary.wiley.com/doi/abs/10.1111/gcbb.12456. _eprint:
+https://onlinelibrary.wiley.com/doi/pdf/10.1111/gcbb.12456.
+Paolo Thiran. Exploring options for a fossil-free European energy system : The role of renewable
+fuels. PhD thesis, UCL, 2025. URL http://hdl.handle.net/2078.1/293132.
+Bertil Wahlund, Jinyue Yan, and Mats Westermark. Increasing biomass utilisation in energy
+systems : a comparative study of CO2 reduction and cost for different bioenergy processing
+options. Biomass and Bioenergy, 26(6):531–544, 2004. doi: 10.1016/j.biombioe.2003.09.003.
+URL https://urn.kb.se/resolve?urn=urn:nbn:se:ltu:diva-10672.
+WWF. The energy report : 100% renewable energy by 2050. 2011. ISBN 978-2-940443-26-0.
+URL https://portals.iucn.org/library/node/28831.
+19

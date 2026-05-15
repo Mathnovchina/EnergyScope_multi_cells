@@ -1,0 +1,5 @@
+file,parameter,technology_or_resource,value
+Resources.csv,avail_local,WOOD_FI1,54530
+Resources.csv,avail_local,WOOD_FI2,45857
+Resources.csv,avail_local,WOOD_FI3,15052
+Resources.csv,avail_local,WOOD_FI4,6504

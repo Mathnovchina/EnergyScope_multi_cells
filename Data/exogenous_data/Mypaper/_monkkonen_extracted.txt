@@ -1,0 +1,999 @@
+Ecologically and economically sustainable level of timber harvesting in 
+boreal forests – defining the safe operating space for forest use 
+ 
+Mönkkönen, Mikko 1,2 
+Blattert, Clemens 1,2,3 
+Cours, Jérémy 1,2 
+Duflot, Rémi 1,2 
+Elo, Merja 1,2 
+Eyvindson, Kyle 4,5 
+Kouki, Jari 6 
+Triviño, María 1,2 
+Burgas, Daniel 1,2 * 
+ 
+1 Department of Biological and Environmental Science, University of Jyvaskyla, FI-40014 Jyvaskyla, 
+Finland 
+2 School of Resource Wisdom, University of Jyvaskyla, FI-40014 Jyvaskyla, Finland 
+3 Forest Resources and Management, Swiss Federal Research Institute WSL, Zürcherstrasse 111, CH-
+8903, Birmensdorf, Switzerland 
+4 Faculty of Environmental Sciences and Natural Resource Management, Norwegian University of 
+Life Sciences, NMBU, P.O. Box 5003, NO-1433, Ås, Norway 
+5 Natural Resource Institute Finland (LUKE), Latokartanonkaari 9, FI-00790, Helsinki, Finland 
+6 School of Forest Sciences, University of Eastern Finland, P. O. Box 111, FI-80101, Joensuu, Finland 
+ 
+* Corresponding author: daniel.d.burgas@jyu.fi 
+ 
+Abstract 
+Planetary-level analyses indicate that we are exceeding the ecological limits. However, we need 
+approaches to implement global sustainability frameworks regionally, using natural resources at 
+levels that allow for their regeneration. We present a framework to define limits beyond which 
+ecosystems are threatened to collapse, to answer how much we can extract from ecosystems, and to 
+manage natural resources for both human and ecosystem wellbeing. We exemplify this approach 
+with the heath forest habitat types in Finland, which provide most of the national timber production. 
+We use the IUCN Red List of Habitats to set favourable reference values for volume of deadwood, 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+proportion of old-growth forest cover and proportion of deciduous trees. Through forest growth 
+simulations and management optimization, we found that the proportion of old-growth forest is the 
+most challenging criteria to be reached only by 2100. This would require not only a larger use of 
+extensive forest management practices than hitherto but also to drastically reduce the maximum 
+economic sustainable harvest level from the current 96% to 60%. By combining threat assessments 
+with ecosystem modelling and management planning, this approach can support regional decision 
+makers to make informed decisions to stay within safe limits of use of natural resources. 
+ 
+Main 
+Humans have already exceeded six of the nine Earth System boundaries beyond which humanity 
+can operate safely (i.e., planetary boundaries, sensu1–3). This overshoot of, for example, climate and 
+biodiversity loss (or biosphere integrity, sensu1), poses a significant risk for ecosystems and their 
+functions and, ultimately, also for human societies4,5. As human appropriation of natural resources 
+and habitat encroachment are the main factors deteriorating the Earth system6, we should set 
+boundaries for human activities, yet, defining how this could be done in practice remains a 
+significant challenge. As species always require functional ecosystems and habitats therein, a useful 
+approach to prevent biodiversity loss is to reduce the threat for habitats. IUCN7 defines that “an 
+ecosystem is collapsed when it is virtually certain that its defining biotic or abiotic features are lost, 
+and the characteristic native biota is no longer sustained". To sustain a favourable conservation 
+status of habitats and avoid ecosystem collapse, we must bring human influence into a safe 
+operating space, that is limited by the ecological ceiling and the social foundation—i.e., the 
+unavoidable impacts of human activities to fulfil human needs (following the doughnut economics 
+framework, Fig. 1a;8). 
+ 
+Many environmental policy initiatives (e.g., Global Biodiversity Framework) address the challenge 
+by asking “how much conservation is enough?” to maintain biodiversity and strive to set the 
+minimum coverage of protected areas (e.g.,9,10). In addition, we need to tackle the root causes of 
+biodiversity loss rather than only remedy their symptoms. Biodiversity is lost because we consume 
+natural resources faster than nature can regenerate them11. Even when not exceeding the 
+regeneration rate, excessive human appropriation of natural resources is a threat to biodiversity and 
+ecosystem integrity (e.g., functional), as remaining resources (e.g., carbon, nutrients, water, space) 
+may become insufficient. Thus, we should shift the focus and address “how much resource use is 
+too much?” and quantify an ecological ceiling that prevents ecosystem collapse. Defining a 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+maximum biodiversity-safe level of natural resource use would provide a clear, practical, and 
+accountable policy target that relates directly to biodiversity loss due to human activities. 
+ 
+ 
+Fig. 1 | Schematic overview of the framework developed to explore ecologically and 
+economically sustainable timber harvest levels applied to Finland. a) Our study combines the 
+frameworks of Planetary Boundaries1 and doughnut economics8. We evaluate what would be the 
+maximum level of timber extraction, i.e., timber flow and net present value (social/economic 
+foundation) that would still allow critical forest structural features to develop and remain at 
+necessary levels (ecological ceiling). b) Case study context of Southern Finland, in grey, covering 
+the hemiboreal, south and middle boreal vegetation zones of Finland. c) Current level of the three 
+criteria defining the conservation status of heath forest habitats and, thus, used to define the 
+ecological ceiling (see criteria values in Table 1). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+ 
+Taking the boreal forest ecosystems and forestry sector as an example, we explored how to define 
+an ecological ceiling for the safe operating space. The boreal forest is one of the largest biomes on 
+Earth, contains approximately 45% of the world’s stock of growing timber and accounts for 25-33% 
+of wood-biomass products within the global export market12,13. About two-thirds of the biome’s 
+area is actively managed and harvested for timber production, which changes the structure and tree 
+species composition of the forest, and impacts wildlife and ecosystem functioning14–16. Particularly 
+in Fennoscandia, protected areas cover only less than 5% of productive forest land and forests are 
+considered primarily a source of biomass17. Therefore, habitat and resource availability for species 
+associated with old-growth forests have severely declined. Consequently, forest management is the 
+most prominent threat for biodiversity18–20. It is evident that the ecological ceiling of forest 
+ecosystems and their functional integrity sensu Rockström et al.21 have largely been exceeded in 
+Fennoscandia. 
+Fennoscandian boreal forests are perhaps the most thoroughly studied terrestrial ecosystems of the 
+biosphere. From a global perspective, national economies of the Nordic countries are affluent, 
+stable, and predictable. Therefore, Fennoscandia is an ideal test arena to find out if sustainable 
+forestry, in ecological, economic, and social terms, is an achievable goal. Implementation of the 
+safe operating space consequently implies securing forest habitats while maintaining timber 
+production for the forestry sector. Indeed, the latter represent a significant economic sector, 
+providing raw material, energy, and job opportunities to society (i.e., social foundation, Fig. 1a). 
+Here, we introduce a new approach to address the question of “how much is too much?” and test it 
+by defining an ecological ceiling for human forest use, that is, a maximum timber harvest level 
+below which forest ecosystems are no longer threatened. We apply this approach to the hemiboreal, 
+south and middle boreal heath forests in continental Finland (hereafter Southern Finland, sensu 22) 
+using the recent Red-List assessment of forest habitat types (Fig. 1b;22). Specifically, we ask (i) how 
+fast the forest habitat types can be removed from the IUCN Red List, (ii) how forests should be 
+managed to achieve this goal, and finally, (iii) what is the maximum annual harvest to stay in the 
+safe space. To answer these questions, we use the IUCN Red-List criteria22, which define criteria 
+for endangerment of forest habitat types, and identify the level of those criteria that should be 
+reached to remove the forest habitats from the risk of collapse, i.e., Favourable Reference Value 
+(FRV, Fig. 1c). Then, we use forest growth simulations and a multi-objective optimization 
+framework23 to define the time, the optimal management combination, and the maximum harvesting 
+level needed to reach the FRVs (Fig. 2). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+ 
+ 
+Fig. 2 | Workflow used for the analyses and main answers we expect with the outputs of this 
+framework. FRVs stands for Favourable Reference Values. 
+ 
+Results 
+ 
+How much time will it take to reach favourable reference values for all forest habitat 
+types? 
+The time needed to render the habitat types not threatened ranges from 40 to 80 years (2060-2100), 
+depending on the habitat type (Fig. 3). In xeric forests (representing 3% of forest area in Southern  
+Finland24), it may take till 2100 before all criteria can reach their favourable reference values 
+(FRVs). Herb-rich forests (23% of forest area) can reach FRV already by 2060, mesic by 2070 (50 
+% of forest area) and sub-xeric forests 20 % of forest area) by 2080. The main limiting criteria 
+affecting the time needed to achieve a favourable status was the proportion of old-growth forest 
+area, except for herb rich forest for which the limiting factor was the volume of deadwood (Fig. 3, 
+see Table 1 in the Methods section). The required proportion of deciduous trees from total timber 
+volume is swiftly achievable across the forest types. To project the development of forests, we used 
+the intermediate climate change Representation Concentration Pathway (RCP) 4.5, which 
+approximates our current climate pathway25. Sensitivity analyses with the “business as usual” high-
+emission scenario RCP8.5 did not show significant changes in the timing or criteria limiting the 
+achievement of favourable status (Supplementary Material Fig. S1). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+ 
+Fig. 3 | Possibility to achieve and exceed the favourable reference values (FRV) in Southern 
+Finland for the four main habitat types of heath forest (herb-rich, mesic, sub-xeric and xeric). 
+The horizontal axis represents the target year when the FRVs were strived to be reached. Values for 
+alternative criteria are expressed as percentages from the FRVs (see Table 1), with red colour 
+indicating that the target has not yet been achieved, white that the target has been achieved and 
+green that the target has been surpassed. 
+ 
+How forests should be managed and what is the maximum harvest level to stay 
+within a safe operating space? 
+The faster we strive to render forest habitat types not threatened, the more we need to rely on setting 
+aside forests from timber harvesting (Fig. 4a). Targeting 2100, the earliest year when all forest 
+habitat types can reach favourable reference values, we would need to set aside (i.e., no 
+management) more than one third of forests. This is challenging as currently less than 6% of forest 
+land in Southern Finland is protected26. The optimal combination of management categories also 
+included 40% of intensive management where the focus is more on timber production, and 25% of 
+extensive management also targeting biodiversity conservation and other ecosystem services than 
+timber (Fig. 4a, and Supplementary Material Fig. S2 for management sub-categories). There was 
+variation among the forest habitat types in the optimal combination of management categories. In 
+general, on the more productive habitat types (herb-rich and mesic forests) set aside was a more 
+prominent option, while on less productive habitat types (sub-xeric & xeric forests) extensive 
+management gained more prevalence (see Supplementary Material Fig. S3 for the proportion of 
+management showed by habitat type categories). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+ 
+The sooner we want to reach FRVs, the more we should give up on the maximum economically 
+sustainable annual harvesting potential, i.e., the maximum annual harvest allowing for a constant 
+timber production over time (also known as even flow of timber) (Fig. 4b). If we set 2100 as the 
+target year, when all forest habitat types can reach a favourable status, the ecological ceiling is a 
+harvest level of 58% of the maximum economically sustainable annual harvesting potential. This is 
+considerably less than the realized recent harvest level in Southern Finland, that is 96% (Fig. 4b, 27). 
+ 
+Fig. 4 | (a) Proportion of management categories and (b) maximum annual timber harvest 
+level that would maximise the favourable reference values in all four forest habitat types. The 
+horizontal axis represents the target-year when the FRVs were strived to be reached (but might not 
+be reached, see Fig. 3). In (b), the vertical axis shows the harvest level relative to the maximum 
+economically sustainable annual harvesting potential (i.e., without ecological constraints). The 
+dashed horizontal line represents the current level of set-aside forest land (a), and the average 
+harvest level between the years 2016-2021 (b) in Southern Finland27. 
+ 
+Discussion 
+Our economies are not external to nature but embedded within it11. Building on this premise, we 
+operationalized the planetary boundaries and doughnut economy frameworks at large spatial scale 
+and defined a maximum biodiversity-safe level of harvesting timber from a European boreal region. 
+Maximum harvest level was estimated so that it does not exceed the capacity of the forest 
+ecosystems to supply biodiversity-critical habitat characteristics. Results indicate that harvesting 
+should be capped well below current levels, but the exact level depends on how fast we want to 
+enter the safe operating space. Setting a realistic target year of 2100 requires utilizing at most 60% 
+of the annual harvesting potential. Curbing forest harvesting to this level creates a challenge for the 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+Fennoscandian forest industry, which currently is largely based on producing large quantities of 
+pulp and sawn timber for exporting products. The challenge can be tackled by developing 
+regenerative business models28, which emphasize higher value-added wood products that provide 
+livelihoods for the entire value-chain relying on wood biomass. More profoundly, resolving this 
+challenge will require moving away from a life frame where nature is considered a mere provider of 
+resources, to partnerships with nature that focus on nature’s life-supporting processes29. 
+ 
+Simultaneously with the ecological ceiling, we evaluated the social foundation of the Finnish forest 
+use as the maximum annual timber flow and monetary benefits (net present value) that are possible 
+to achieve under the ecological ceiling. This follows the current societal values, which emphasize 
+instrumental values and where forest resources are seen as a provider of job opportunities, 
+economic value, and raw materials to fulfil human needs30. In affluent postindustrial societies, such 
+as in Fennoscandia, we see an increasing endorsement of relational and intrinsic values such as 
+seeing nature as a part of one’s meaningful life and much more than means to an end. Such values 
+are typically tied to local context, and thus, implementing the idea of staying within the safe 
+operating space requires local deliberation and planning—e.g., on how to sustain livelihoods with 
+less resource extraction in a just manner. 
+ 
+Staying within a safe operating space requires a constant flow of forest biomass, which, according 
+to our results, is best achieved with a diverse combination of management regimes to ensure a 
+diversity of habitats31,32 and the flow of timber and non-timber ecosystem services from forests33. 
+Our results suggest that high shares of both protected areas supporting biodiversity conservation, 
+and intensively managed areas—maximizing timber production and economic benefits—are 
+needed, complemented by extensive management. The utility of such functional zoning outcome is 
+evident34,35. This requires a big change in current management practices, where intensive clear-cut 
+forestry heavily dominates in Fennoscandia, by increasing adoption of alternatives such as 
+continuous cover forestry (see Supplementary Material Fig. S2). 
+ 
+Among the biodiversity indicators, achieving the favourable reference value for old-growth forests is 
+the largest challenge. More than a century of intensive forest management has shifted the forest 
+composition towards young forests36 and recovering a high proportion of old-growth forest will 
+require a long time. This result highlights the need to swiftly start actions for biodiversity as recovery 
+processes and formation time of most critical microhabitats in forest ecosystems are slow. Only by 
+acting now we can reduce any further, potentially irreversible biodiversity losses37. The primary focus 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+should be on safeguarding the remaining old-growth forests, in accordance with the EU biodiversity 
+strategy for 20309. However, old-growth forests are not only characterized by tree age but also by 
+their structural features that are important for biodiversity and human well-being38,39. Hence, there 
+exists the possibility of actively restoring deadwood and tree-related microhabitats to speed up the 
+recovery process40. 
+ 
+Deadwood is a critical resource for species in boreal forests41 and a good indicator of forest 
+biodiversity42. In boreal Fennoscandia, 20–25% of the forest-dwelling species are dependent on 
+deadwood habitat and they constitute 60% of red-listed species43. The FRVs for deadwood volume 
+can be reached relatively quickly in all forest types, suggesting the potential for relatively rapid 
+recovery of deadwood-dependent biodiversity. However, production of large deadwood pieces, 
+sheltering peculiar communities44, should need extra-time. This effectively requires more set asides36, 
+which would eventually result in more old-growth forests, as well. 
+ 
+Further enhancements of this approach could entail adding ecological constraints into simulations as 
+well as considering social factors. For example, our results remained qualitatively similar under 
+different climate change scenarios, but this could change by including natural disturbances, which 
+have increased and will continue to increase in frequency, intensity and spatial extent due to climate 
+change45,46. Disturbances may have contrasting effects on FRVs: they contribute in creating 
+deadwood and certain tree-related microhabitats if systematic salvage logging of damaged trees is 
+avoided36,47,48, while severe disturbances can also reduce the area of old-growth forests49,50. 
+Ultimately, cumulative and interactive effects of human and atypical natural disturbances may lead 
+to an ecosystem shift into a compromised functional state45,51. Because reaching a favourable 
+conservation status for heath forest habitats in Finland will take several decades, the chance of facing 
+extreme disturbance events is very high, further delaying the achievement of targeted proportion of 
+old-growth forest. Hence, the more ambitious we are initially, the more likely we are to halt the 
+biodiversity crisis. 
+ 
+In our study we consider the ecological and economic limits of the forest ecosystems to identify a 
+safe operating space. Future studies should go one step further and quantify both safe and just Earth 
+system boundaries21. Thus, a just transformation of the forest sector requires acknowledging the 
+multiple needs and views of forest stakeholders and understanding the dynamics of the entire forest 
+social-ecological system transition. 
+ 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+Methods 
+We used a large forest dataset representing the hemiboreal, south and middle boreal vegetation 
+zones in Finland (Fig. 1). We focused on the four main fertility site types of heath forest: herb-rich, 
+mesic, sub-xeric, and xeric heath forest. These four site types represent together over 96% of the 
+productive forest of the focal regions according to the latest National Forest Inventory (NFI12). 
+Forested peatlands were excluded because a large proportion of them have been drained for forestry 
+purposes, which is the main criteria defining their conservation status, i.e., not directly related to 
+harvest level. We also excluded the northern boreal vegetation zone, which contains 28% of heath 
+forests in Finland, because a large proportion of heath forests there are either barren heaths (very 
+low timber production) and/or currently protected. Less than 5% of harvested timber volume in 
+Finland originates from forests in the North boreal zone, and thus, excluding these forests has a 
+small effect on required harvesting levels at the national scale. Moreover, most threatened forest-
+dwelling species in Finland have Southern distributions20,37. 
+ 
+Favourable reference values for defining an ecological ceiling. 
+The recent assessment of threatened habitat types in Finland52 followed IUCN criteria, which 
+consider changes in the quantity of the habitat type, changes in abiotic and biotic quality, and rarity. 
+The assessment shows that three-quarters of the Finnish forest habitat types are threatened22; herb-
+rich and mesic forest habitats are classified as vulnerable (VU), i.e., at a high risk of collapse, and 
+sub-xeric and xeric forest habitats are endangered (EN), i.e., at a very high risk of collapse. 
+ 
+Most of the heath forest habitat types were assessed as threatened according to changes in their 
+abiotic and biotic quality (IUCN criteria D). However, the decline in area (IUCN criteria A) was the 
+most important reason for old heath forests to be threatened22. We adopted three quality indicators, 
+which translate the IUCN criteria into measurable characteristics, from Kouki et al.53: deadwood 
+volume, the proportion of old forest cover, and the proportion of deciduous trees relative to the total 
+tree volume. These indicators are considered critical features also for red-listed species in Finnish 
+boreal forests20. Following the logic of the greatest risk of loss and following the IUCN guidelines, 
+Kouki et al.53 used the condition of forests in 1750 as a reference point, except for the proportion of 
+deciduous trees for which the situation in the 1960s was the reference (the value in 1750 is not 
+available). The 1750 time point represents the earliest onset of industrial-scale exploitation of 
+ecosystems54 and is justified in the IUCN Red List of Ecosystems7. According to the IUCN criteria 
+D, a habitat type (fertility site type in our study) is considered threatened if the indicator value has 
+decreased more than 50% (30% for the proportion of deciduous trees) from its reference value in 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+1750 (1960s for the proportion of deciduous trees). We followed this logic to address what is the 
+required improvement in the quality indicator values that will render the heath forest habitat types 
+not being at risk of collapse (i.e., not threatened). That is, for a currently threatened habitat type to 
+become not threatened, the value of an indicator must improve to a level that is at least 50% of the 
+reference value in 1750 (area of old forest and volume of deadwood), or 70% of the reference value 
+in the 1960s (proportion of deciduous trees) and remain at that level or above ever since. We 
+consider this level of an indicator as a favourable reference value (FRV, Table 1). 
+ 
+Table 1. Reference values for the quality indicators for the four fertility site types in Southern 
+Finland. Values for forests in natural state (no human impact) were calculated multiplying the 
+values for each age class in Kouki et al.53 by the proportion of land covered by each age class in 
+natural state forests55. Values for the 1750 were taken from Kouki et al.53. Values for the 1960s 
+were taken from the 5th national forest inventory in Finland (NFI5) and current values were 
+obtained from the input data for the simulations (see section Data and forest simulation). The logic 
+to derive favourable reference values (FRVs) is explained in the text. 
+Indicator 
+Fertility 
+site type 
+Natural 
+state 
+Ref. 
+1750 
+1960s 
+(NFI5) 
+FRV 
+Current  
+values 
+Deadwood volume 
+(m3/ha) 
+Herb-
+rich 
+140 
+56 
+3.3 
+28 
+4.9 
+Mesic 
+110 
+38 
+3.7 
+19 
+4.7 
+Sub-
+xeric 
+95 
+29 
+3.7 
+14.5 
+4.4 
+Xeric 
+70 
+20 
+3.2 
+10 
+4.3 
+Proportion of old 
+forest (% cover)* 
+Herb-
+rich 
+50 
+11 
+0.6 
+5.5 
+0.4 
+Mesic 
+25 
+4.4 
+12.5 
+0.1 
+Sub-
+xeric 
+35 
+1.4 
+17.5 
+0.3 
+Xeric 
+50 
+0.6 
+25 
+0.5 
+Proportion of 
+deciduous trees  
+(% volume) 
+Herb-
+rich 
+na 
+na 
+28.5 
+20 
+36 
+Mesic 
+16.9 
+11.8 
+24 
+Sub-
+xeric 
+8.1 
+5.7 
+12 
+Xeric 
+3.3 
+2.3 
+9 
+*Threshold ages for old forest: herb-rich 120 years, mesic and sub-xeric 140 years, xeric forests 160 
+years 
+ 
+We used IUCN criteria to estimate favourable reference values. Another option would have been to 
+derive the FRVs from literature on species distributions and population persistence as functions of 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+critical structural features. Although there is much variation in species response to variation in 
+critical features56, literature suggests that when resource availability decreases by 80‐90% from the 
+natural state, native biota become depauperated due to local extinctions57–59. This approach would 
+result in similar FRVs to what we had (Table 1). Our FRVs for deadwood volume also largely 
+correspond to critical ecological threshold values for deadwood-dependent organisms in boreal 
+forests60,61. 
+ 
+Data and forest simulations 
+To obtain a representative sample of the initial forest state for forest growth simulations, we used 
+two data sources. We obtained private forest owners’ detailed stand-level information from 2016 
+from the public database www.metsaan.fi of the Finnish Forest Centre. This data was 
+complemented by the Multi-source National Forest Inventory from 2015, to cover areas not 
+privately owned62. Both data sets were sampled along the regional and temporal systematic clusters 
+following the design of the 11th Finnish National Forest Inventory (see 23). We selected only data 
+points within heath forest of the hemiboreal, south and middle boreal vegetation zones in 
+continental Finland. 
+ 
+We performed the forest simulations using the open-source forest simulator SIMO63. SIMO 
+simulates individual tree growth, mortality, and regeneration for even-aged64 and uneven-aged (i.e., 
+continuous cover forestry) boreal forests65. We simulated forest dynamics and management under 
+two climate trajectories; representative concentration pathways RCP4.5 and RCP8.5. Climate 
+variables driving stand growth and soil dynamics (mean and amplitude of temperature, CO2 
+concentration, precipitation) were based on Lehtonen et al.66, and the climate data of the Canadian 
+Earth system model CanESM67. The impacts of climate on tree growth are introduced into the 
+calculation of volume growth, and further allocated between diameter and height growth based on 
+the models of Matala et al.68. 
+ 
+For each forest plot, we simulated 29 management regimes in five-year periods over 100 years, with 
+the exact number of management alternatives applied depending on the initial conditions of each 
+individual stand (i.e., dominant stand height, basal area, site type, and stand age). The regimes 
+provided a diverse set of management alternatives for each stand, from which the optimization 
+afterward selected an ideal management based on the management effects on optimization 
+objectives (see optimization section below). We grouped the regimes into three classes based on the 
+harvest level: Intensive, Extensive, and Set aside (Table 2).  
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+ 
+Table 2. Summary table of the simulated management regimes for Finland and their allocation to 
+the six management classes. The classification to intensive and extensive regimes follows Blattert et 
+al.35. BAU stands for business-as-usual rotation forestry; CCF for continuous cover forestry.  
+Management class 
+Abbreviation  
+Description 
+Intensive managements 
+BAU 
+Rotation forestry, no thinnigs prior clearfelling 
+ 
+BAU F 
+= BAU, with fertilization 
+ 
+BAU -5 
+= BAU, with 5 years shorter rotation age 
+ 
+BAU -5 F 
+= BAU -5, with fertilization 
+ 
+BAU + 5 
+= BAU, with 5 year extended rotation age 
+ 
+BAU w thin 
+Rotation forestry, with thinnings prior clearfelling 
+ 
+BAU w thin B 
+= BAU w thin, with increased broadleaf planting 
+ 
+BAU w thin F 
+= BAU w thin, with fertilization 
+ 
+BAU w thin -5 
+= BAU w thin, with 5 years shorter rotation age 
+ 
+BAU w thin -5 F 
+= BAU w thin -5, with fertilization 
+ 
+BAU w thin +5 
+= BAU w thin, with 5-year extended rotation age 
+ 
+BAU w thin +5 B 
+= BAU w thin +5, with increased broadleaf planting 
+ 
+BAU w thin GTR 
+= BAU w thin, with 30 retention trees or 30m2 per ha left 
+ 
+BAU w thin GTR B 
+= BAU w thin GTR, with increased broadleaf planting 
+ 
+BAU w GTR 
+= BAU, with 30 retention trees or 30m2 per ha left 
+ 
+CCF 1 
+Thinning from above, basal area threshold -3 m2/ha 
+ 
+CCF 2 
+Thinning from above, basal area threshold +/-0 m2/ha 
+Extensive managements 
+CCF 3 
+Thinning from above, basal area threshold + 3 m2/ha 
+ 
+CCF 4 
+Thinning from above, basal area threshold + 6 m2/ha 
+ 
+BAU w/o thin 
+Rotation forestry, no thinnings prior to or after 
+clearfelling 
+ 
+BAU w/o thin -20 
+= BAU w/o thin, with 20 years shorter rotation age 
+ 
+BAU w/o thin -20 F 
+= BAU w/o thin -20, with fertilization 
+ 
+BAU + 15 
+= BAU, with 15 years extended rotation age 
+ 
+BAU w thin +15 
+= BAU w thin, with 15 years extended rotation age 
+ 
+BAU w thin +15 B 
+= BAU w thin +15, with increased broadleaf planting 
+ 
+BAU +30 
+= BAU, with 30 years extended rotation age 
+ 
+BAU w thin +30 
+= BAU w thin, with 30 years extended rotation age 
+ 
+BAU w thin +30 B 
+= BAU w thin +30, with increased broadleaf planting 
+Set aside (SA) 
+SA 
+No management, only growth and mortality 
+ 
+Optimization 
+To quantify the potential ability of the forest to reach the specific FRVs at a specific time period, 
+we applied a systematic optimization framework. This framework is based on the MultiOptForest 
+framework69 which relies on the application of an achievement scalarizing function 70 and the 
+epsilon constraint method71. This allowed evaluating the possibility to reach the specific targets, and 
+the economic timber availability possible once the maximum potential (or targeted) habitat 
+indicators are reached. The general optimization problem can be formulated as: 
+ 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+(1) 
+min
+𝑥
+max
+𝑖∈𝐼
+(𝑓𝑖(𝑥) −𝑧𝑖
+𝑟𝑒𝑓)
+(𝑧𝑖
+𝑖𝑑𝑒𝑎𝑙−𝑧𝑖
+𝑛𝑎𝑑𝑖𝑟)
+⁄
++ 𝜌∑(𝑓𝑖(𝑥)
+(𝑧𝑖
+𝑖𝑑𝑒𝑎𝑙−𝑧𝑖
+𝑛𝑎𝑑𝑖𝑟)
+⁄
+)
+𝑖∈𝐼
+ 
+ 
+subject to: 
+ 
+(2) 
+𝑓𝑖(𝑥) ≤𝜀𝑖, ∀𝑖∈𝐼 
+(3) 
+ 
+(4)  
+𝑓𝐸𝐹(𝑥) ≤min⁡ (∑∑(𝑥𝑗𝑘𝑧𝑗𝑘𝑝
+ℎ)
+𝑘∈𝐾𝑗
+𝑗∈𝐽
+)⁡∀⁡𝑝∈𝑃 
+(5)  
+𝑓𝑏,𝑠(𝑥) ≤∑∑(𝑥𝑗𝑘𝑧𝑗𝑘𝑝
+𝑏)
+𝑘∈𝐾𝑗
+𝑗∈𝐽𝑠
+−𝑡𝑏∀⁡𝑝∈𝑃∖𝑌≥𝑡𝑎𝑟𝑔𝑒𝑡⁡𝑦𝑒𝑎𝑟, 𝑠∈𝑆, 𝑏∈𝐵 
+(6) 
+∑𝑥𝑗𝑘
+𝑘∈𝐾𝑗
+= 1, ∀⁡𝑗∈𝐽 
+ 
+where 𝐼 is the set of objectives; 𝑓𝑖(𝑥) is the obtained value for the specific objective; 
+𝑧𝑖
+𝑟𝑒𝑓, 𝑧𝑖
+𝑖𝑑𝑒𝑎𝑙, 𝑧𝑖
+𝑛𝑎𝑑𝑖𝑟 are the target, ideal and nadir values for the specific objective; 𝜌 is an arbitrary 
+small constant; 𝜀𝑖 is the epsilon constraint target for the specific objective; 𝑃 is the set of periods 
+under consideration; 𝐽 is the set of forest plots; 𝐾𝑗 is the management options available for stand j; 
+𝑧𝑗𝑘𝑝 is the value provided for each stand, management action at the specific period, with 
+superscripts i, e, h and b respectively referring to net income, end stand value, timber harvest 
+quantity and, FRVs; 𝑥𝑗𝑘 is the decision to conduct management action k to stand j. 
+ 
+The optimization problem starts with equation (1), where the objective function is a multi-objective 
+optimization, formulated as an achievement scalarizing function. The epsilon constraint is 
+formulated in equation (2), which requires the objective to be greater than the specified value (𝜀𝑖). 
+Equation (3) evaluates the net present value of the problem, with equation (4) calculates the 
+minimum timber harvest value across all periods. Equation (5) calculates the FRVs, striving to meet 
+the target value at a specific period, and exceeding it for all other periods. 
+ 
+To assess when the indicators are possible to be attained, we performed a re-iteration of the 
+optimization striving to achieve the FRVs targets at the beginning of each decade. We first ran the 
+optimization without any epsilon constraints (𝜀𝑖) and set the targets (𝑧𝑖
+𝑟𝑒𝑓) for the achievement 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+scalarizing functions to the specific FRVs desired. We then ran the optimization by setting the 
+obtained values for the FRVs as epsilon constraints (requiring the specific indicator value at the 
+specific year), and re-ran the optimization three times: once were we strived to maximize NPV, to 
+maximize the minimum periodic timber harvested across all time periods exceeding the targeted 
+year, to maximize both the NPV and minimum periodic timber harvested across all time periods 
+exceeding the targeted year. 
+ 
+References 
+1. Steffen, W. et al. Planetary boundaries: Guiding human development on a changing planet. 
+Science 347, 1259855 (2015). 
+2. Rockström, J. et al. A safe operating space for humanity. Nature 461, 472–475 (2009). 
+3. Richardson, K. et al. Earth beyond six of nine planetary boundaries. Science Advances 9, 
+eadh2458 (2023). 
+4. IPBES. IPBES Global Assessment on Biodiversity and Ecosystem Services. IPBES Global 
+Assessment on Biodiversity and Ecosystem Services (2019). 
+5. Millennium Ecosystem Assessment (Program). Ecosystems and human well-being: synthesis. 
+(Island Press, 2005). 
+6. Erb, K.-H. et al. Analyzing the global human appropriation of net primary production — 
+processes, trajectories, implications. An introduction. Ecological Economics 69, 250–259 
+(2009). 
+7. IUCN. An Introduction to the IUCN Red List of Ecosystems: The Categories and Criteria for 
+Assessing Risks to Ecosystems. (IUCN International Union for Conservation of Nature, 2016). 
+doi:10.2305/IUCN.CH.2016.RLE.2.en. 
+8. Raworth, K. Doughnut Economics: Seven Ways to Think Like a 21st-Century Economist. 
+(Chelsea Green Publishing, 2017). 
+9. European Commission. Communication from the Commission to the European Parliament, the 
+Council, the European Economic and Social Committee and the Committee of the Regions. EU 
+Biodiversity Strategy for 2030. COM/2020/380 final (2020). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+10. Convention on Biological Diversity. Kunming–Montreal Global Biodiversity Framework. 
+(2022). 
+11. Dasgupta, P. The economics of biodiversity: the Dasgupta review. (Hm Treasury, 2021). 
+12. Burton, P. J. et al. Sustainability of boreal forests and forestry in a changing environment. 
+Forests and society: responding to global drivers of change 247–282 (2010). 
+13. Vanhanen, H., Jonsson, R., Gerasimov, Y., Krankina, O. N. & Messier, C. Making Boreal 
+Forests Work for People and Nature. 15 (2012). 
+14. Östlund, L., Zackrisson, O. & Axelsson,  a-L. The history and transformation of a Scandinavian 
+boreal forest landscape since the 19th century. Canadian Journal of Forest Research 27, 1198–
+1206 (1997). 
+15. Bradshaw, C. J. A., Warkentin, I. G. & Sodhi, N. S. Urgent preservation of boreal carbon stocks 
+and biodiversity. Trends in Ecology & Evolution 24, 541–548 (2009). 
+16. Kuuluvainen, T., Tahvonen, O. & Aakala, T. Even-aged and uneven-aged forest management in 
+boreal Fennoscandia: a review. Ambio 41, 720–37 (2012). 
+17. Mönkkönen, M. et al. Solving Conflicts among Conservation, Economic, and Social Objectives 
+in Boreal Production Forest Landscapes: Fennoscandian Perspectives. in Ecosystem Services 
+from Forest Landscapes 169–219 (Springer, 2018). 
+18. ArtDatabanken 2015. Rödlistade arter i Sverige 2015 [Red-listed species in Sweden 2015]. 
+(ArtDatabanken 2015, 2015). 
+19. S. Henriksen & O. Hilmo. Norsk Rødliste for Arter 2015 [Norwegian Red List for Species 
+2015]. (Artsdatabanken, Norge, 2015). 
+20. Suomen lajien uhanalaisuus: Punainen kirja 2019 [The 2019 Red List of Finnish Species]. 
+(Ympäristöministeriö & Suomen ympäristökeskus, 2019). 
+21. Rockström, J. et al. Safe and just Earth system boundaries. Nature 619, 102–111 (2023). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+22. Kouki J et al. Forests. in Threatened habitat types in Finland 2018. Red List of habitats. Part I: 
+Results and basis for assessment 113–124 (Finnish Environment Institute and Ministry of 
+Environment, 2019). 
+23. Blattert, C. et al. Climate targets in European timber-producing countries conflict with goals on 
+forest ecosystem services and biodiversity. Commun Earth Environ 4, 1–12 (2023). 
+24. Korhonen, K. et al. Forests of Finland 2014–2018 and their development 1921–2018. Silva 
+Fennica 55, 10662 (2021). 
+25. Lee, H. et al. Climate change 2023: synthesis report. Contribution of working groups I, II and 
+III to the sixth assessment report of the intergovernmental panel on climate change. (2023). 
+26. Forest protection. Natural Resources Institute Finland https://www.luke.fi/en/statistics/forest-
+protection. 
+27. Commercial fellings. Natural Resources Institute Finland 
+https://www.luke.fi/en/statistics/commercial-fellings. 
+28. Konietzko, J., Das, A. & Bocken, N. Towards regenerative business models: A necessary shift? 
+Sustainable Production and Consumption 38, 372–388 (2023). 
+29. Pascual, U. et al. Diverse values of nature for sustainability. Nature 620, 813–823 (2023). 
+30. Carmenta, R. et al. Exploring the relationship between plural values of nature, human well-
+being, and conservation and development intervention: Why it matters and how to do it? People 
+and Nature 5, 1720–1738 (2023). 
+31. Augustynczik, A. L. D. et al. Diversification of forest management regimes secures tree 
+microhabitats and bird abundance under climate change. Science of The Total Environment 650, 
+2717–2730 (2019). 
+32. Duflot, R., Fahrig, L. & Mönkkönen, M. Management diversity begets biodiversity in 
+production forest landscapes. Biological Conservation 268, 109514 (2022). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+33. Eyvindson, K. et al. High boreal forest multifunctionality requires continuous cover forestry as 
+a dominant management. Land Use Policy 100, 104918 (2021). 
+34. Himes, A., Betts, M., Messier, C. & Seymour, R. Perspectives: Thirty years of triad forestry, a 
+critical clarification of theory and recommendations for implementation and testing. Forest 
+Ecology and Management 510, 120103 (2022). 
+35. Blattert, C. et al. Enhancing multifunctionality in European boreal forests: The potential role of 
+Triad landscape functional zoning. Journal of Environmental Management 348, 119250 (2023). 
+36. Mönkkönen, M. et al. More wood but less biodiversity in forests in Finland: a historical 
+evaluation. Memo Soc Fauna Flora Fenn 98, 1–11 (2022). 
+37. Hanski, I. Extinction debt and species credit in boreal forests: modelling the consequences of 
+different approaches to biodiversity conservation. Annales Zoologici Fennici 37, 271–280 
+(2000). 
+38. DellaSala, D. A. et al. Mature and old-growth forests contribute to large-scale conservation 
+targets in the conterminous United States. Frontiers in Forests and Global Change 5, (2022). 
+39. Martin, M., Shorohova, E. & Fenton, N. J. Embracing the Complexity and the Richness of 
+Boreal Old-Growth Forests: A Further Step Toward Their Ecosystem Management. in Boreal 
+Forests in the Face of Climate Change (eds. Girona, M. M., Morin, H., Gauthier, S. & 
+Bergeron, Y.) vol. 74 191–218 (Springer International Publishing, 2023). 
+40. Elo, M., Halme, P., Toivanen, T. & Kotiaho, J. S. Species richness of polypores can be 
+increased by supplementing dead wood resource into a boreal forest landscape. Journal of 
+Applied Ecology 56, 1267–1277 (2019). 
+41. Stokland, J. N., Siitonen, J. & Jonsson, B. G. Biodiversity in Dead Wood. (Cambridge 
+University Press, 2012). doi:10.1017/CBO9781139025843. 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+42. Lassauce, A., Paillet, Y., Jactel, H. & Bouget, C. Deadwood as a surrogate for forest 
+biodiversity: Meta-analysis of correlations between deadwood volume and species richness of 
+saproxylic organisms. Ecological Indicators 11, 1027–1039 (2011). 
+43. Tikkanen, O.-P., Martikainen, P., Hyvärinen, E., Junninen, K. & Kouki, J. Red-listed boreal 
+forest species of Finland: associations with forest structure, tree species, and decaying wood. 
+Annales Zoologici Fennici 43, 373–383 (2006). 
+44. Juutilainen, K., Mönkkönen, M., Kotiranta, H. & Halme, P. The effects of forest management 
+on wood-inhabiting fungi occupying dead wood of different diameter fractions. Forest Ecology 
+and Management 313, 283–291 (2014). 
+45. Turner, M. G. & Seidl, R. Novel Disturbance Regimes and Ecological Responses. Annual 
+Review of Ecology, Evolution, and Systematics 54, 63–83 (2023). 
+46. Triviño, M. et al. Enhancing Resilience of Boreal Forests Through Management Under Global 
+Change: a Review. Curr Landscape Ecol Rep 8, 103–118 (2023). 
+47. Thorn, S. et al. Impacts of salvage logging on biodiversity: A meta-analysis. Journal of Applied 
+Ecology 55, 279–289 (2018). 
+48. Bouget, C. et al. Trait-Based Response of Deadwood and Tree-Related Microhabitats to 
+Decline in Temperate Lowland and Montane Forests. Ecosystems (2023) doi:10.1007/s10021-
+023-00875-9. 
+49. McDowell, N. G. et al. Pervasive shifts in forest dynamics in a changing world. Science 368, 
+eaaz9463 (2020). 
+50. Turner, M. G. et al. The magnitude, direction, and tempo of forest change in Greater 
+Yellowstone in a warmer world with more fire. Ecological Monographs 92, e01485 (2022). 
+51. Lindenmayer, D. B., Hobbs, R. J., Likens, G. E., Krebs, C. J. & Banks, S. C. Newly discovered 
+landscape traps produce regime shifts in wet forests. Proc. Natl. Acad. Sci. U.S.A. 108, 15887–
+15891 (2011). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+52. Red List of Habitats – Results and Basis for Assessment. (Finnish Environment Institute and 
+Ministry of the Environment). 
+53. Kouki J et al. Metsät [Forests]. in Suomen luontotyyppien uhanalaisuus 2018. Luontotyyppien 
+punainen kirja – Osa 1: Tulokset ja arvioinnin perusteet [Threatened habitats in Finland 2018 - 
+Red Book of Habitats - Part 1: Results and assessment criteria] vol. 2018 171–201 (Finnish 
+Environment Institute and Ministry of Environment, 2018). 
+54. Keith, D. A. et al. Scientific Foundations for an IUCN Red List of Ecosystems. PLoS ONE 8, 
+e62111 (2013). 
+55. Berglund, H. & Kuuluvainen, T. Representative boreal forest habitats in northern Europe, and a 
+revised model for ecosystem management and biodiversity conservation. Ambio 1–15 (2021) 
+doi:10.1007/s13280-020-01444-3. 
+56. Mönkkönen, M. & Reunanen, P. On Critical Thresholds in Landscape Connectivity: A 
+Management Perspective. Oikos 84, 302–305 (1999). 
+57. Hanski, I. Habitat loss, the dynamics of biodiversity, and a perspective on conservation. Ambio 
+40, 248–55 (2011). 
+58. Hanski, I. Habitat fragmentation and species richness. Journal of Biogeography 42, 989–993 
+(2015). 
+59. Rybicki, J. & Hanski, I. Species–area relationships and extinctions caused by habitat loss and 
+fragmentation. Ecology Letters 16, 27–38 (2013). 
+60. Müller, J. & Bütler, R. A review of habitat thresholds for dead wood: a baseline for 
+management recommendations in European forests. European Journal of Forest Research 129, 
+981–992 (2010). 
+61. Junninen, K. & Komonen, A. Conservation ecology of boreal polypores: A review. Biological 
+Conservation 144, 11–20 (2011). 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+62. Mäkisara, K., Katila, M. & Peräsaari, J. The Multi-Source National Forest Inventory of Finland 
+– methods and results 2015. (Luonnonvarakeskus, 2019). 
+63. Rasinmäki, J., Mäkinen, A. & Kalliovirta, J. SIMO: An adaptable simulation framework for 
+multiscale forest resource data. Computers and Electronics in Agriculture 66, 76–84 (2009). 
+64. Hynynen, J. et al. Models for predicting stand development in MELA System. 
+(Metsäntutkimuslaitos, 2002). 
+65. Pukkala, T., Lähde, E. & Laiho, O. Species interactions in the dynamics of even- and uneven-
+aged boreal forests. Journal of Sustainable Forestry 32, 371–403 (2013). 
+66. Lehtonen, I., Venäläinen, A., Kämäräinen, M., Peltola, H. & Gregow, H. Risk of large-scale 
+fires in boreal forests of Finland under changing climate. Nat. Hazards Earth Syst. Sci. 16, 239–
+253 (2016). 
+67. Von Salzen, K. et al. The Canadian Fourth Generation Atmospheric Global Climate Model 
+(CanAM4). Part I: Representation of Physical Processes. Atmosphere-Ocean 51, 104–125 
+(2013). 
+68. Matala, J., Ojansuu, R., Peltola, H., Raitio, H. & Kellomäki, S. Modelling the response of tree 
+growth to temperature and CO2 elevation as related to the fertility and current temperature sum 
+of a site. Ecological Modelling 199, 39–52 (2006). 
+69. Eyvindson, K. et al. MultiOptForest: An interactive multi-objective optimization tool for forest 
+planning and scenario analysis. Open Research Europe 3, 103 (2023). 
+70. Wierzbicki, A. P. On the completeness and constructiveness of parametric characterizations to 
+vector optimization problems. OR Spektrum 8, 73–87 (1986). 
+71. Haimes, Y. Y., Lasdon, L. S. & Wismer, D. A. On a Bicriterion Formulation of the Problems of 
+Integrated System Identification and System Optimization. IEEE Trans. Syst., Man, Cybern. 1, 
+296–297 (1971). 
+ 
+Acknowledgements 
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 
+This work was partly funded by the Strategic Research Council at the Academy of Finland 
+(Mönkkönen 358473). J.C., M.T. and R.D. were supported by the Kone Foundation (application 
+202206136 and 202105759).We would also like to thank Kaisa Junninen for the help with threat 
+assessments of forest habitats. 
+ 
+Author contributions 
+M.M., C.B., R.D., M.E., K.E., M.T. and D.B. conceived and designed the study, performed the 
+experiments, and analysed the data. C.B., K.E. and J.K. contributed materials/analysis tools. J.C. 
+contributed with visualizations and analyses. All authors contributed to the writing of the 
+manuscript.  
+.
+CC-BY-NC 4.0 International license
+perpetuity. It is made available under a
+preprint (which was not certified by peer review) is the author/funder, who has granted bioRxiv a license to display the preprint in 
+The copyright holder for this
+this version posted January 24, 2025. 
+; 
+https://doi.org/10.1101/2024.06.27.600997
+doi: 
+bioRxiv preprint 

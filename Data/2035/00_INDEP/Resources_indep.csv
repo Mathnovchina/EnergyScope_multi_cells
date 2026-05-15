@@ -13,6 +13,11 @@ Renewable,Renewable fuel,JET_FUEL_RE,0,0.1502,0,
 Non-renewable,Fossil fuel,GAS,0.2666,0.04425306,0.2,
 Renewable,Renewable fuel,GAS_RE,0,0.118326,0,
 Renewable,Biomass,WOOD,0.02456,0,0,
+Renewable,Biomass,WOOD_FI1,0.020,0,0,Industrial wood by-products (black liquor/bark/sawdust) - MINBIOWOOa
+Renewable,Biomass,WOOD_FI2,0.022,0,0,Logging residues (branches/tops/stumps) - MINBIOFRSR1
+Renewable,Biomass,WOOD_FI3,0.024,0,0,Secondary woodchips and sawdust - MINBIOWOOW1+MINBIOWOOW1a
+Renewable,Biomass,WOOD_FI4,0.026,0,0,Direct fuelwood and landscape residues - MINBIOWOO+MINBIOFRSR1a
+Renewable,Biomass,WOOD_FI5,0.040,0,0,Nordic/Baltic pellet and chip imports (backstop)
 Renewable,Biomass,WET_BIOMASS,0.01056,0,0,
 Renewable,Biomass,ENERGY_CROPS_2,0.00756,0,0,
 Renewable,Biomass,BIOMASS_RESIDUES,0.00324,0,0,

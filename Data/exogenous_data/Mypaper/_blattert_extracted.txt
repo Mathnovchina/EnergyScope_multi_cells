@@ -1,0 +1,1463 @@
+Forest Policy and Economics 136 (2022) 102689
+Available online 13 January 2022
+1389-9341/© 2022 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).
+Sectoral policies cause incoherence in forest management and ecosystem 
+service provisioning 
+Clemens Blattert a,b,*, Kyle Eyvindson a,b,c,d, Markus Hartikainen e, Daniel Burgas a,b, 
+Maria Potterf a,b, Jani Lukkarinen f, Tord Sn¨all g, Astor Tora˜no-Caicoya h, Mikko M¨onkk¨onen a,b 
+a Department of Biological and Environmental Science, University of Jyv¨askyl¨a, P.O. Box 35, 40014 Jyv¨askyl¨a, Finland 
+b School of Resource Wisdom, University of Jyv¨askyl¨a, P.O. Box 35, 40014 Jyv¨askyl¨a, Finland 
+c Natural Resource Institute Finland (LUKE), Laatokartanonkaari 9, 00790 Helsinki, Finland 
+d Faculty of Environmental Sciences and Natural Resource Management, Norwegian University of Life Sciences, P.O. Box 5003, NO-1432 Ås, Norway 
+e Silo AI, 5th Floor, Fredrikinkatu 57 C, 00100 Helsinki, Finland 
+f Finnish Environment Institute (SYKE), Latokartanonkaari 11, 00790 Helsinki, Finland 
+g SLU Swedish Species Information Centre, Swedish University of Agricultural Sciences, P.O. Box 7007, 75007 Uppsala, Sweden 
+h Chair of Growth and Yield Science, TUM School of Life Sciences, Hans-Carl-von-Carlowitz-Platz 2, 8354 Freising, Germany   
+A R T I C L E  I N F O   
+Keywords: 
+Forest policy 
+Ecosystem services 
+Biodiversity 
+Multi-objective optimization 
+Forest management 
+Climate change 
+A B S T R A C T   
+Various national policies guide forest use, but often with competing policy objectives leading to divergent 
+management paradigms. Incoherent policies may negatively impact the sustainable provision of forest ecosystem 
+services (FES), and forest multifunctionality. There is uncertainty among policymakers about the impacts of 
+policies on the real world. We translated the policy documents of Finland into scenarios including the quanti­
+tative demands for FES, representing: the national forest strategy (NFS), the biodiversity strategy (BDS), and the 
+bioeconomy strategy (BES). We simulated a Finland-wide systematic sample of forest stands with alternative 
+management regimes and climate change. Finally, we used multi-objective optimization to identify the combi­
+nation of management regimes matching best with each policy scenario and analysed their long-term effects on 
+FES. 
+The NFS scenario proved to be the most multifunctional, targeting the highest number of FES, while the BES 
+had the lowest FES targets. However, the NFS was strongly oriented towards the value chain of wood and 
+bioenergy and had a dominating economic growth target, which caused strong within-policy conflicts and 
+hindered reaching biodiversity targets. The BDS and BES scenarios were instead more consistent but showed 
+either sustainability gaps in terms of providing timber resources (BDS) or no improvements in forest biodiversity 
+(BES). All policy scenarios resulted in forest management programs dominated by continuous cover forestry, set- 
+aside areas, and intensive management zones, with proportions depending on the policy focus. Our results 
+highlight for the first time the conflicts among national sectoral policies in terms of management requirements 
+and effects on forest multifunctionality. The outcomes provide leverage points for policymakers to increase 
+coherence among future policies and improve implementation of multiple uses of forests.   
+1. Introduction 
+Forests provide a wide range of ecosystem services demanded by the 
+society, like wood and non-wood forest goods as provisioning services, 
+carbon storage, nutrient and water cycles as regulating services, as well 
+as cultural services like recreation. Additionally, forests play a key role 
+for biodiversity conservation (Forest Europe, 2020; MEA, 2005; Wolf­
+slehner et al., 2019). These societal benefits, commonly referred to as 
+forest ecosystem services (FES), have become the focus of a number of 
+European policies (Bouwma et al., 2018; EASAC, 2017; Primmer et al., 
+2021). 
+The EU forest strategy (EC, 2013, 2021) recognizes FES more 
+* Corresponding author at: Department of Biological and Environmental Science, University of Jyv¨askyl¨a, P.O. Box 35, FI-40014 Jyv¨askyl¨a, Finland. 
+E-mail addresses: clemens.c.blattert@jyu.fi (C. Blattert), kyle.eyvindson@luke.fi (K. Eyvindson), markus.hartikainen@silo.ai (M. Hartikainen), daniel.d.burgas@ 
+jyu.fi (D. Burgas), maria.m.potterf@jyu.fi (M. Potterf), jani.lukkarinen@syke.fi (J. Lukkarinen), tord.snall@slu.se (T. Sn¨all), astor.torano-caicoya@tum.de 
+(A. Tora˜no-Caicoya), mikko.monkkonen@jyu.fi (M. M¨onkk¨onen).  
+Contents lists available at ScienceDirect 
+Forest Policy and Economics 
+journal homepage: www.elsevier.com/locate/forpol 
+https://doi.org/10.1016/j.forpol.2022.102689 
+Received 14 June 2021; Received in revised form 9 December 2021; Accepted 3 January 2022   
+Forest Policy and Economics 136 (2022) 102689
+2
+explicitly than any other policy and aims to balance the delivering of 
+various FES and meeting the societal demands (Bouwma et al., 2018). In 
+addition, forest issues are addressed by disparate sector policies. Even 
+though these policies do not always directly refer to FES, they address 
+the functions of forest ecosystems that benefit society (Primmer et al., 
+2021). The EU biodiversity strategy aims to halt the loss and restore 
+biodiversity and ecosystem services (EC, 2011). The new EU biodiversity 
+strategy promotes an increase in sustainable management and forest 
+resilience against climate change. Further, it aims to protect 30% of the 
+EU’s land area, out of which 10% are strictly protected, including all 
+remaining primary and old-growth forests (EC, 2020). At the same time, 
+the bioeconomy strategy emphasizes a transition from a fossil-based to a 
+bio-based economy, causing increased timber demands (EC, 2018). 
+Overall, the coherence among existing EU-level sectoral policies is 
+moderate, and the implementation of these policies is not coordinated 
+(Bouwma et al., 2018; Wolfslehner et al., 2020). The lack of policy 
+coherence is expected to create undesired trade-offs among FES, which 
+in turn may decrease sustainability (Nabuurs et al., 2019; Nilsson et al., 
+2012; Winkel and Sotirov, 2015), particularly due to the uncertainty of 
+climate change, which strongly affects European forests (Hanewinkel 
+et al., 2013; Lindner et al., 2010; McDowell et al., 2020). 
+Unlike in agriculture, there is no common agreed EU forest policy 
+among member states, due to factors like sectoral and institutional 
+competition, and different economic interests. Instead, a collection of 
+distinct and disintegrated policy initiatives exists at the member state 
+level, guiding the management of FES and handling contradictions and 
+conflicts (Pülzl et al., 2018; Winkel and Sotirov, 2015; Wolfslehner et al., 
+2020). In the case of Finland, the biodiversity strategy (FME, 2012), the 
+bioeconomy strategy (FMME et al., 2014), and the national forest policy 
+(FMAF, 2015, 2019), are the sectoral policies that handle resources for 
+the provision of FES. National sectoral policies represent an operation­
+alized version of the EU level counterparts, reflecting the demands 
+Finnish policies place on FES (Primmer et al., 2021), and coordinating 
+the diverse stakeholder interests (Harrinkari et al., 2016). The general 
+pathway in the Finnish forest policy is to produce “more of everything”, 
+co-aligned with the global bioeconomy discourse to safeguard the use of 
+forest resources, which contributes to the legitimisation of intensive 
+management practices (Kr¨oger and Raitio, 2017). In 2018, the total 
+roundwood harvest in Finland was the highest ever with 78.2 million 
+cubic meters (24% higher than the average over the preceding ten-year 
+period). At the same time, around 11% of the forest is strictly protected. 
+However, the majority of the protected forest (80%) is located in the low 
+productive northern parts of Finland (Peltola et al., 2019). The priori­
+tisation of production over ecological objectives is causing underlying 
+conflicts within the Finnish forest policy pathway, which are not openly 
+addressed (Kr¨oger and Raitio, 2017). 
+To understand the conflicts among disintegrated sectoral policies 
+and to identify synergies in ways forward, it is crucial to understand how 
+the FES targets within the strategies plays out in the form of long-term 
+levels and what management is needed to achieve the policy targets. 
+Eyvindson et al. (2018) showed that increased timber harvests following 
+the Finnish bioeconomy targets are causing trade-offs with the conser­
+vation capacity of the forest landscape and its ability to provide multiple 
+FES. 
+The method of multi-objective optimization is widely used to alle­
+viate conflicts between increasing harvest demands and sustaining non- 
+woody FES (e.g. Chen et al. (2016); Eggers et al. (2020a); Knoke et al. 
+(2016); Mazziotta et al. (2017)). It can be used to study how manage­
+ment targeting a focal objective affects another objective, and resolve 
+conflicts by finding compromise solutions that balance among multiple 
+FES objectives in the landscape (Mazziotta et al., 2017). For example, 
+Pohjanmies et al. (2017) solved conflicts between provisioning and 
+regulating services, and biodiversity conservation by identifying man­
+agement solutions that minimized the losses of all objectives. Eyvindson 
+et al. (2019) quantified the conflicts among different interest groups in 
+forest resource management. Eggers et al. (2020b) revealed to 
+stakeholders how their management preference plays out concerning 
+economic and ecological indicators. Finally, the method was recently 
+used to explore how the banning of clear-cutting management, advo­
+cated by Finnish citizen initiative to promote biodiversity, will reduce 
+the future forest landscape multifunctionality (Eyvindson et al., 2021). 
+Generally, there are large unrealized potentials for “win-win” manage­
+ment strategies that increase overall multifunctionality of landscapes 
+(van der Plas et al., 2018), which are efficiently explored and revealed 
+using this method. 
+Even though securing multiple FES has been identified as a key 
+condition for overall sustainability of forest use (EASAC, 2017), the 
+complex management drivers arising from the FES targets stated in 
+sectoral policies are not well understood and have not gained much 
+attention. Previous research tackled the question of conflicting forest 
+sectoral policies only from the governance perspective (Bouwma et al., 
+2018; Primmer et al., 2021; Sotirov and Storch, 2018; Winkel and 
+Sotirov, 2015), with limited focus on their long-term impact on actual 
+FES levels in the forest. This is a serious drawback, because we do not 
+know the potential inefficiencies resulting from policy incoherence at 
+the level of forest landscapes. The scarce research on policy drivers for 
+FES might depend on the different time perspectives between forest 
+ecosystems (rather inert and long-term systems) and sectoral policy 
+strategies (rather dynamic and short-term systems). Further, policies are 
+based on specific sectoral interests and preparation processes, while 
+their implementation is coordinated at the level of forest management. 
+Additionally, policies and their objectives are quite often “fluffily” 
+formulated, making it challenging to quantitatively assess and analyse 
+the consequences of their implementation within forest management 
+planning. This requires a framework that facilitates the holistic analysis 
+of policy documents by standardising references to FES, as recently 
+presented by Primmer et al. (2021), to gain information for strategic 
+forest planning purposes. 
+This paper aims to close the gap between governance research and 
+long-term forest ecosystem management research to investigate the ef­
+fects of sectoral policies on forest landscapes, and their ability to provide 
+FES. Using Finland as a case study, we ask: I) How can national sectoral 
+policies for forestry, biodiversity and bioeconomy translate into explicit 
+scenarios that can be quantitatively evaluated? II) What is the required 
+forest management program (a combination of management regimes) 
+that best fulfil the FES demands given by different policies? III) What are 
+the long-term effects of the policies and their associated, resulting 
+management programs on FES? IV) Are such policies causing sustain­
+ability gaps in terms of FES? To answer these questions, we analysed 
+three sectoral policies on societal demands for nine FES categories, 
+adopting the policy analysis framework of Primmer et al. (2021). We 
+used multi-objective optimization to identify management programs 
+that achieved policy demands and analysed their impacts on FES. The 
+basis for the optimization was simulations of long-term forest dynamics 
+and management of a forest sample representing the national scale 
+(Fig. 1). 
+2. Method 
+2.1. Study region and data 
+Finnish national forest sectoral policies are addressing the whole 
+boreal forest land in Finland, which accounts for 86% of the land area 
+(including 10% of unproductive forest area). According to the 12th 
+national forest inventory (NFI), half of the growing stock in Finland is 
+made up of pine (Pinus sylvestris), 30% is spruce (Picea abies), 17% is 
+birch (Betula pendula, B. pubescens) and the remaining 3% are other 
+broadleaved trees. The annual increment totalled 108 Mm3, with a mean 
+of 6.9 m3ha−1 in southern and 3.2 m3ha−1 in northern Finland. 
+Approximately, two-thirds of the forest land is on mineral soil, with the 
+remaining part on peatlands. Peatland areas have, however, decreased 
+during the past several decades, due to ditching, resulting in the 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+3
+vegetation and growth of trees typical of mineral soils. Around 11% of 
+the forest land in Finland is under strict protection (Peltola et al., 2019). 
+To accurately represent the forest conditions across Finland and at 
+the same time to allow reasonable computation time for data simulation 
+and optimization, we created a sub-sample of the stands from the 
+Finnish Forest Centre.1 The publicly available data describe the forest 
+situation at stand level over the whole of Finland, containing basic in­
+formation about individual stands (e.g., location, soil type) and detailed 
+information about their current structure (e.g., tree species distribution, 
+tree density, tree size). Forest stands were selected along the regional 
+and temporal specific NFI sampling grid; when a NFI plot centre falls 
+into a stand this stand was noted (Fig. 2). In total, 39,445 stands were 
+selected for our analysis showing an average age of 53.8 years (sd =
+29.8). To account for the national scale, simulated stand outcomes 
+(Section 2.2) were normalized to values per hectare and multiplied by 
+the represented forest area of the NFI plot. We also recorded if a NFI plot 
+centre was located in a statutory protected area, whereby management 
+activities were not allowed. The data about the protected areas were 
+freely available from the Finnish environmental Institute (SYKE).2 For 
+details about data generation, see the supplementary material Appendix 
+S1. 
+2.2. Forest management simulation 
+The forest dynamics and management was simulated using the open 
+source forest simulator SIMO (Rasinm¨aki et al., 2009). SIMO simulates 
+tree growth, mortality and regeneration for even-aged (Hynynen et al., 
+2002) and uneven-aged boreal forests (Pukkala et al., 2013). For each 
+forest stand, we simulated 29 management regimes in five-year periods 
+from 2016 to 2116, with the exact number of management alternatives 
+applied depending on the initial conditions of each individual stand (i.e. 
+dominant stand height, basal area, site type, and stand age; Table 1). The 
+regimes provided a diverse set of management alternatives for each 
+stand out of which the optimization afterwards selected an ideal one 
+based on the management effects on FES indicators. 
+The regimes can be categorized into six classes based on their 
+defining features, like harvest intensity, rotation time, green tree 
+retention, time and number of thinnings, stand regeneration, and 
+fertilization. The six classes are (Table 1): business as usual (BAU) re­
+gimes with an even-aged rotation forest management according to the 
+Finnish management guidelines (¨Aij¨al¨a et al., 2014); regimes with 
+intensified (IBAU) and extensified (EBAU) versions of rotation forest 
+management; regimes that increase the broadleave shares on medium 
+fertile sites in southern and central Finland for better adaptation to 
+climate change (ACC); continuous cover forestry (CCF) regimes that 
+convert stands into permanently covered and diverse structured forests, 
+and a setting aside (SA) regime with no management activities. Ap­
+pendix S2 lists details of the management regimes. 
+Forest development and management were simulated under three 
+climate change scenarios: current climate, representative concentration 
+pathways RCP2.6 and RCP4.5 scenario. The regional climate variables 
+driving stand growth and soil dynamics (mean and amplitude of tem­
+perature, CO2, concentration, precipitation) were based on Lehtonen 
+et al. (2016), and the climate data of the Canadian Earth system model 
+CanESM (von Salzen et al., 2013). The impact of climate variables on 
+forest growth dynamics in SIMO was included based on climate sensitive 
+statistical growth and yield models (Matala et al., 2006; Matala et al., 
+2005). The simulations were conducted with high performance 
+computational resources provided by CSC - IT Center for Science LTD 
+(cPouta, https://research.csc.fi). 
+2.3. Forest ecosystem services and indicators 
+Simulated forest stand characteristics and harvested potential under 
+Fig. 1. Illustration of the study approach. Finnish sectoral policies were analysed regarding their demands for forest ecosystem service (FES). Multi-objective 
+optimization was used to identify management programs that achieved policy demands and the long-term management impact on FES was analysed. The basis 
+for the optimization was national simulations of forest dynamics and management. 
+1 http://www.metsaan.fi (March 2021).  
+2 https://www.syke.fi/en-US/Open_information (March 2021). 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+4
+the different management regimes and climate change scenarios were 
+used to calculate indicators for FES assessments. The policy framework 
+of Primmer et al. (2021) defines ten FES according to international 
+classification schemes (Haines-Young and Potschin-Young, 2018; MEA, 
+2005), allocating biodiversity conservation and resilience as regulating 
+services. The ten FES were: wood production, bioenergy, non-wood 
+forest products, and game animals (provisioning services); biodiversity 
+conservation, water protection, climate regulation, and resilience 
+(regulating services); as well as recreation and cultural heritage (cultural 
+service). Except for the cultural heritage service, we linked to each FES 
+our simulated indicators to assess their long-term provisioning (Table 2). 
+Cultural heritage was not considered as we currently do not have 
+empirical information or models to link forest structural characteristics 
+with the emotional and spiritual relationships of citizens with forests. 
+The FES wood production was measured by the simulated annual 
+yearly increment (m3 ha−1 yr−1) and the periodically harvested timber 
+volume (m3 ha−1). Bioenergy was assessed by the harvested biomass 
+(m3 ha−1), which summarises the combined volume of harvest residues, 
+uplifted tree stumps and roots. Uplifting stumps and roots were only 
+simulated for spruce and pine stands under rotation forestry that are 
+situated on fertile and medium fertile site types. 
+Non-wood FES were assessed by the yield of bilberry, cowberry and 
+marketable mushrooms, which are important non-timber products in the 
+boreal forest (Miina et al., 2020; Wolfslehner et al., 2019). The yield (kg 
+ha-1) for bilberry (Vaccinium myrtillus L.) (Miina et al., 2009) and 
+cowberry (Vaccinium vitis-idaea L.) (Turtiainen et al., 2013) was pre­
+dicted with models considering site and stand characteristics like basal 
+area (BA) and the dominant tree species as independent variables. 
+Marketed mushrooms yield (kg ha-1) was estimated using the models of 
+Tahvanainen et al. (2016). The mushroom models were developed for 
+Norway spruce dominated stands in eastern Finland, and therefore can 
+overestimate expected yields for less productive forests over all of 
+Finland. Yet, we include this measure for sake of quantitative compar­
+ison on the suitability of alternative management regimes for this 
+Fig. 2. The national scale of Finland was used as study area represented by a systematic sample of forest stands from the Finnish Forest Centre (www.metsaan.fi) 
+along the National Forest Inventory (NFI11) sampling grid. 
+Table 1 
+The alternative management regimes applied in the forest growth simulations 
+have been grouped into six categories. For details see Appendix S2.  
+Management category 
+Description 
+Business as usual (BAU) 
+Even-aged rotation forestry, according Finnish 
+recommendations (¨Aij¨al¨a et al., 2014); rotation length 
+between 70 and 90 years; final felling is determined by 
+site type, dominant stand height and age; 5 retention 
+trees ha−1; replanting after final felling; 1–3 thinnings 
+during rotation 
+Intensified BAU (IBAU) 
+Modifications of BAU, regimes with shortened rotation 
+length (−5 to −20 years); regimes with shortened 
+rotation and additional fertilization (300 kg N ha−1) at 
+basal area (BA) threshold of 14–20 m2 ha−1 
+Extensified BAU (EBAU) 
+Modifications of BAU, with either postponed final 
+fellings (5, 15, 30 years) or with retention trees left after 
+final felling (30 trees ha−1 or 30 m3 ha−1) 
+Continuous Cover 
+Forestry (CCF) 
+Large trees are periodically removed (thinning from 
+above) down to BA threshold (16–22 m2 ha−1 depending 
+on site fertility); four different predefined BA thresholds; 
+natural regeneration of stands 
+Adaption to climate 
+change (ACC) 
+Modification of BAU, aims to increase resilience against 
+climate change on the most prone medium fertile sites 
+(Herb rich heath, Mesic heath) in Southern and Central 
+Finland; replanted with broadleave trees after final 
+felling 
+Set aside (SA) 
+No management activities, only tree growth, mortality 
+and natural regeneration are simulated  
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+5
+important non-timber product. 
+The FES game included three species: moose (Alces alces), western 
+capercaillie (Tetrao urogallus), hazel grouse (Bonasia bonasa). We 
+selected these species to represent a wide range of important game an­
+imals in Finland. The occurrence of moose was measured with a species- 
+specific habitat suitability index (HSI) describing their winter-feeding 
+habitats based on the stand characteristics tree species mixture, stand 
+density and height of trees (Kurttila et al., 2002). The HSI models 
+describing the stand characteristics for the occurrence of capercaillie 
+and hazel grouse were taken from (M¨onkk¨onen et al., 2014). The HSI 
+vary between 0 (unsuitable habitat) and 1 (most suitable habitat). 
+According to the red list of habitat types in Finland (Kontula and 
+Raunio, 2019), the most significant reasons for forest habitat types 
+becoming red-listed are a reduction in deadwood, reduction in old- 
+growth forests and individual old trees as well as changes in tree spe­
+cies composition by reducing the share of deciduous trees. The biodi­
+versity conservation value of the forest was thus measured by five 
+separate variables: deadwood volume (m3 ha−1); percentage of decid­
+uous trees in the standing tree volume (%); the number of large trees 
+(diameter at breast height DBH > 40 cm); the share of stands that are 
+managed by SA, representing strict protected areas; the share of stands 
+that are managed with CCF (two regimes with reduced thinning in­
+tensity, basal area threshold +3, +6 m2 ha−1) and an extensified BAU 
+version with retention trees, representing biodiversity conservation 
+oriented management in commercial forests. 
+The water quality of lakes and streams depends on the management 
+activities on adjacent forests. Intensive management with clear-cutting 
+combined with ditches increase nutrient and sediments discharges to 
+the water bodies, particularly on peatland (Marttila et al., 2020; Nie­
+minen et al., 2017; Tolkkinen et al., 2020). As indicator for the FES 
+water quality, we used the share of CCF on peatlands, which is seen as an 
+economically and environmentally feasible management option to 
+decrease negative water quality impacts (Nieminen et al., 2018). 
+Climate regulation was measured by the carbon sink (t CO2 ha−1 
+yr−1), which represents the change in carbon storage between two 
+simulation time steps. Carbon storage was the sum of the total carbon 
+held within standing timber, deadwood, and soil, converted in its cor­
+responding CO2 content. The carbon of standing timber and deadwood 
+was evaluated as 50% of the dry biomass. Deadwood decomposition was 
+simulated using the models from M¨akinen et al. (2006). Soil carbon was 
+quantified using two models; for mineral soil the Yasso07 model was 
+used (Liski et al., 2005; Tuomi et al., 2011; Tuomi et al., 2009), and for 
+peatland soils the carbon flux models by Ojanen et al. (2014), ac­
+counting also for the initial carbon pool of peat soils. The carbon storage 
+in wood products was not included since we consider the forest land­
+scape as our system boundary. 
+FES recreation was calculated using two indices (Pukkala et al., 
+1988; Pukkala et al., 1995), which estimate people’s average opinion 
+about the recreational value (recreation index) and beauty of forests 
+(scenic index) of managed forest stands. The indices assume that the 
+recreational values of forests increases with the age and size of trees, as 
+well as increasing the shares of pines and birches. 
+The aspect of resilience was quantified by the share of forest stands 
+managed with the adaption regimes (ACC, see Table 2), applied in 
+Table 2 
+Three policy scenarios were optimized representing the Finnish national forest strategy, the biodiversity strategy and the bioeconomy strategy. Scenarios were 
+described by the considered ecosystem service indicators, and the way indicators have been implemented in the multi-objective optimization: as objectives to be 
+maximized, or as constraints. The optimal solution was approached stepwise in a lexicographic approach following the preferences set by the policies (indicated by 
+column ‘step’).  
+Forest ecosystem 
+services (FES) 
+Indicator (unit) 
+National forest strategy 
+(NFS)  
+Biodiversity strategy 
+(BDS)  
+Bioeconomy strategy (BES)  
+Objective / constraint 
+step 
+Objective / constraint 
+step 
+Objective / constraint 
+step 
+Wood production 
+Increment (m3 ha−1 yr−1) 
+Target in 2025: ≥115 Mm3; 
+in 2050: ≥125 Mm3 
+1      
+Harvested roundwood (m3 
+ha−1) 
+Target in 2025: ≥80 Mm3 
+1 
+Maximize (even-flow) 
+1 
+Maximize even-flow under 
+biodiversity constraints 
+2 
+Bioenergy 
+Harvested biomass (m3 
+ha−1) 
+Target in 2025: ≥6.5 Mm3 
+1   
+Maximize even-flow under 
+biodiversity constraints 
+2 
+Non-wood 
+Bilberry (kg ha−1) 
+No decline, maximize it 
+further 
+3      
+Cowberry (kg ha−1) 
+No decline, maximize it 
+further 
+3      
+Mushrooms (kg ha−1) 
+No decline, maximize it 
+further 
+3     
+Game 
+HSI moose (−) 
+Maximize 
+4 
+Maximize 
+1    
+HSI capercaillie (−) 
+Maximize 
+4 
+Maximize 
+1    
+HSI hazel grouse (−) 
+Maximize 
+4 
+Maximize 
+1   
+Biodiversity 
+Regime SA (−)   
+Target of 17% 
+1   
+Conservation 
+Conservation regimes*** 
+(−) 
+Target of ≥4.5% 
+2 
+Target of 4.5% 
+1    
+Deadwood (m3 ha−1) 
+Target in 2025: avg. ≥8 
+m3ha−1 
+2 
+Target in 2050: increase 
+by 60% 
+1 
+No decline allowed, but no target 
+1  
+Deciduous tree volume (%) 
+Maximize 
+4 
+Target in 2050: increase 
+by 10% 
+1 
+No decline allowed, but no target 
+1  
+Large trees (DBH > 40 cm) 
+(n ha−1) 
+Maximize 
+4 
+Target in 2050: increase 
+by 10% 
+1 
+No decline allowed, but no target 
+1 
+Water protection 
+Only regimes CCF/SA on 
+peatland (%) 
+Enabled constraint 
+1 
+Enabled constraint 
+1   
+Climate regulation 
+Carbon sink (t CO2 ha−1 
+yr−1) 
+Target in 2025: ≥27.88 
+MtCO2 equivalent 
+2 
+*  
+**  
+Recreation 
+Recreation index (−) 
+Maximize 
+4 
+Maximize 
+1 
+Maximize 
+2  
+Scenic index (−) 
+Maximize 
+4 
+Maximize 
+1 
+Maximize 
+2 
+Resilience 
+CC adaption regimes (−) 
+Maximize 
+4 
+*  
+**  
+* Indirectly addressed by importance of protected areas for carbon sinks; ** Indirectly addressed by exploiting timber resources; *** Conservation oriented regimes 
+were represented by two CCF regimes with reduced thinning intensity (CCF_3, CCF_4), and an extensified BAU regime with retention tree (BAUwGTR, see Appendix S2 
+for details on regimes). 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+6
+Southern and Central Finland on medium fertile sites. It is widely 
+acknowledged that minimizing the future effects of climate induced 
+disturbances require an increase of broadleaves in the forest stands and 
+landscape (Ven¨al¨ainen et al., 2020). 
+2.4. Policy analysis 
+The three Finnish sectoral policies analysed were: National Forest 
+Strategy (NFS) (FMAF, 2015, 2019), Biodiversity Strategy (BDS) (FME, 
+2012), and Bioeconomy Strategy (BES) (FMME et al., 2014). Therefore, 
+we followed the recent work of Primmer et al. (2021), and their meth­
+odological framework for categorizing and assessing how FES are 
+mentioned in policy documents. Translating policy documents into a 
+multi-objective optimization problem requires a detailed information on 
+which FES are addressed, and what is the stated demand for FES in each 
+policy. 
+The framework used a coding scheme that weights how each FES in 
+the documents is addressed, with a range from zero to four (0 = no 
+mention; 1 = mentioned indirectly; 2 = mentioned directly but not an 
+objective; 3 = stated as an objective but no stated targets or measures for 
+implementation, 4 = central objective with clear targets and measures 
+for implementation). For each policy document, Primmer et al. (2021) 
+summarised how the FES are mentioned and extracted the correspond­
+ing text parts (qualitative FES demands), which were filled into a tem­
+plate and stored in a database. We further elaborated this approach and 
+particularly focused on quantitative demands and indicators for FES 
+explicitly indicated in each policy document. Stated policy demands and 
+indicators for FES were then related to our simulated FES indicators and 
+used to define a multi-objective optimization problem to be solved for 
+each policy. A detailed overview of the policy analysis and the collected 
+data is given in Appendix S3. 
+2.5. Sectoral policies optimization 
+The analysed FES demands of the sectoral policies were used to 
+define individual objectives for each policy scenario, which were then 
+jointly addressed within a unique multi-objective optimization problem 
+(section 2.5.4). The aim of the optimization was to select an ideal 
+management regime per stand and identify the optimal management 
+combination best fulfilling the policy demands for FES. Therefore, the 
+optimization alleviated conflicts among multiple FES by finding a 
+compromise solution that minimizes the maximum deterioration among 
+objectives. Sections 2.5.1 to 2.5.3 describe how the FES indicators were 
+addressed in each policy optimization scenarios, further summarised in 
+Table 2. Details are provided in Appendix S4. 
+2.5.1. National forest strategy scenario 
+The NFS defined clear quantitative yearly targets at the national 
+scale for the increment (2025: 115 Mm3; 2050: on avg. 125 Mm3), 
+harvested roundwood (80 Mm3), and biomass (6.5 Mm3). Monetary 
+targets were not specified by the policy. Similarly, the policy stated 
+targets for deadwood (2025: on avg. 8 m3 ha−1, south 5m3 ha−1, north 
+10–11 m3 ha−1) and yearly carbon sinks in forests (2025: 27.88 MtCO2 
+equivalent). These targets were considered as constraints that aimed to 
+reach the demands until the defined years and maintain such demand 
+levels for all years afterwards (Appendix S4, Eq. S1). Non-wood objec­
+tives (bilberry, cowberry, mushrooms) were considered as constraints 
+avoiding a decrease from the current state and aiming to maximize it 
+simultaneously (Eq. S2). The NFS described them as by-products with an 
+important and growing demand. The share of strictly protected forest 
+areas in Finland (currently 10.6% of forestry land) was, according to the 
+NFS, considered as large in international terms. To improve biodiversity 
+protection, this scenario aims at increasing the proportion of biodiver­
+sity conservation sites in managed forests. This was implemented 
+through constraining the share of conservation regimes (see Table 2) to 
+at least 4.5% from the beginning of the 100-year planning horizon (Eq. 
+S3). This target represents three times the current situation of conser­
+vation sites in commercial forests. The policy target for water regulation 
+suggests the use of the best available management practice for its pro­
+tection. This was implemented through constraining peatland manage­
+ment to the use of CCF or SA regimes (Eq. S4). 
+The FES representing recreation and the biodiversity goals for de­
+ciduous and large trees were addressed as objectives to be maximized, 
+with (Eq. S5): the recreation and scenic indices maximized for the worst 
+case over all simulated years (minimum value); the deciduous and large 
+trees (biodiversity) optimized towards the best case at the end of the 
+planning horizon (last year). Similarly, the FES game was addressed, 
+where we maximized for the average value over time to overcome zero 
+HSI values that can arise under those “fuzzy” assessment for species 
+habitat characteristics. The FES game was considered by the policy as an 
+“important by-product”, but with decreasing game populations 
+(particularly moose), because of the expected future decrease of habitats 
+(spruce forests). To meet the resilience targets of the policy, we aimed to 
+maximize the share of ACC regimes (Eq. S3). 
+The overall complexity of the optimization problem and the prefer­
+ences set by the policy on certain FES required using a lexicographic 
+approach (Miettinen, 1999c), where objectives are optimized group­
+wise. The first group of objectives optimized for was wood production 
+and bioenergy under the constraints for water regulation. The optimal 
+solution for this group then entered the following optimization step as 
+constraints. For the second group, the target values of biodiversity and 
+climate regulation were optimized. Third, the group of non-wood was 
+optimized, and finally all remaining objectives. The rationale for the 
+ordering of these groups was the emphasis found in the written policy 
+documents (Table 2, Appendix S3). 
+2.5.2. Biodiversity strategy scenario 
+The BDS aims to ensure a favourable status of biodiversity and 
+ecosystem services by 2050, for which Finland will urgently undertake 
+effective actions designed to halt the loss of biodiversity. Therefore, the 
+biodiversity indicators for deadwood, deciduous and large trees were 
+implemented as constraints avoiding a decrease from the current state 
+and aiming for a favourable status by 2050. Since the policy lacks clear 
+numerical values, we defined numerical targets that should represent 
+the urgent and effective actions demanded by the policy: deadwood 
+should increase by 60%, deciduous and large trees by 10% (Appendix 
+S4, Eq. S6). A target value of 17% for protected areas (SA) was set to 
+follow the Convention on Biological Diversity, and a target value of 
+4.5% for biodiversity conservation regimes in production forests was set, 
+similar to NFS (Eq. S3). To achieve the stated water regulation targets, 
+the constraint requiring that only CCF and SA were allowed on peatland 
+was implemented (Eq. S4). The remaining services wood production, 
+game, and recreation were implemented as objectives to be maximized, 
+whereby the HSI for game, the recreation and scenic indices were 
+addressed like in the NFS. Wood production was maximized for a 
+continuous supply of harvested roundwood (even-flow) next to biodi­
+versity constraints, as the policy aims to utilise the resources sustainably 
+(Eq. S5). Climate regulation and resilience targets were indirectly 
+addressed in the policy by increased shares of protected areas for carbon 
+sinks, why no additional objectives were implemented. 
+2.5.3. Bioeconomy strategy scenario 
+Under the BES, Finland was considered to have high growth poten­
+tial for roundwood and biomass for energy purpose, which are expected 
+to increase further under climate change. The policy aims to simulta­
+neously mobilize the resources for bioeconomy purposes and safeguard 
+biodiversity. Therefore, the first lexicographic group aimed to maximize 
+the even-flow of harvested roundwood and biomass (Appendix S4, Eq. 
+S5), under the constraint that biodiversity does not decline (Eq. S6). In 
+the second lexicographic group, the FES recreation was maximized 
+under the constraints of maximum possible harvests and no decline in 
+biodiversity (Eq. S5). Climate regulation and resilience were also 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+7
+addressed by the policy, but with the logic that exploiting the forest 
+resources will directly contribute to them. Thus, no additional objectives 
+were considered. 
+2.5.4. Multi-objective optimization implementation 
+From a technical perspective, a single solution for each policy sce­
+nario can be found through the formulation of unique multi-objective 
+optimization problems (Miettinen, 1999a): 
+minimize
+x
+{f1(x) , …, fn(x) }
+subject x ∈S
+(1)  
+where fi(x) denotes the different objective functions, x the vector of 
+management regimes that are to be chosen in the optimization, and S is 
+the feasible set of management regimes determined by a set of 
+constraints. 
+The aim of the optimization is to seek out an efficient management 
+solution for each stand, which is achieved through specifying constraints 
+and objectives that are logically consistent. The stated requirements 
+from the strategy can therefore be addressed by using Achievement 
+scalarizing functions (ASF) (Wierzbicki, 1986) or by the epsilon- 
+constraint method (Miettinen, 1999b). ASF functions can be seen as 
+“soft targets” or reference points that are aimed to be achieved and 
+relaxed if not feasible. Epsilon-constraints define instead strict upper/ 
+lower targets that need to be achieved. The use of these approaches is to 
+guarantee Pareto optimal solutions (i.e., a solution where none of the 
+objectives can be improved without impairing one of the other solutions 
+(Miettinen, 1999a)). For each scenario, we have developed a unique 
+multi-objective optimization formulation meeting the stated and 
+perceived objectives of each strategy (section 2.5.1 to 2.5.3). 
+Individual objectives were normalized by using a pay-off table, were 
+the evaluation of objective ranges (ideal and anti-ideal value) was 
+conducted using single-objective problems that were maximized or 
+minimized (based on the preferences for each objective). This allowed to 
+jointly address the individual objectives when solving the problem and 
+make them comparable. The final values for each individual objective 
+were stored after the optimization procedure, including; the ideal, the 
+anti-ideal, and the optimal solution. 
+These values were further used for a graphical interpretation of the 
+optimization outcomes in terms of provided FES demands and constraint 
+achievement levels (section 3.1.2). Therefore, the individual optimal 
+solutions were normalized in relation to the ideal and anti-ideal values 
+of objective ranges: 
+u(a) = a −a*
+a* −a*
+(2)  
+where u(a) is the normalized optimal solution a related to the anti-ideal 
+a* and ideal a* solution of the objective ranges. If objectives were 
+addressing a clear target value (implemented as constraint), optimal 
+solutions were further normalized in relation to the target value 
+(Table 2, except enabled constraints). 
+u(a) = a −a*
+ta −a*
+, if a < ta
+(3)  
+and 
+u(a) = a
+ta
+, if a ≥ta
+(4)  
+where ta is the target value for a. These normalizations allowed a 
+graphical interpretation on how good the optimal landscape manage­
+ment fulfilled the societal demands stated by the policies. (section 
+3.1.2). 
+The multi-objective optimization framework was implemented in 
+python and solved with CPLEX and conducted with high performance 
+computational resources provided by CSC - IT Center for Science LTD 
+(cPouta). To allow for demonstration we uploaded the Jupyter notebook 
+on an online repository together with a sample dataset (https://github. 
+com/maeehart/MultiForestDemonstration). 
+3. Results 
+3.1. Optimal management for policy scenarios 
+3.1.1. Management programs 
+The optimized forest stand management program was aggregated 
+and illustrated as the percentage area assigned to each regime class 
+(Fig. 3) and individual regimes (Appendix S4). There were clear differ­
+ences between the policy scenarios in terms of optimal management 
+programs. The traditional BAU regimes were rarely the optimal man­
+agement across all scenarios. NFS received the maximum proportion of 
+BAU (3.4%), which slightly decreased with increasing climate change. 
+Overall, climate change showed only minor effects on the optimal 
+management combination. SA, CCF, and IBAU was assigned the highest 
+area shares across all optimized scenarios, which means a segregation in 
+forest management across the forest landscapes. 
+Under NFS, management class CCF received the highest share (up to 
+41.2%), followed by IBAU and SA, and small amounts of EBAU. ACC was 
+not part of the optimal solution. Under BDS, almost half of the forest was 
+assigned to SA and the remaining half was split among the other man­
+agement classes (except BAU). The BES scenario resulted in almost equal 
+shares of IBAU (up to 33.1%) and SA (35.7%), followed by CCF (19.3%) 
+and some shares for EBAU and ACC. 
+3.1.2. Objective ranges and constraints 
+Because of multiple, and often conflicting FES objectives within in­
+dividual policy scenarios, the maximum level of the objectives for FES 
+was not reached in any of the optimized scenarios (Fig. 4a, Fig. 5a, 
+Fig. 6a). Thus, policies are not only compromises when developed by 
+politics but also in practice in the forest – the maximum of all objectives 
+cannot be reached. Moreover, the degree to which the maximum po­
+tential level could be achieved strongly varied between optimized sce­
+narios. The NFS scenario, for example, received relatively high levels of 
+timber production and carbon sink objectives, but reached low levels in 
+relation to the maximum particularly for biodiversity objectives 
+(Fig. 4a). Under the BDS scenario, relatively high levels of recreation 
+and some biodiversity related objectives (e.g., deadwood and share of 
+deciduous trees) were reached, but timber production remained at a low 
+level compared with potential maximum (Fig. 5a). The BES scenario 
+performed well with respect to objectives related to bioenergy and 
+timber production, but less well with respect to biodiversity (Fig. 6a). 
+The policy scenarios can also be compared concerning whether their 
+main objectives (constraints) as specified in the associated policy 
+document can be reached or not. From this perspective, the scenario BDS 
+is the most coherent as all its constraints can be achieved (Fig. 5b). 
+Under the BES scenario, it was not possible to achieve bioenergy or 
+timber production related objectives (only 75% of the maximum 
+possible harvest) when simultaneously fulfilling biodiversity constraints 
+(Fig. 6b). The NFS scenario showed a strong within-policy incoherence 
+as in the optimal solution most objectives remained under the targeted 
+levels (Fig. 4b). Notable is the discrepancy between objective and 
+constraint achievement. Whereas targeted conservation regimes pre­
+formed poor in terms of achieved objective levels (Fig. 4a), constraints 
+were instead over exceeded (Fig. 4b). Vice versa it was the case for the 
+increment objectives under the NFS scenario – high levels for objectives, 
+whereas constraints were not achieved under current climate. Thus, 
+climate change will likely change the situation increasing the possibility 
+to achieve the alternative targeted levels in FES (red points, blue tri­
+angles). However, the biodiversity objective of deadwood remained very 
+far from the targeted level irrespective of the climate change scenario. 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+8
+3.2. Forest ecosystem service flows under policies 
+The optimal management solutions under the three policy scenarios 
+resulted in drastic among-policy differences in the flow of FES (Fig. 7 
+and Fig. 8). 
+Harvested roundwood, biomass and increment (Fig. 7a-c), showed 
+the effects of the constraints. NFS followed the 80 Mm3 roundwood and 
+6.5 Mm3 biomass target from 2025 onwards. The increment showed a 
+stepwise increase to meet the target values in 2025 (115 Mm3) and 2050 
+(125 Mm3), which were finally only reached under RCP 4.5. BES 
+maximized the constant flow of timber resources but mobilized less 
+roundwood and more biomass in comparison to NFS. BDS showed the 
+lowest harvests, with peaking values during the last third of the simu­
+lation. This resulted from setting aside a large share of the area for 
+conservation (mainly old stands with high ecological value), and as such 
+causing a gap in harvested timber amounts. 
+The biodiversity indicators deadwood and deciduous trees were the 
+highest under BDS at the end of simulations (Fig. 7d,f), while the amount 
+of large trees increased under all scenarios. The strongest effect was 
+under NFS due to the promoted individual tree growth under the large 
+share of CCF (Fig. 7e). For deadwood and deciduous trees, the NFS 
+scenario resulted in a decline until the end of the simulation. A notable 
+result is that the deadwood decline was reversed when targeted incre­
+ment constraints under the FES were ignored, while the required har­
+vests of this scenario could still be achieved, see Appendix S8. The 
+scenario BES again showed the effect of the constraints, which allowed 
+no decline. 
+The non-wood indicator bilberry increased under all policy and 
+climate change scenarios, except under BES and RCP 4.5 (Fig. 8a). It 
+increased the most under BDS, but with climate change having a 
+dampening effect. The temporary decline in NFS at 2021 explained that 
+the constraint for this objective was not fulfilled (maximize the mini­
+mum value over the time, see Fig. 4b). The same effect caused the un­
+fulfilled constraint for cowberry under NFS, which decreased also below 
+the initial value from 2096 onwards (Fig. 8b). However, cowberry 
+showed a strong increase for NFS at the beginning, peaking at 2036, 
+before it collapsed. Similarly, cowberry did develop under BES, but the 
+collapse was less distinct. BDS showed a fluctuated development for 
+cowberry peaking at 2101 parallel with harvests, (Fig. 7a), but resulting 
+overall in a decline. Mushrooms overall declined under all policy sce­
+narios, strongest under BDS. Climate change had a positive effect, 
+leading even to a stable development under NFS and RCP 4.5 (Fig. 8c). 
+The carbon sink was highest under NFS during the end, with up to 80 
+Mt. CO2 per year stored in the forest to the end of the simulation 
+(Fig. 8d). BDS resulted in the highest values at the beginning. Yet, the 
+carbon sink collapsed during the second half of the simulation and 
+became even negative, which correlated with the harvest peak. The BES 
+led to a slight decrease in the carbon sink, with 28 MtCO2 per year stored 
+in the forest at the end. Climate change increased the sink capacity due 
+to increased growth. 
+The game animals benefited most from the BDS scenario, but showed 
+a decline under all three policy scenarios, with climate change having a 
+minor effect (presented as the average for three HSI indices). The steep 
+decline was influenced mostly by the HSI of capercaillie and hazel 
+grouse, with the latter even close to extinction, whereas HSI for moose 
+showed a slight increase to the end (see Appendix S4). The average of 
+recreation and scenic index strongly increased under all policy sce­
+narios, but with slightly higher values in the BDS. Both indices benefited 
+from the larger proportion of areas with SA and CCF and the resulting 
+old forest structural attributes (see Appendix S5). 
+Fig. 3. Optimal management solution for the three policy scenarios representing the Finnish national forest strategy (NFS), the biodiversity strategy (BDS) and the 
+bioeconomy strategy (BES). The management categories considered were business as usual (BAU), intensified (IBAU) and extensified BAU (EBAU), continuous cover 
+forestry (CCF), adaption to climate change regimes (ACC) and setting aside (SA). The optimization was repeated for three climate change scenarios: current climate 
+(noCC), RCP2.6 and RCP4.5. 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+9
+Fig. 4. Achievement of individual objectives (a) and constraints (b) under the national forest strategy (cf. Table 2). a) Normalized optimal solution in relation to the 
+possible objective ranges (ideal and anti-ideal solution, Eq. 2). b) Normalized optimal solution in relation to the targeted values illustrated as red dashed line (if 
+solution lies below the target = Eq. 3, if solution matches or lies above = Eq. 4). Bars represent the outcomes for current climate, circle and triangle represent the 
+solutions under RCP2.6 and RCP4.5, respectively. The first letters of the x-axis label indicate the ecosystem service category: BC = biodiversity conservation, BE =
+Bioenergy, CR = climate regulation, G = game, NW = non-wood, Rec = recreation, Res = Resilience, WP = wood production. (For interpretation of the references to 
+colour in this figure legend, the reader is referred to the web version of this article.) 
+Fig. 5. Achievement of individual objectives (a) and constraints (b) under the biodiversity strategy (cf. Table 2). See Fig. 4 for explanation.  
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+10
+4. Discussion 
+Analyses of policy documents have shown that they are incoherent 
+and that their ecosystem services concept is rather weak (Bouwma et al., 
+2018; Winkel and Sotirov, 2015). We show the long-term FES de­
+ficiencies in the forests resulting from these incoherencies, and present 
+the forest management needed to meet the societal demands of the 
+policies. We further highlight the incoherencies within the Finnish na­
+tional forest strategy as not all stated policy demands for FES can be 
+jointly met. For better policy integration and implementation, it is 
+important to understand these incoherencies, because they provide 
+leverage points to balance the conflicting societal demands of current 
+policies. There are apparent opportunities for strengthening the coher­
+ence among policies at both national and regional levels (Bouwma et al., 
+2018). 
+4.1. Policy scenarios 
+The translation of the policy demands into a multiple-objective op­
+timizations was a critical task, since it significantly affected the results of 
+this study. The policy framework of Primmer et al. (2021) provided a 
+structured approach for the national policy analysis (Appendix S3). 
+According to Primmer et al. (2021) and our analysis, FES were generally 
+recognised in sectoral policies, but the number and detail in which they 
+were addressed varied strongly, with NFS being the most comprehensive 
+one. The most strongly emphasised FES were centred around existing 
+value chains of wood and bioenergy (NFS and BES), as well as biodi­
+versity conservation (BDS). In contrast, non-wood forest products, game, 
+and the aspect of recreation, received little attention in individual pol­
+icies. Further, those were generally described rather “fluffily”, without 
+clear targets and measurements, which impedes their implementation 
+and effectiveness. This vagueness is also partially deliberated and con­
+nected with the engagement of diverse interest coalitions with contra­
+dictory expectations on the formulation of policy agendas (Harrinkari 
+et al., 2016). Resilience and climate regulation were mainly addressed 
+indirectly through two different and contradictory mechanisms: forest 
+area under protection (BDS), or sustainable use of timber resources 
+(BES). 
+The translation of policy demands into an optimization problem 
+required inherent simplifications, representing the opinions and 
+knowledge of the authors of this study, since only the NFS scenario 
+provided clear quantitative targets. A slightly different preference 
+setting (optimization steps) or implementation of each optimization 
+objective might change the results considerably (as illustrated for the 
+NFS scenario without increment constraint in Appendix S8). A sensi­
+tivity analysis could show how stable results are, for example by 
+adjusting constraint thresholds, or implementing individual objectives 
+differently (e.g. switch constraints into maximize objective). Neverthe­
+less, the size of our simulated forest data and the overall complexity of 
+the optimization problem (several constraints often lead to infeasible 
+solutions) would have made a sensitivity analysis very time-consuming. 
+The optimal management outcomes we present thus cannot be taken for 
+absolute, but rather represent one possible realization under each na­
+tional forest policy, acknowledging that in practice all policies drive 
+management and FES provision simultaneously. 
+4.2. Climate change 
+Climate change showed almost no effects on the optimal manage­
+ment programs (Fig. 3), whereas the effects of climate were visible on 
+the level of FES indicators (Figs. 7, 8). However, this result should not 
+lead to the conclusion that the management effect on the final optimal 
+solution is more important than climate change, as recent studies have 
+shown the opposite (Seidl et al., 2019). One reason for the rather small 
+effect on the optimal management was that climate-induced distur­
+bances were not considered in our study. However, Finnish forests will 
+likely experience higher disturbance activities under climate change, 
+mainly caused by extreme drought, storm events, insect pests and forest 
+fires (Ven¨al¨ainen et al., 2020). Including disturbances, either within the 
+simulations (Perera et al., 2015; Seidl et al., 2011), or by additional 
+Fig. 6. Achievement of individual objectives (a) and constraints (b) under the bioeconomy strategy (BES, cf. Table 2). See Fig. 4 for explanation.  
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+11
+disturbance risk indicators within the optimization (Díaz-Y´a˜nez et al., 
+2019; Temperli et al., 2020), might affect the optimal management. 
+Taking into account wind damage risk during our optimizations would 
+probably decrease even-aged rotation forestry regimes in favour of less 
+vulnerable uneven-sized stand structures (Pukkala et al., 2016), and 
+regimes that increase broadleaves in forests (Hahn et al., 2021). 
+Another reason for the small effect of climate change on the optimal 
+management depends on the optimization problem itself. The BES and 
+BDS scenarios strive for maximal harvests, under the constraints of 
+biodiversity. The NFS scenario in contrast aims for high increment de­
+mands that were only achieved under RCP4.5 (Fig. 4b). Both demands 
+forced the harvesting of the increased growth due to warming, resulting 
+in similar management programs under all the climate scenarios (see for 
+example Appendix S8 and the changed management program under 
+relaxed constraints on the increment). Hence, the non-effect of climate 
+change on the optimal management was also driven by the targeted 
+societal demands in our optimization. However, climate change will not 
+only increase productivities in northern latitudes, but it is also expected 
+to create suboptimal conditions for certain tree species (Kellom¨aki et al., 
+2008; Torssonen et al., 2015; Ven¨al¨ainen et al., 2020). Future studies 
+should account for the potential negative effects of climate change on 
+forest growth and FES provisioning (Hanewinkel et al., 2013; Jonsson 
+et al., 2020). 
+4.3. Forest ecosystem services 
+The FES demands for resilience were rather weakly addressed within 
+all sectoral policies (Appendix S3), which also contributed to the low 
+climate sensitivity of the scenarios. In the BDS, resilience is strived for 
+with the logic to integrate protected areas into the forest landscape 
+(FME, 2012). The primary logic of the BES and NFS policy documents is 
+that resilience will be achieved, if the increased growth potential will be 
+exploited sustainably for timber production (FMAF, 2015, 2019; FMME 
+et al., 2014). Due to these rather weak resilience targets, our adaptation 
+regimes that aimed for higher broadleaves shares remained zero under 
+NFS, and reached only a few percent for BDS and BES in the optimal 
+management solution (Fig. 3). Sufficient resistance and resilience ca­
+pacity of forests against future uncertainties, however, requires the use 
+of the most efficient management and silvicultural practices across the 
+forest landscape (Messier et al., 2019; Mina et al., 2020), addressing 
+ideally also the social resilience component that focuses on the consis­
+tent flow of societal demands (Nikinmaa et al., 2020). Striving primary 
+for high timber production and high growth rates are as such not 
+appropriate policy targets to face the future uncertainties. 
+Strong growth paradigms of the policies showed negative conse­
+quences for biodiversity targets, by reducing deadwood amounts and 
+shares of broadleaves in forests (Fig. 7d). This especially concerned the 
+NFS scenario and led to strong incoherence within the policy (Fig. 4b). 
+Trade-offs between an economically oriented management and biodi­
+versity have also been reported by several other optimization studies 
+(Eggers et al., 2020b; Eyvindson et al., 2018; Pohjanmies et al., 2017; 
+Repo et al., 2020). The growth rates of forests are the highest in the early 
+succession (Lynch and Zhang, 2011). Policy targets that aim for high 
+increments thus hinder biodiversity objectives of old forest structures. 
+According to Otero et al. (2020), policies should acknowledge the con­
+flict between economic growth and biodiversity conservation and move 
+beyond the growth paradigm to halt the global biodiversity decline, and 
+enhance overall prosperity. Relaxing the increment constraint in the 
+Fig. 7. Effect of the optimal management for policy scenarios on the future development of forest ecosystem service indictors under three climate change scenarios: 
+current climate (no CC), RCP2.6, RCP4.5. Figure: a) - c) represent the area weighted sum and d) - e) the area weighted average over stands (NFS = national forest 
+strategy, BDS = biodiversity strategy, BES = bioeconomy strategy). 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+12
+NFS scenario considerably increased the deadwood amount in forests 
+while simultaneously achieving the roundwood and biomass targets of 
+the policy (Appendix S8). Compared to the 1950s, the total increment in 
+Finland has almost doubled, with 108 Mm3 in the latest NFI (Peltola 
+et al., 2019). Thus, stepping back from the high increment targets could 
+considerably increase the coherence among multiple FES. We found that 
+decoupling the policy from economic growth, as suggested by Otero 
+et al. (2020), will offer higher shares of protected forest sites (Appendix 
+S8). The SA shares even increased under climate change (36% no CC, 
+44% RCP 4.5), as the harvest targets could be achieved on a smaller 
+managed forest area (due to climate-induced growth). This offered in 
+turn more room for protection (Appendix S8). 
+Within policy conflicts among FES did not only result from inco­
+herent policy targets but also due to real-life trade-offs among services 
+and indicators. An example was the targeted FES game under NFS and 
+BDS, which decreased under both scenarios, caused by the indicators for 
+capercaillie and hazel grouse (Fig. 8, Appendix S6). According to 
+M¨onkk¨onen et al. (2014), those species mainly benefit from extensified 
+BAU regimes, with longer rotation age and green tree retention, whereas 
+both policy scenarios showed high shares of continuous cover forestry 
+combined with setting aside. In contrast, indicator moose benefited from 
+more intensified management with shorter rotation (I-BAU), since 
+moose prefers younger stands as habitats (Kurttila et al., 2002). Policies 
+need to consider such “real-life” trade-offs and provide solutions and 
+instruments helping to disentangle them at the level of forest 
+management. 
+4.4. Optimal forest management 
+The regimes continuous cover forestry (CCF) and setting aside (SA), 
+together with the more extensive managements (EBAU and ACC), 
+contributed to 2/3 of the optimal management under NFS and BES. 
+Considering CCF and EBAU as more conservation oriented manage­
+ments, both scenarios would thus easily exceed the 30% protection 
+targets of EU policies (EC, 2020, 2021). The remaining 1/3 of the area 
+was covered by intensified management (IBAU). Under the BDS sce­
+nario, half of the forest landscape was instead suggested to be protected 
+(Fig. 3), with strong negative effects on wood production and bioenergy 
+services (Fig. 7). The suggested separation of the forest landscape into 
+clearly protected, and more extensively managed areas (combining CCF, 
+EBAU, and ACC) with primary focus on non-wood and conservation 
+values, as well as intensively used areas for production purposes follows 
+the land sparing or segregation approach (Blattert et al., 2018; Car­
+pentier et al., 2016; Cˆot´e et al., 2010; Messier et al., 2009). By allocating 
+the land to areas with different management purposes, conflicts among 
+FES will be minimized and the overall multifunctionality of the forest 
+landscape will increase. Further, our suggested management regime 
+shares are in line with the recently presented reference model for boreal 
+forests of Berglund and Kuuluvainen (2021) (ASIO model), a manage­
+ment guideline that aims to mimic natural disturbance processes. For 
+attaining favourable forest conservation and ecosystem status, the 
+model suggests that approximately 1/3 of the forests should be managed 
+by even-aged, and 2/3 with individual gap and cohort dynamics (mainly 
+corresponding to SA and CCF), while additionally emphasizing late 
+successional forests. 
+Fig. 8. Effect of the optimal management for policy scenarios on the future development of forest ecosystem service indicators, under three climate change scenarios: 
+current climate (noCC), RCP2.6, RCP4.5. Figure: d) represents the area weighted sum and all others the area weighted average over stands (NFS = national forest 
+strategy, BDS = biodiversity strategy, BES = bioeconomy strategy). Fuzzy indicators of three habitat suitability indices (HSI) for game, and two recreation indices 
+were averaged. 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+13
+The optimization study of Eyvindson et al. (2021) recently also 
+suggested that larger proportions of the forests in Finland should be 
+managed by CCF to achieve higher landscape multifunctionality. 
+Indeed, CCF has the potential to become an important management in 
+boreal forests, as it has greater ability to simultaneously provide mul­
+tiple FES (Peura et al., 2018; Pukkala et al., 2016). CCF is considered 
+more efficient than rotation forestry as the resulting forest conditions are 
+less sensitive to changes in management objectives (Pukkala, 2016). The 
+main difference between our results and Eyvindson et al. (2021) is that 
+large proportions of the forest landscape suggested to be managed with 
+intensified regimes, including fertilization (Appendix S5). The simulated 
+fertilization increased the stand growth, explaining why the regimes 
+were primary selected in the optimization aiming to achieve demands 
+for wood production and bioenergy. However, we did not consider the 
+negative ecological consequences of fertilization activities (Hedwall 
+et al., 2014), neither the costs of fertilization, both reducing the share of 
+fertilization regimes. Thus, our result should not be interpreted as a 
+promotion of fertilization, but highlight that also intensive rotation 
+forestry is required to satisfy future demands for timber resources, 
+particularly in the era of circular bioeconomy (Hetem¨aki et al., 2017). 
+All scenarios suggested a major change from current management 
+practices in Finland, which is dominated by even-aged rotation forestry 
+(our BAU) (Peltola et al., 2019). Policies should therefore also define 
+instruments that support the management transition, since the opti­
+mized managements currently seem not to be feasible in a market 
+economy with multiple actors. This would require appropriate subsi­
+dizing systems that motivate forest owners to manage their forests for 
+biodiversity policy targets and compensate harvest revenue losses (i.e., 
+subsidize longer rotations, CCF management actions and setting aside). 
+Additionally, instruments would be needed that motivate forest owners 
+to adjust their management for bioeconomy purpose and intensify forest 
+use. Corresponding programs already exist in Finland, like the METSO- 
+program, which compensates forest owners for setting-aside their forests 
+for protection, or the KEMERA-program, which subsidizes tending and 
+thinning of forest stands, building roads and fertilization. Such in­
+centives would require further developments if policy targets should be 
+implemented successfully in the future. 
+5. Conclusion 
+The combination of governance and long-term forest management 
+planning research provided novel insights into the design of Finnish 
+forest management resulting from sectoral policies. Our research high­
+lighted the incoherence among inspected policies in terms of manage­
+ment and impact on forest ecosystem services (FES). Studying the policy 
+drivers for forest management and the resulting FES trade-offs is 
+particularly relevant when developing new policies and forest man­
+agement paradigms. It provides leverage points for better integration of 
+multiple FES in future policies to overcome socio-ecological land-use 
+conflicts in forests. 
+All scenarios suggested major changes in forest management 
+compared with the current practices to meet the policy demands for FES. 
+However, to successfully achieve such demands in the future there 
+would be a need to develop policy instruments guiding forest owners in 
+their management (e.g. subsidizing). From a management decision and 
+implementation point of view, it would also be beneficial if multiple FES 
+are addressed clearly and holistically in sectoral policies, including non- 
+timber objectives, and describing the management types to achieve the 
+policy objectives. Further, the Finnish forest policies have to go beyond 
+an economic growth paradigm (e.g., high annual increment targets 
+under NFS) to achieve higher multifunctionality, as current policies lead 
+to strong incoherence with biodiversity targets. We also underline that 
+future policies need to more clearly address the targets and management 
+approaches to increase the resilience of the Finnish forest against the 
+uncertainties of climate change. 
+Author contributions 
+CB, MM, KE: conceptualization of the study. CB, MP, KE, JL: data 
+curation. MM, TS: Funding acquisition. MH, KE, CB, AT: Optimization 
+methodology and software. CB, KE: Simulation and optimization. DB, 
+KE: Project admin and supervision. CB: Data analysis and writing of 
+original draft. All authors contributed substantially to the writing of the 
+article and approved the submitted version. 
+Declaration of Competing Interest 
+The authors declare no competing interests. 
+Acknowledgement 
+We thank the two anonymous reviewers whose comments helped to 
+improve and clarify this manuscript. We also wish to thank CSC - IT 
+Center for Science LTD for providing the high performance computa­
+tional resources. This work was conducted within the project Multi­
+Forest, which is supported under the umbrella of ERA-NET Cofund 
+ForestValue by: Academy of Finland (aka 326321), Business Finland, 
+Federal Ministry of Agriculture, Forestry, Environment & Water Man­
+agement (Austria), Agency for Renewable Resources (Germany), 
+Research Council of Norway, Vinnova (2018-04982; Sweden). Forest­
+Value has received funding from the European Union’s Horizon 2020 
+research and innovation program under grant agreement N◦773324. 
+Finally, the study received funding through the 2017-2018 Belmont 
+Forum and BiodivERsA joint call for research proposals, under the 
+BiodivScen ERA-Net Cofund program, and with the funding organisation 
+Academy of Finland (aka 326309). 
+Appendix A. Supplementary data 
+Supplementary data to this article can be found online at https://doi. 
+org/10.1016/j.forpol.2022.102689. 
+References 
+¨Aij¨al¨a, O., Koistinen, A., Sved, J., Vanhatalo, K., V¨ais¨anen, P., 2014. Hyv¨an 
+mets¨anhoidon Suositukset [Good Forest Management Recommendations]. Forestry 
+Development Center Tapio [In Finnish]. 
+Berglund, H., Kuuluvainen, T., 2021. Representative boreal forest habitats in northern 
+Europe, and a revised model for ecosystem management and biodiversity 
+conservation. Ambio 50, 1003–1017. 
+Blattert, C., Lemm, R., Thees, O., Hansen, J., Lexer, M.J., Hanewinkel, M., 2018. 
+Segregated versus integrated biodiversity conservation: value-based ecosystem 
+service assessment under varying forest management strategies in a Swiss case study. 
+Ecol. Indic. 95, 751–764. 
+Bouwma, I., Schleyer, C., Primmer, E., Winkler, K.J., Berry, P., Young, J., Carmen, E., 
+ˇSpulerov´a, J., Bez´ak, P., Preda, E., Vadineanu, A., 2018. Adoption of the ecosystem 
+services concept in EU policies. Ecosyst. Serv. 29, 213–222. 
+Carpentier, S., Filotas, E., Handa, I.T., Messier, C., 2016. Trade-offs between timber 
+production, carbon stocking and habitat quality when managing woodlots for 
+multiple ecosystem services. Environ. Conserv. 44, 14–23. 
+Chen, S., Shahi, C., Chen, H.Y.H., 2016. Economic and ecological trade-off analysis of 
+forest ecosystems: options for boreal forests. Environ. Rev. 24, 348–361. 
+Cˆot´e, P., Tittler, R., Messier, C., Kneeshaw, D.D., Fall, A., Fortin, M.J., 2010. Comparing 
+different forest zoning options for landscape-scale management of the boreal forest: 
+possible benefits of the TRIAD. For. Ecol. Manag. 259, 418–427. 
+Díaz-Y´a˜nez, O., Arias-Rodil, M., Mola-Yudego, B., Gonz´alez-Olabarria, J.R., Pukkala, T., 
+2019. Simulating the effects of wind and snow damage on the optimal management 
+of Norwegian spruce forests. Forestry 92, 406–416. 
+EASAC, 2017. Multi-Functionality and Sustainability in the Eurpean Union’s Forests. 
+EASAC Policy Report 32. Eurpean Academies’ Science Advisory Council, p. 43. 
+EC, 2011. Communication from the Commission to the European Parliament, the 
+Council, the Economic and Social Committee and the Committee of the Regions. In: 
+Our life insurance, our natural capital: an EU biodiversity strategy to 2020. COM 
+(2011) 244 final, Brussels.  
+EC, 2013. Communication from the Commission to the European Parliament, the 
+Council, the Economic and Social Committee and the Committee of the Regions. In: 
+A new EU Forest Strategy: for forests and the forest-based sector. COM(2013) 659 
+final, Brussels.  
+EC, 2018. Communication from the Commission to the European Parliament, the 
+Council, the Economic and Social Committee and the Committee of the Regions. In: 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+14
+A sustainable Bioeconomy for Europe: Strengthening the connection between 
+economy, society and the environment. COM(2018) 673 final, Brussels.  
+EC, 2020. Communication from the Commission to the European Parliament, the 
+Council, the Economic and Social Committee and the Committee of the Regions. In: 
+EU Biodiversity Strategy for 2030. Bringing nature back into our lives. COM(2020) 
+380 final, Brussels.  
+EC, 2021. Communitaion from the Commission to the European Parliament, the Council, 
+the European Economic and Social Committee and the Committee for the Regions. 
+In: New EU Forest Strategy for 2030. COM(2021) 572 final, Brussels.  
+Eggers, J., Melin, Y., Lundstr¨om, J., Bergstr¨om, D., ¨Ohman, K., 2020a. Management 
+strategies for wood fuel harvesting—trade-offs with biodiversity and Forest 
+ecosystem services. Sustainability 12, 4089. 
+Eggers, J., R¨aty, M., ¨Ohman, K., Sn¨all, T., 2020b. How well do stakeholder-defined Forest 
+management scenarios balance economic and ecological Forest values? Forests 11, 
+86. 
+Eyvindson, K., Repo, A., M¨onkk¨onen, M., 2018. Mitigating forest biodiversity and 
+ecosystem service losses in the era of bio-based economy. Forest Policy Econ. 92, 
+119–127. 
+Eyvindson, K., Repo, A., Trivi˜no, M., Pynn¨onen, S., M¨onkk¨onen, M., 2019. Quantifying 
+and easing conflicting goals between interest groups in natural resource planning. 
+Can. J. For. Res. 49, 1233–1241. 
+Eyvindson, K., Duflot, R., Trivi˜no, M., Blattert, C., Potterf, M., M¨onkk¨onen, M., 2021. 
+High boreal forest multifunctionality requires continuous cover forestry as a 
+dominant management. Land Use Policy 100, 104918. 
+FMAF, 2015. National Forest Strategy 2025 – Government Resolution of 12 February 
+2015. Publications of the Finnish Ministry of Agriculture and Forestry (FMAF) 6b/ 
+2015, Helsinki, p. 56. 
+FMAF, 2019. The National Forest Strategy 2025 – An Updated Version Government 
+Resolution of 21 February 2019. Publications of the Finnish Ministry of Agriculture 
+and Forestry (FMAF) 2019:17, Helsinki, p. 124. 
+FME, 2012. Saving Nature for People - National Action Plan for the Conservation and 
+Sustainable Use of Biodiversity in Finland 2013–2020. Publikation of the Finnish 
+Ministry of the Environment (FME), Finland, p. 105. 
+FMME, FMAF, FME, 2014. Finnish Bioeconomy Strategy - Sustainable Growth from 
+Bioeconomy. Publication of the Finnish Ministry of Employment and Economy 
+(FMEE), Ministry of Agriculture and Forestry (FMAF), Ministry of the Environment 
+(FME), Finland, p. 30. 
+Forest Europe, 2020. State of Europe’s Forests 2020. 
+Hahn, T., Eggers, J., Subramanian, N., Tora˜no Caicoya, A., Uhl, E., Sn¨all, T., 2021. 
+Specified resilience value of alternative forest management adaptations to storms. 
+Scand. J. For. Res. 1–13. 
+Haines-Young, R., Potschin-Young, M.B., 2018. Revision of the common international 
+classification for ecosystem services (CICES V5.1): a policy brief. One Ecosyst. 3, 
+e27108. 
+Hanewinkel, M., Cullmann, D.A., Schelhaas, M.-J., Nabuurs, G.-J., Zimmermann, N.E., 
+2013. Climate change may cause severe loss in the economic value of European 
+forest land. Nat. Clim. Chang. 3, 203–207. 
+Harrinkari, T., Katila, P., Karppinen, H., 2016. Stakeholder coalitions in forest politics: 
+revision of Finnish forest act. Forest Policy Econ. 67, 30–37. 
+Hedwall, P.-O., Gong, P., Ingerslev, M., Bergh, J., 2014. Fertilization in northern forests – 
+biological, economic and environmental constraints and possibilities. Scand. J. For. 
+Res. 29, 301–311. 
+Hetem¨aki, L., Hanewinkel, M., Muys, B., Ollikainen, M., Palahí, M., Trasobares, A., 2017. 
+Leading the Way to a European Circular Bioeconomy Strategy. In: From Science to 
+Policy 5. European Forest Institute, p. 50. 
+Hynynen, J., Ojansuu, R., H¨okk¨a, H., Siipilehto, J., Salminen, H., Haapala, P., 2002. 
+Models for predicting stand development in MELA system. In: 
+Mets¨antutkimuslaitoksen tiedonantoja, 835. Mets¨antutkimuslaitos, p. 116. 
+Jonsson, M., Bengtsson, J., Gamfeldt, L., Moen, J., Sn¨all, T., 2020. Stand age and climate 
+influence forest ecosystem service delivery and multifunctionality. Environ. Res. 
+Lett. 15, 0940a8. 
+Kellom¨aki, S., Peltola, H., Nuutinen, T., Korhonen, K.T., Strandman, H., 2008. Sensitivity 
+of managed boreal forests in Finland to climate change, with implications for 
+adaptive management. Philos. Trans. R. Soc. Lond. Ser. B Biol. Sci. 363, 2341–2351. 
+Knoke, T., Paul, C., Hildebrandt, P., Calvas, B., Castro, L.M., Hartl, F., Dollerer, M., 
+Hamer, U., Windhorst, D., Wiersma, Y.F., Curatola Fern´andez, G.F., Obermeier, W. 
+A., Adams, J., Breuer, L., Mosandl, R., Beck, E., Weber, M., Stimm, B., Haber, W., 
+Fürst, C., Bendix, J., 2016. Compositional diversity of rehabilitated tropical lands 
+supports multiple ecosystem services and buffers uncertainties. Nat. Commun. 7. 
+Kontula, T., Raunio, A., 2019. Threatened Habitat Types in Finland 2018. Red List of 
+Habitats – Results and Basis for Assessment, the Finnish Environment 2/2019. 
+Finnish Environment Institute and Ministry of the Environment, Helsinki, p. 254. 
+Kr¨oger, M., Raitio, K., 2017. Finnish forest policy in the era of bioeconomy: a pathway to 
+sustainability? Forest Policy Econ. 77, 6–15. 
+Kurttila, M., Pukkala, T., Loikkanen, J., 2002. The performance of alternative spatial 
+objective types in forest planning calculations: a case for flying squirrel and moose. 
+For. Ecol. Manag. 166, 245–260. 
+Lehtonen, I., Ven¨al¨ainen, A., K¨am¨ar¨ainen, M., Peltola, H., Gregow, H., 2016. Risk of 
+large-scale fires in boreal forests of Finland under changing climate. Nat. Hazards 
+Earth Syst. Sci. 16, 239–253. 
+Lindner, M., Maroschek, M., Netherer, S., Kremer, A., Barbati, A., Garcia-Gonzalo, J., 
+Seidl, R., Delzon, S., Corona, P., Kolstr¨om, M., Lexer, M.J., Marchetti, M., 2010. 
+Climate change impacts, adaptive capacity, and vulnerability of European forest 
+ecosystems. For. Ecol. Manag. 259, 698–709. 
+Liski, J., Palosuo, T., Peltoniemi, M., Siev¨anen, R., 2005. Carbon and decomposition 
+model Yasso for forest soils. Ecol. Model. 189, 168–182. 
+Lynch, T., Zhang, D., 2011. On relative maxima of diameter growth, basal area growth, 
+volume growth, and mean annual increment for individual trees. For. Sci. 57, 
+353–358. 
+M¨akinen, H., Hynynen, J., Siitonen, J., Siev¨anen, R., 2006. Predicting the decomposition 
+of scots pine, Norway spruce, and birch stems in Finland. Ecol. Appl. 16, 1865–1879. 
+Marttila, H., Lepist¨o, A., Tolvanen, A., Bechmann, M., Kyllmar, K., Juutinen, A., 
+Wenng, H., Skarbøvik, E., Futter, M., Kortelainen, P., Rankinen, K., Hellsten, S., 
+Kløve, B., Kronvang, B., Kaste, Ø., Solheim, A.L., Bhattacharjee, J., Rakovic, J., de 
+Wit, H., 2020. Potential impacts of a future Nordic bioeconomy on surface water 
+quality. Ambio 49, 1722–1735. 
+Matala, J., Ojansuu, R., Peltola, H., Siev¨anen, R., Kellom¨aki, S., 2005. Introducing effects 
+of temperature and CO2 elevation on tree growth into a statistical growth and yield 
+model. Ecol. Model. 181, 173–190. 
+Matala, J., Ojansuu, R., Peltola, H., Raitio, H., Kellom¨aki, S., 2006. Modelling the 
+response of tree growth to temperature and CO2 elevation as related to the fertility 
+and current temperature sum of a site. Ecol. Model. 199, 39–52. 
+Mazziotta, A., Podkopaev, D., Trivi˜no, M., Miettinen, K., Pohjanmies, T., M¨onkk¨onen, M., 
+2017. Quantifying and Resolving Conservation Conflicts in Forest Landscapes Via 
+Multiobjective Optimization. 
+McDowell, N.G., Allen, C.D., Anderson-Teixeira, K., Aukema, B.H., Bond-Lamberty, B., 
+Chini, L., Clark, J.S., Dietze, M., Grossiord, C., Hanbury-Brown, A., Hurtt, G.C., 
+Jackson, R.B., Johnson, D.J., Kueppers, L., Lichstein, J.W., Ogle, K., Poulter, B., 
+Pugh, T.A.M., Seidl, R., Turner, M.G., Uriarte, M., Walker, A.P., Xu, C., 2020. 
+Pervasive shifts in forest dynamics in a changing world. Science 368, eaaz9463. 
+MEA, 2005. Millenium Ecosystem Assessment - Ecosystem and Human Well-Being: 
+Snthesis. Island Press, Washington, DC.  
+Messier, C., Tittler, R., Kneeshaw, D.D., G´elinas, N., Paquette, A., Berninger, K., 
+Rheault, H., Meek, P., Beaulieu, N., 2009. TRIAD zoning in Quebec: experiences and 
+results after 5 years. For. Chron. 85, 885–896. 
+Messier, C., Bauhus, J., Doyon, F., Maure, F., Sousa-Silva, R., Nolet, P., Mina, M., 
+Aquilu´e, N., Fortin, M.-J., Puettmann, K., 2019. The functional complex network 
+approach to foster forest resilience to global changes. Forest Ecosyst. 6, 1–16. 
+Miettinen, K., 1999a. Nonlinear Multiobjective Optimization. Springer, Boston, MA.  
+Miettinen, K., 1999b. A Posteriori Methods, Nonlinear Multiobjective Optimization. 
+Springer US, Boston, MA, pp. 77–113. 
+Miettinen, K., 1999c. A Priori Methods, Nonlinear Multiobjective Optimization. Springer 
+US, Boston, MA, pp. 115–129. 
+Miina, J., Hotanen, J.-P., Salo, K., 2009. Modelling the Abundance and Temporal 
+Variation in the Production of Bilberry (Vaccinium myrtillus L.) in Finnish Mineral 
+Soil Forests. 
+Miina, J., Kurttila, M., Calama, R., de Miguel, S., Pukkala, T., 2020. Modelling non- 
+timber Forest products for forest management planning in Europe. Curr. Forest. Rep. 
+6, 309–322. 
+Mina, M., Messier, C., Duveneck, M., Fortin, M.-J., Aquilu´e, N., 2020. Network Analysis 
+Can Guide Resilience-Based Management in Forest Landscapes under Global Change. 
+Ecological Applications (n/a).  
+M¨onkk¨onen, M., Juutinen, A., Mazziotta, A., Miettinen, K., Podkopaev, D., Reunanen, P., 
+Salminen, H., Tikkanen, O.-P., 2014. Spatially dynamic forest management to 
+sustain biodiversity and economic returns. J. Environ. Manag. 134, 80–89. 
+Nabuurs, G.-J., Verweij, P., Eupen, M.V., P´erez-Soba, M., Pülzl, H., Hendriks, K., 2019. 
+Next-generation information to support a sustainable course for European forests. 
+Nat. Sustain. 2, 815–818. 
+Nieminen, M., Sallantaus, T., Ukonmaanaho, L., Nieminen, T.M., Sarkkola, S., 2017. 
+Nitrogen and phosphorus concentrations in discharge from drained peatland forests 
+are increasing. Sci. Total Environ. 609, 974–981. 
+Nieminen, M., H¨okk¨a, H., Laiho, R., Juutinen, A., Ahtikoski, A., Pearson, M., Kojola, S., 
+Sarkkola, S., Launiainen, S., Valkonen, S., Penttil¨a, T., Lohila, A., Saarinen, M., 
+Haahti, K., M¨akip¨a¨a, R., Miettinen, J., Ollikainen, M., 2018. Could continuous cover 
+forestry be an economically and environmentally feasible management option on 
+drained boreal peatlands? For. Ecol. Manag. 424, 78–84. 
+Nikinmaa, L., Lindner, M., Cantarello, E., Jump, A.S., Seidl, R., Winkel, G., Muys, B., 
+2020. Reviewing the use of resilience concepts in Forest sciences. Curr. Forest. Rep. 
+6, 61–80. 
+Nilsson, M., Zamparutti, T., Petersen, J.E., Nykvist, B., Rudberg, P., McGuinn, J., 2012. 
+Understanding policy coherence: analytical framework and examples of 
+sector–environment policy interactions in the EU. Environ. Policy Gov. 22, 395–423. 
+Ojanen, P., Lehtonen, A., Heikkinen, J., Penttil¨a, T., Minkkinen, K., 2014. Soil CO2 
+balance and its uncertainty in forestry-drained peatlands in Finland. For. Ecol. 
+Manag. 325, 60–73. 
+Otero, I., Farrell, K.N., Pueyo, S., Kallis, G., Kehoe, L., Haberl, H., Plutzar, C., Hobson, P., 
+García-M´arquez, J., Rodríguez-Labajos, B., Martin, J.-L., Erb, K.-H., Schindler, S., 
+Nielsen, J., Skorin, T., Settele, J., Essl, F., G´omez-Baggethun, E., Brotons, L., 
+Rabitsch, W., Schneider, F., Pe’er, G., 2020. Biodiversity policy beyond economic 
+growth. Conserv. Lett. 13, e12713. 
+Peltola, A., Ihalainen, A., M¨aki-Simola, E., Sauvula-Sepp¨al¨a, T., Torvelainen, J., 
+Uotila, E., Vaahtera, E., Ylitalo, E., 2019. Suomen Mets¨atilastot - Finnish Forest 
+Statistics. Helsinki, LUKE, p. 198. 
+Perera, A.H., Sturtevant, B.R., Buse, L.J., 2015. Simulation modeling of Forest landscape 
+disturbances: Where do we go from Here? In: Perera, A.H., Sturtevant, B.R., Buse, L. 
+J. (Eds.), Simulation Modeling of Forest Landscape Disturbances. Springer 
+International Publishing, Cham, pp. 287–311. 
+Peura, M., Burgas, D., Eyvindson, K., Repo, A., M¨onkk¨onen, M., 2018. Continuous cover 
+forestry is a cost-efficient tool to increase multifunctionality of boreal production 
+forests in Fennoscandia. Biol. Conserv. 217, 104–112. 
+van der Plas, F., Ratcliffe, S., Ruiz-Benito, P., Scherer-Lorenzen, M., Verheyen, K., 
+Wirth, C., Zavala, M.A., Ampoorter, E., Baeten, L., Barbaro, L., Bastias, C.C., 
+C. Blattert et al.                                                                                                                                                                                                                                 
+Forest Policy and Economics 136 (2022) 102689
+15
+Bauhus, J., Benavides, R., Benneter, A., Bonal, D., Bouriaud, O., Bruelheide, H., 
+Bussotti, F., Carnol, M., Castagneyrol, B., Charbonnier, Y., Cornelissen, J.H.C., 
+Dahlgren, J., Checko, E., Coppi, A., Dawud, S.M., Deconchat, M., De Smedt, P., De 
+Wandeler, H., Domisch, T., Fin´er, L., Fotelli, M., Gessler, A., Granier, A., 
+Grossiord, C., Guyot, V., Haase, J., H¨attenschwiler, S., Jactel, H., Jaroszewicz, B., 
+Joly, F.-X., Jucker, T., Kambach, S., Kaendler, G., Kattge, J., Koricheva, J., 
+Kunstler, G., Lehtonen, A., Liebergesell, M., Manning, P., Milligan, H., Müller, S., 
+Muys, B., Nguyen, D., Nock, C., Ohse, B., Paquette, A., Pe˜nuelas, J., Pollastrini, M., 
+Radoglou, K., Raulund-Rasmussen, K., Roger, F., Seidl, R., Selvi, F., Stenlid, J., 
+Valladares, F., van Keer, J., Vesterdal, L., Fischer, M., Gamfeldt, L., Allan, E., 2018. 
+Continental mapping of forest ecosystem functions reveals a high but unrealised 
+potential for forest multifunctionality. Ecol. Lett. 21, 31–42. 
+Pohjanmies, T., Trivi˜no, M., Le Tortorec, E., Salminen, H., M¨onkk¨onen, M., 2017. 
+Conflicting objectives in production forests pose a challenge for forest management. 
+Ecosyst. Serv. 28, 298–310. 
+Primmer, E., Varumo, L., Krause, T., Orsi, F., Geneletti, D., Brogaard, S., Aukes, E., 
+Ciolli, M., Grossmann, C., Hern´andez-Morcillo, M., Kister, J., Kluv´ankov´a, T., 
+Loft, L., Maier, C., Meyer, C., Schleyer, C., Spacek, M., Mann, C., 2021. Mapping 
+Europe’s institutional landscape for forest ecosystem service provision, innovations 
+and governance. Ecosyst. Serv. 47, 101225. 
+Pukkala, T., 2016. Which type of forest management provides most ecosystem services? 
+Forest Ecosyst. 3, 9. 
+Pukkala, T., Kellomaki, S., Mustonen, E., 1988. Prediction of the amenity of a tree stand. 
+Scand. J. Forest Res. 3, 533–544. 
+Pukkala, T., Nuutinen, T., Kangas, J., 1995. Integrating scenic and recreational amenities 
+into numerical forest planning. Landsc. Urban Plan. 32, 185–195. 
+Pukkala, T., L¨ahde, E., Laiho, O., 2013. Species interactions in the dynamics of even- and 
+uneven-aged boreal forests. J. Sustain. For. 32, 371–403. 
+Pukkala, T., Laiho, O., L¨ahde, E., 2016. Continuous cover management reduces wind 
+damage. For. Ecol. Manag. 372, 120–127. 
+Pülzl, H., Wydra, D., Hogl, K., 2018. Piecemeal integration: explaining and 
+understanding 60 years of European Union Forest policy-making. Forests 9, 719. 
+Rasinm¨aki, J., M¨akinen, A., Kalliovirta, J., 2009. SIMO: an adaptable simulation 
+framework for multiscale forest resource data. Comput. Electron. Agric. 66, 76–84. 
+Repo, A., Eyvindson, K.J., Halme, P., M¨onkk¨onen, M., 2020. Forest bioenergy harvesting 
+changes carbon balance and risks biodiversity in boreal forest landscapes. Can. J. 
+For. Res. 50, 1184–1193. 
+von Salzen, K., Scinocca, J.F., McFarlane, N.A., Li, J., Cole, J.N.S., Plummer, D., 
+Verseghy, D., Reader, M.C., Ma, X., Lazare, M., Solheim, L., 2013. The Canadian 
+fourth generation atmospheric global climate model (CanAM4). Part I: 
+representation of physical processes. Atmosphere-Ocean 51, 104–125. 
+Seidl, R., Fernandes, P.M., Fonseca, T.F., Gillet, F., J¨onsson, A.M., Merganiˇcov´a, K., 
+Netherer, S., Arpaci, A., Bontemps, J.-D., Bugmann, H., Gonz´alez-Olabarria, J.R., 
+Lasch, P., Meredieu, C., Moreira, F., Schelhaas, M.-J., Mohren, F., 2011. Modelling 
+natural disturbances in forest ecosystems: a review. Ecol. Model. 222, 903–924. 
+Seidl, R., Albrich, K., Erb, K., Formayer, H., Leidinger, D., Leitinger, G., Tappeiner, U., 
+Tasser, E., Rammer, W., 2019. What drives the future supply of regulating ecosystem 
+services in a mountain forest landscape? For. Ecol. Manag. 445, 37–47. 
+Sotirov, M., Storch, S., 2018. Resilience through policy integration in Europe? Domestic 
+forest policy changes as response to absorb pressure to integrate biodiversity 
+conservation, bioenergy use and climate protection in France, Germany, the 
+Netherlands and Sweden. Land Use Policy 79, 977–989. 
+Tahvanainen, V., Miina, J., Kurttila, M., Salo, K., 2016. Modelling the yields of marketed 
+mushrooms in Picea abies stands in eastern Finland. For. Ecol. Manag. 362, 79–88. 
+Temperli, C., Blattert, C., Stadelmann, G., Br¨andli, U.-B., Thürig, E., 2020. Trade-offs 
+between ecosystem service provision and the predisposition to disturbances: a NFI- 
+based scenario analysis. Forest Ecosyst. 7, 27. 
+Tolkkinen, M.J., Heino, J., Ahonen, S.H.K., Lehosmaa, K., Mykr¨a, H., 2020. Streams and 
+riparian forests depend on each other: a review with a special focus on microbes. For. 
+Ecol. Manag. 462, 117962. 
+Torssonen, P., Strandman, H., Kellom¨aki, S., Kilpel¨ainen, A., Jylh¨a, K., Asikainen, A., 
+Peltola, H., 2015. Do we need to adapt the choice of main boreal tree species in 
+forest regeneration under the projected climate change? Forestry 88, 564–572. 
+Tuomi, M., Thum, T., J¨arvinen, H., Fronzek, S., Berg, B., Harmon, M., Trofymow, J.A., 
+Sevanto, S., Liski, J., 2009. Leaf litter decomposition—estimates of global variability 
+based on Yasso07 model. Ecol. Model. 220, 3362–3371. 
+Tuomi, M., Laiho, R., Repo, A., Liski, J., 2011. Wood decomposition model for boreal 
+forests. Ecol. Model. 222, 709–718. 
+Turtiainen, M., Miina, J., Salo, K., Hotanen, J.-P., 2013. Empirical Prediction Models for 
+the Coverage and Yields of Cowberry in Finland. 
+Ven¨al¨ainen, A., Lehtonen, I., Laapas, M., Ruosteenoja, K., Tikkanen, O.-P., Viiri, H., 
+Ikonen, V.-P., Peltola, H., 2020. Climate change induces multiple risks to boreal 
+forests and forestry in Finland: a literature review. Glob. Chang. Biol. 26, 
+4178–4196. 
+Wierzbicki, A.P., 1986. On the completeness and constructiveness of parametric 
+characterizations to vector optimization problems. Operations-Research-Spektrum 8, 
+73–87. 
+Winkel, G., Sotirov, M., 2015. Whose integration is this? European forest policy between 
+the gospel of coordination, institutional competition, and a new spirit of integration. 
+Environ. Plann. 34, 496–514. 
+Wolfslehner, B., Prokofieva, I., Mavsar, R., 2019. Non-wood Forest Products in Europe: 
+Seeing the Forest around the Trees. What Science Can Tell us 10. European Forest 
+Institute, p. 113. 
+Wolfslehner, B., Pülzl, H., Kleinschmit, D., Aggestam, F., Winkel, G., Candel, J., 
+Eckerberg, K., Feindt, P., McDermott, C., Secco, L., Sotirov, M., Lackner, M., 
+Roux, J.-L., 2020. European Forest Governance Post-2020, From Science to Policy. 
+European Forest Institute, p. 51. 
+C. Blattert et al.                                                                                                                                                                                                                                 

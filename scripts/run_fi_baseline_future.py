@@ -182,6 +182,8 @@ def parse_args():
                    help="Override share_heat_dhn_min (0-1). Finland reality ~0.46")
     p.add_argument("--dhn-max", type=float, default=None,
                    help="Override share_heat_dhn_max (0-1). Finland reality ~0.46")
+    p.add_argument("--study-group", default="manual_runs",
+                   help="Subfolder of case_studies/FI/ to store this run (default: manual_runs)")
     return p.parse_args()
 
 
@@ -519,13 +521,14 @@ def main():
     # ---- Run directory ----
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_name = f"{timestamp}__{args.name}"
-    run_dir = REPO_ROOT / "case_studies" / "FI" / "manual_runs" / run_name
+    study_group = args.study_group
+    run_dir = REPO_ROOT / "case_studies" / "FI" / study_group / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
     print(f"\n  Run directory: {run_dir}")
 
     # ---- Config ----
     config = {
-        "case_study": f"manual_runs/{run_name}",
+        "case_study": f"{study_group}/{run_name}",
         "comment": args.desc or f"FI baseline {args.year} — {args.name}",
         "regions_names": ["FI"],
         "gwp_limit_overall": args.gwp_limit,
