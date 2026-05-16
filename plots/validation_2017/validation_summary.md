@@ -1,37 +1,37 @@
-# Validation Summary: calib_2017_finland
+# Validation Summary: 20260323_173930__2017_baseline
 
-Generated: 2026-03-02 14:19
+Generated: 2026-05-16 18:54
 
 ## Primary Energy (TWh)
 
 | Metric | Model | Reality | Error |
 |--------|-------|---------|-------|
-| Biomass | 66.9 | 100.0 | -33% ⚠ |
-| Oil | 70.4 | 82.0 | -14% ✓ |
-| Gas | 28.0 | 20.0 | +40% ⚠ |
-| Coal+Peat | 0.0 | 35.0 | -100% ✗ |
-| Nuclear | 61.0 | 65.0 | -6% ✓ |
-| Hydro | 26.7 | 15.0 | +78% ✗ |
-| Wind | 6.6 | 5.0 | +33% ⚠ |
+| Biomass | 94.0 | 100.0 | -6% ✓ |
+| Oil | 80.9 | 82.0 | -1% ✓ |
+| Gas | 20.0 | 20.0 | -0% ✓ |
+| Coal+Peat | 35.0 | 35.0 | -0% ✓ |
+| Nuclear | 65.1 | 65.0 | +0% ✓ |
+| Hydro | 14.6 | 15.0 | -3% ✓ |
+| Wind | 4.8 | 5.0 | -4% ✓ |
 
 ## Electricity Generation (TWh)
 
 | Metric | Model | Reality | Error |
 |--------|-------|---------|-------|
-| Nuclear | 22.6 | 21.4 | +6% ✓ |
-| Hydro | 26.7 | 14.5 | +84% ✗ |
-| Wind | 6.6 | 4.8 | +38% ⚠ |
-| CHP | 55.9 | 10.5 | +433% ✗ |
-| Condensation | 0.0 | 5.5 | -100% ✗ |
-| Solar | 2.4 | 0.1 | +2584% ✗ |
-| Geothermal | 2.3 | 0.0 | N/A |
-| Imports | 25.0 | 20.3 | +23% ⚠ |
+| Nuclear | 20.8 | 21.6 | -4% ✓ |
+| Hydro | 14.6 | 14.6 | -0% ✓ |
+| Wind | 4.8 | 4.8 | -0% ✓ |
+| CHP | 20.5 | 20.7 | -1% ✓ |
+| Condensation | 3.3 | 3.3 | +0% ✓ |
+| Solar | 0.0 | 0.0 | +1% ✓ |
+| Geothermal | 0.0 | 0.0 | N/A |
+| Imports | 19.5 | 20.4 | -4% ✓ |
 
 ## Emissions
 
 | Metric | Model | Reality | Error |
 |--------|-------|---------|-------|
-| CO2 (MtCO2) | 24.5 | 41.2 | -41% ⚠ |
+| CO2 (MtCO2) | 41.3 | 41.2 | +0% ✓ |
 
 ---
 Legend: ✓ = ±20% | ⚠ = ±50% | ✗ = >50%

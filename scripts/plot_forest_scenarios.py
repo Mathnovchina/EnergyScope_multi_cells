@@ -38,8 +38,9 @@ OUT_DIR.mkdir(exist_ok=True)
 #          → pro-biodiversity, constrained bioeconomy
 SCENARIOS = {
     "S1_BES": {
-        "label":  "S1 — High potential\n(Bioeconomy strategy, –biodiversity)",
-        "short":  "S1: High potential",
+        "label":  "S1 — High potential\nBioeconomy strategy",
+        "short":  "S1 — High potential",
+        "abbr":   "S1",
         "color":  "#a04000",          # dark amber-brown (intensive harvest)
         "bg":     "#fef5e7",          # very light amber background
         "avail_gwh": {                # cumulative tier availability limits (GWh)
@@ -50,8 +51,9 @@ SCENARIOS = {
         },
     },
     "S2_NFS": {
-        "label":  "S2 — Reference (BAU)\n(Policy trends / neutral)",
-        "short":  "S2: BAU / Ref.",
+        "label":  "S2 — Reference\nPolicy-trend baseline",
+        "short":  "S2 — Reference",
+        "abbr":   "S2",
         "color":  "#4a4a4a",          # dark gray (neutral)
         "bg":     "#f6f6f6",          # neutral background
         "avail_gwh": {
@@ -62,21 +64,22 @@ SCENARIOS = {
         },
     },
     "S3_BDS": {
-        "label":  "S3 — Low potential\n(Biodiversity-friendly, +conservation)",
-        "short":  "S3: Low potential",
+        "label":  "S3 — Low potential\nBiodiversity-first",
+        "short":  "S3 — Low potential",
+        "abbr":   "S3",
         "color":  "#1e6b3c",          # forest green (biodiversity-first)
         "bg":     "#eafaf1",          # very light green background
         "avail_gwh": {
-            "FI1": 43188,
-            "FI2": 43188 + 20690,
-            "FI3": 43188 + 20690 + 6272,
-            "FI4": 43188 + 20690 + 6272 + 4071,
+            "FI1": 32000,
+            "FI2": 32000 + 6000,
+            "FI3": 32000 + 6000 + 1500,
+            "FI4": 32000 + 6000 + 1500 + 500,
         },
     },
 }
 
-GHG_TARGETS = ["unconstrained", "ghg_95pct_nonuke", "ghg_95pct"]
-GHG_LABELS  = ["Unconstrained", "−95% GHG\n(nuclear phase-out)", "−95% GHG\n(with nuclear)"]
+GHG_TARGETS = ["unconstrained", "ghg_95pct", "ghg_95pct_nonuke"]
+GHG_LABELS  = ["Unconstrained", "−95% GHG\n(with nuclear)", "−95% GHG\n(nuclear phase-out)"]
 
 # ─── COLOR PALETTES ──────────────────────────────────────────────────────
 CARRIER_COLORS = {
@@ -113,10 +116,10 @@ TIER_ORDER = ["WOOD_FI1", "WOOD_FI2", "WOOD_FI3", "WOOD_FI4", "WOOD_FI5"]
 
 # Availability limit dash styles (cumulative up to tier FI1 … FI4)
 AVAIL_STYLES = [
-    ("-",  "#1a7a2e", "≤ FI-1 cap"),
-    ("--", "#74c476", "≤ FI-1+2 cap"),
-    ("-.", "#d4a017", "≤ FI-1+2+3 cap"),
-    (":",  "#c0392b", "≤ FI-1+2+3+4 cap"),
+    ("-",  "#1a7a2e", "Availability cap after FI-1"),
+    ("--", "#74c476", "Availability cap after FI-1+2"),
+    ("-.", "#d4a017", "Availability cap after FI-1+2+3"),
+    (":",  "#c0392b", "Availability cap after FI-1+2+3+4"),
 ]
 
 # ─── BIOMASS ALLOCATION (Colla Fig. 4 equivalent) ────────────────────────
@@ -274,12 +277,12 @@ def main():
     ref_cost = data.get(("S2_NFS", "unconstrained"), {}).get("cost", None)
 
     # 3. Build figure
-    fig = plt.figure(figsize=(17, 11))
+    fig = plt.figure(figsize=(18, 10.6))
     gs  = fig.add_gridspec(
         2, 3,
         height_ratios=[2.5, 1.2],
-        hspace=0.42, wspace=0.10,
-        left=0.07, right=0.82, top=0.91, bottom=0.07,
+        hspace=0.32, wspace=0.10,
+        left=0.07, right=0.82, top=0.88, bottom=0.08,
     )
     axes_top = [fig.add_subplot(gs[0, c]) for c in range(3)]
     axes_bot = [fig.add_subplot(gs[1, c]) for c in range(3)]
@@ -289,7 +292,7 @@ def main():
     scen_keys = list(SCENARIOS.keys())
 
     # Shared Y ranges
-    y_top_max = 310
+    y_top_max = 330
     y_bot_max = 145
 
     for col_i, scen_key in enumerate(scen_keys):
@@ -361,17 +364,6 @@ def main():
         else:
             ax_top.set_yticklabels([])
 
-        # Column title
-        ax_top.set_title(
-            scen_info["label"],
-            fontsize=11, fontweight="bold", color="white",
-            bbox=dict(
-                boxstyle="round,pad=0.3", facecolor=scen_info["color"],
-                edgecolor="none", alpha=0.9,
-            ),
-            pad=8,
-        )
-
         # ── Panel B: Biomass tier stacked bars ────────────────────────────
         ax_bot.set_facecolor(scen_info["bg"])
         for spine in ax_bot.spines.values():
@@ -428,6 +420,30 @@ def main():
         else:
             ax_bot.set_yticklabels([])
 
+        ax_bot.text(
+            0.11, 0.95,
+            "Wood used by supply tier\n(lines = cumulative domestic caps)",
+            transform=ax_bot.transAxes,
+            ha="left", va="top",
+            fontsize=8.2, color="#34495e",
+            bbox=dict(boxstyle="round,pad=0.2", facecolor="white", edgecolor="none", alpha=0.8),
+            zorder=5,
+        )
+
+        top_box = ax_top.get_position()
+        bot_box = ax_bot.get_position()
+        fig.text(
+            (top_box.x0 + top_box.x1) / 2,
+            (top_box.y0 + bot_box.y1) / 2,
+            scen_info["label"].replace("\n", "  ·  "),
+            ha="center", va="center",
+            fontsize=10.5, fontweight="bold", color="white",
+            bbox=dict(
+                boxstyle="round,pad=0.28", facecolor=scen_info["color"],
+                edgecolor="none", alpha=0.92,
+            ),
+        )
+
     # ─── LEGENDS (right side) ─────────────────────────────────────────────
     # Panel A: energy carriers
     carrier_handles = [
@@ -459,7 +475,7 @@ def main():
         handles=tier_handles + [mpatches.Patch(facecolor="none", edgecolor="none", label="")] + avail_handles,
         loc="lower left", bbox_to_anchor=(0.833, 0.06),
         fontsize=8.5, framealpha=0.97,
-        title="d–f  Finnish biomass tiers\n   & availability limits", title_fontsize=9,
+        title="Bottom row: wood tiers used\nand availability caps", title_fontsize=9,
         ncol=1, borderpad=0.8,
     )
 
@@ -468,7 +484,9 @@ def main():
     all_axes = axes_top + axes_bot
     for ax, lbl in zip(all_axes, panel_labels):
         ax.annotate(
-            lbl, xy=(0.015, 0.975), xycoords="axes fraction",
+            lbl,
+            xy=(0.015, 0.88 if ax in axes_top else 0.975),
+            xycoords="axes fraction",
             fontsize=11, fontweight="bold", color="#1a252f",
             ha="left", va="top",
             bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.75),
@@ -477,16 +495,20 @@ def main():
     # ─── FIGURE TITLE ─────────────────────────────────────────────────────
     fig.suptitle(
         "Finland 2035 — Energy mix & biomass supply ladder\n"
-        "under forest biodiversity policy  ×  GHG reduction ambition",
-        fontsize=13.5, fontweight="bold", y=0.98,
+        "under different forest management intensity  ×  GHG reduction ambition",
+        fontsize=13.5, fontweight="bold", y=0.965,
         color="#1a252f",
     )
 
     # ─── SAVE ─────────────────────────────────────────────────────────────
-    outpath = OUT_DIR / "forest_scenarios_2035_energy_matrix.png"
-    fig.savefig(outpath, dpi=200, bbox_inches="tight", facecolor="white")
+    for suffix, kwargs in {
+        ".png": {"dpi": 200},
+        ".pdf": {},
+    }.items():
+        outpath = OUT_DIR / f"forest_scenarios_2035_energy_matrix{suffix}"
+        fig.savefig(outpath, bbox_inches="tight", facecolor="white", **kwargs)
+        print(f"  Saved → {outpath}")
     plt.close()
-    print(f"  Saved → {outpath}")
 
     # 4. Biomass allocation figure (Colla Fig. 4 style)
     plot_biomass_allocation(data)
@@ -502,15 +524,17 @@ def plot_biomass_allocation(data: dict) -> None:
     """
     scen_keys  = list(SCENARIOS.keys())
     n_scen     = len(scen_keys)
-    bar_w      = 0.22
-    group_gap  = 0.85          # distance between GHG groups
+    bar_w      = 0.24
+    group_gap  = 1.45          # distance between GHG groups
     x_groups   = np.arange(len(GHG_TARGETS)) * group_gap
-    offsets    = np.linspace(-(n_scen - 1) / 2, (n_scen - 1) / 2, n_scen) * bar_w
+    offsets    = np.array([-bar_w * 1.15, 0.0, bar_w * 1.15])
 
-    fig, ax = plt.subplots(figsize=(12, 7.5))
+    fig, ax = plt.subplots(figsize=(14.6, 7.9))
+    fig.subplots_adjust(left=0.08, right=0.72, top=0.84, bottom=0.14)
     ax.set_facecolor("#fafafa")
 
-    scen_hatch = {"S1_BES": None, "S2_NFS": "....", "S3_BDS": "xxxx"}
+    for gi, xg in enumerate(x_groups):
+        ax.axvspan(xg - 0.48, xg + 0.48, color="#f5f7f8" if gi % 2 == 0 else "#eef4f7", alpha=0.85, zorder=0)
 
     for si, scen_key in enumerate(scen_keys):
         scen_info = SCENARIOS[scen_key]
@@ -560,28 +584,38 @@ def plot_biomass_allocation(data: dict) -> None:
                     fontsize=7.5, color=scen_info["color"], fontweight="bold",
                 )
 
-    # ── X-axis labels with GHG group and scenario sub-labels ──────────────
-    ax.set_xticks(x_groups)
-    ax.set_xticklabels(GHG_LABELS, fontsize=11, fontweight="bold")
+    # ── X-axis labels: each bar gets S1 / S2 / S3, group title stays above ─
+    bar_positions = []
+    bar_labels = []
+    bar_colors = []
+    for xg in x_groups:
+        for scen_key, offset in zip(scen_keys, offsets):
+            bar_positions.append(xg + offset)
+            bar_labels.append(SCENARIOS[scen_key]["abbr"])
+            bar_colors.append(SCENARIOS[scen_key]["color"])
 
-    # Scenario legend below each group (one tick-mark set per scenario offset)
-    for si, scen_key in enumerate(scen_keys):
-        scen_info = SCENARIOS[scen_key]
-        for gi, xg in enumerate(x_groups):
-            ax.annotate(
-                scen_info["short"],
-                xy=(xg + offsets[si], -4.5),
-                ha="center", va="top",
-                fontsize=7, color=scen_info["color"],
-                fontweight="bold",
-                annotation_clip=False,
-            )
+    ax.set_xticks(bar_positions)
+    ax.set_xticklabels(bar_labels, fontsize=10, fontweight="bold")
+    for tick_label, tick_color in zip(ax.get_xticklabels(), bar_colors):
+        tick_label.set_color(tick_color)
+
+    for gi, xg in enumerate(x_groups):
+        ax.annotate(
+            GHG_LABELS[gi].replace("\n", " "),
+            xy=(xg, 119.5),
+            ha="center", va="bottom",
+            fontsize=10, fontweight="bold", color="#1a252f",
+            bbox=dict(boxstyle="round,pad=0.25", facecolor="white", edgecolor="#d0d7de", alpha=0.95),
+        )
+
+    for left, right in zip(x_groups[:-1], x_groups[1:]):
+        ax.axvline((left + right) / 2, color="#c9d1d9", lw=1.0, ls=":", zorder=1)
 
     # ── Y axis ────────────────────────────────────────────────────────────
-    ax.set_ylim(0, 100)
+    ax.set_ylim(0, 128)
     ax.set_ylabel("Biomass used  (TWh/y)", fontsize=11)
     ax.grid(axis="y", alpha=0.25, zorder=0)
-    ax.set_xlim(x_groups[0] - 0.55, x_groups[-1] + 0.55)
+    ax.set_xlim(x_groups[0] - 0.72, x_groups[-1] + 0.72)
 
     # ── Constant NED reference line ────────────────────────────────────────
     ned_val = 28.7   # always constant across all 9 runs
@@ -606,14 +640,14 @@ def plot_biomass_allocation(data: dict) -> None:
             handles.append(h)
             labels.append(lbl)
 
-    ax.legend(
+    category_legend = ax.legend(
         handles, labels,
-        loc="upper left", bbox_to_anchor=(0.01, 0.99),
-        fontsize=8.5, framealpha=0.95, ncol=2,
-        title="Biomass final use", title_fontsize=9,
+        loc="upper left", bbox_to_anchor=(1.01, 1.00),
+        fontsize=8.3, framealpha=0.95, ncol=1,
+        title="Final use", title_fontsize=9,
     )
 
-    # Scenario colour patch legend (top right)
+    # Scenario colour patch legend (outside right, below category legend)
     scen_handles = [
         mpatches.Patch(
             facecolor="white", edgecolor=SCENARIOS[s]["color"],
@@ -621,33 +655,30 @@ def plot_biomass_allocation(data: dict) -> None:
         )
         for s in scen_keys
     ]
+    ax.add_artist(category_legend)
     ax.legend(
         scen_handles,
         [SCENARIOS[s]["short"] for s in scen_keys],
-        loc="upper right", bbox_to_anchor=(0.99, 0.99),
-        fontsize=9, framealpha=0.95, title="Forest scenario\n(bar border colour)",
+        loc="upper left", bbox_to_anchor=(1.01, 0.43),
+        fontsize=9, framealpha=0.95, title="Forest scenario\n(bar border)",
         title_fontsize=8.5,
-    )
-    # Re-add full legend (categories) on top
-    ax.add_artist(ax.get_legend())   # keep scenario legend
-    leg2 = ax.legend(
-        handles, labels,
-        loc="upper left", bbox_to_anchor=(0.01, 0.99),
-        fontsize=8, framealpha=0.95, ncol=1,
-        title="Biomass final use", title_fontsize=9,
     )
 
     # ── Title ──────────────────────────────────────────────────────────────
     ax.set_title(
         "Finland 2035 — Biomass allocation by final use\n"
-        "forest biodiversity policy  ×  GHG reduction ambition  (inspired by Colla et al. 2022, Fig. 4)",
+        "bars grouped by GHG target; S1/S2/S3 identified by coloured borders and x-axis labels",
         fontsize=11.5, fontweight="bold", color="#1a252f",
     )
 
-    outpath = OUT_DIR / "forest_scenarios_2035_biomass_allocation.png"
-    fig.savefig(outpath, dpi=200, bbox_inches="tight", facecolor="white")
+    for suffix, kwargs in {
+        ".png": {"dpi": 200},
+        ".pdf": {},
+    }.items():
+        outpath = OUT_DIR / f"forest_scenarios_2035_biomass_allocation{suffix}"
+        fig.savefig(outpath, bbox_inches="tight", facecolor="white", **kwargs)
+        print(f"  Saved → {outpath}")
     plt.close()
-    print(f"  Saved → {outpath}")
 
 
 if __name__ == "__main__":

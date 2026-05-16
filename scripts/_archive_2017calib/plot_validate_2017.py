@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 
 # Repository root
-REPO_ROOT = Path(__file__).parent.parent
+REPO_ROOT = Path(__file__).resolve().parents[2]
 CASE_STUDIES = REPO_ROOT / "case_studies" / "FI"
 REALITY_REF = REPO_ROOT / "calibration" / "reality" / "finland_2017_reference.csv"
 
@@ -446,10 +446,10 @@ def generate_sankey_diagram(outputs_dir: Path, output_dir: Path, data_dir: Path 
         from esmc.postprocessing.draw_sankey.output_to_sankey_csv import write_sankey_file
         from esmc.postprocessing.draw_sankey.ESSankey import drawSankey
         
-        # Determine space_id and case_study from path
-        # Expected: .../case_studies/FI/run_name/outputs
-        case_study = outputs_dir.parent.name
-        space_id = outputs_dir.parent.parent.name
+        run_dir = outputs_dir.resolve().parent
+        relative_run_dir = run_dir.relative_to(REPO_ROOT / "case_studies")
+        space_id = relative_run_dir.parts[0]
+        case_study = str(Path(*relative_run_dir.parts[1:]))
         
         # Generate input2sankey CSV files
         write_sankey_file(space_id, case_study)

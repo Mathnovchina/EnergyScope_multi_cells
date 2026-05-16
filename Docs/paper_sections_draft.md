@@ -1,175 +1,238 @@
-# Draft Text: Preliminary Results Sections for EnergyScope Finland Paper
+# Paper Sections Draft — Finland Validation, 2035 Scenarios, and Next Steps
 
-> **Status:** Draft text for embedding in EnergyScope_FI (5).pdf  
-> **Covers:** (A) Section 3 — 2017 Calibration & Validation; (B) Section 4 — 2035 Preliminary Scenarios  
-> **Note:** All numerical results are from completed model runs. Figures referenced exist in `plots/validation_2017/` and `case_studies/FI/manual_runs/ghg_sweep_analysis/`.
+Status: insertion-ready draft text based on the files currently present in the repository.
 
----
+Scope of this draft:
+- 2017 validation section built from the calibrated baseline run `case_studies/FI/manual_runs/20260323_173930__2017_baseline`
+- 2035 scenario-design section built from the current forest biomass scenario files and documentation
+- 2035 results section built from the completed `forest_scenarios_2035` run matrix and final plots
+- future-work section on disturbance shocks built from `Docs/Coupled_Forest_Energy_Modelling_Finland_concept_note.docx`
 
-## SECTION 3 — CALIBRATION AND VALIDATION: FINLAND 2017
-
-### 3.1 Validation Methodology
-
-Following the approach of Limpens et al. (2019), we validate the model by reproducing Finland's 2017 energy system as a reference year. As noted by the original EnergyScope authors, long-term planning models are inherently non-validatable as they model an unknown future; however, their consistency can be demonstrated by representing a known past state of the system. We use the 2017 Finnish energy balance from Statistics Finland (Tilastokeskus) as the validation dataset, supplemented by Eurostat energy balances and the IEA World Energy Balances (2019 edition).
-
-The calibration applies hard technology bounds (`f_min`/`f_max`) to lock in observed installed capacities (nuclear, hydro, gas power plants) and resource availability ceilings (wood, waste, natural gas, oil) from 2017 national statistics. Calibration targets for structural features of the energy system — district heating share, electricity network losses, modal share of public transport, and rail freight share — are imposed as parameter bounds following the methodology of Colla et al. (2022). Table~\ref{tab:calib_targets_2017} summarises the key calibration targets applied.
-
-| Parameter | Target value | Source |
-|---|---|---|
-| DHN share of total heat | 0.45 | Statistics Finland, Energy Statistics 2017 |
-| DHN losses | 0.085 | Energiateollisuus (Finnish Energy), 2017 |
-| Public transport modal share | 0.1608 | Statistics Finland, Transport Statistics 2017 |
-| Rail freight modal share | 0.2761 | Statistics Finland, Transport Statistics 2017 |
-| Electricity network losses | 0.030 | Fingrid, 2017 Annual Report |
-
-### 3.2 Validation Results
-
-Table~\ref{tab:validation_2017} compares model outputs against the 2017 Finnish energy balance for primary energy consumption, electricity generation mix, and GHG emissions.
-
-**Table: Model vs. Finland 2017 Actual Data**
-
-| Metric | 2017 Actual (TWh) | Model (TWh) | Rel. Error | Assessment |
-|---|---|---|---|---|
-| *Primary Energy* | | | | |
-| Biomass (wood, waste) | 100.0 | 66.9 | −33% | ⚠ |
-| Oil products | 82.0 | 70.4 | −14% | ✓ |
-| Natural gas | 20.0 | 28.0 | +40% | ⚠ |
-| Coal + peat | 35.0 | 0.0 | −100% | ✗ |
-| Nuclear (thermal) | 65.0 | 61.0 | −6% | ✓ |
-| Hydro | 15.0 | 26.7 | +78% | ✗ |
-| Wind | 5.0 | 6.7 | +33% | ⚠ |
-| TPES Total | 322.1 | 359.8 | +12% | |
-| *Electricity* | | | | |
-| Nuclear | 21.4 | 22.6 | +6% | ✓ |
-| Hydro | 14.5 | 26.7 | +84% | ✗ |
-| Wind | 4.8 | 6.7 | +38% | ⚠ |
-| CHP (all fuels) | 10.5 | 55.9 | +432% | ✗ |
-| Net imports | 20.3 | 25.0 | +23% | ✓~ |
-| *Emissions* | | | | |
-| CO₂ (MtCO₂) | 41.2 | 24.5 | −41% | ⚠ |
-
-*Legend: ✓ within ±10% | ✓~ within ±25% | ⚠ within ±50% | ✗ beyond ±50%*
-
-### 3.3 Discussion of Validation Discrepancies
-
-Several discrepancies warrant discussion.
-
-**Coal and peat (−100%).** The current model does not represent coal or peat combustion as distinct technologies. Both fuels contribute approximately 35 TWh to Finland's 2017 primary energy mix (mainly condensing power and industrial processes). Their absence introduces a systematic underestimation of GHG emissions and an artificial substitution by other fuels (gas, oil) in the optimiser. A complete 2017 calibration would require adding `COAL` and `PEAT` resources and constraining their use to observed levels; this is deferred to a future version.
-
-**Biomass (−33%).** The unconstrained optimiser does not fully deploy Finland's low-cost biomass resources, preferring gas and oil in some end-use applications where cost-optimal trade-offs differ from historical patterns. Imposing the observed wood consumption level (100 TWh) as a lower bound on biomass use would close this gap. In the 2017 Finnish energy system, high biomass use reflects legacy infrastructure (biomass CHP plants, industrial boilers) that is not captured by a cost-optimisation alone.
-
-**CHP (electricity, +433%).** The optimiser strongly favours combined heat and power production from biomass, gas, and waste given Finland's high district heating penetration and the simultaneous need to supply both heat and electricity. The historical 2017 CHP electricity output (10.5 TWh) reflects sub-optimal dispatch decisions, grid constraints, and the co-existence of many small-scale plants — features not present in the aggregate model. Constraining CHP capacity with tighter `f_max` bounds would bring this indicator in line.
-
-**Hydro (+78–84%).** The model appears to over-exploit hydropower both as primary energy and electricity generation. Finland's run-of-river and reservoir hydro plants are dispatched according to seasonal hydrological constraints not fully captured by the 12 typical-day temporal compression. The model's hydro overshoot partly compensates for the absence of coal and peat.
-
-**GHG emissions (−41%).** The CO₂ discrepancy is a compound consequence of: (i) absence of coal/peat, (ii) biomass underuse, and (iii) partial gas substitution by low-carbon alternatives. The calibrated constrained run (validation_summary.md) recovers CO₂ = 24.5 MtCO₂ (vs actual 41.2 MtCO₂, −41%), which is within the ±50% tolerance of the validation methodology and considerably better than the unconstrained run (0.04 MtCO₂). Full alignment of GHG emissions would require matching all individual fuel flows simultaneously, which is deferred to the final calibration.
-
-**Nuclear and electricity imports (well-reproduced).** Nuclear electricity (22.6 vs 21.4 TWh, +6%) and net electricity imports (25.0 vs 20.3 TWh, +23%) are both reproduced within acceptable margins, confirming that the model correctly handles Finland's baseload electricity structure and Nordic grid interconnection.
-
-**Overall assessment.** The 2017 validation demonstrates that the EnergyScope Finland model captures the gross structure of the Finnish energy system — total primary energy (+12%), nuclear (+6%), and electricity imports (+23%) — with acceptable accuracy. Residual discrepancies are attributable to known modelling simplifications (absence of coal/peat, aggregate temporal representation) rather than fundamental errors in the energy balance. These are consistent with the validation philosophy of Limpens et al. (2019) and with the results reported for Belgium by Colla et al. (2022) in their reference year validation.
+Important manuscript corrections before insertion:
+- The current PDF still mixes a 2050 framing with a 2035 scenario implementation. The sections below are written for the actual completed 2035 analysis.
+- The sentence in the current abstract stating that “simulation results are currently under production” is no longer correct for the 3 x 3 forest-scenario matrix.
+- The 2017 validation run uses `relax_co2 = true`; this is appropriate for historical reproduction, but it must not be presented as the operating assumption of the 2035 forward-looking runs.
+- The old 80% GHG forest-scenario column and the original optimistic S3-BDS ENSPRESO values should not be used in the paper. The final matrix is `unconstrained`, `ghg_95pct`, and `ghg_95pct_nonuke`, with the revised conservative S3-BDS supply.
 
 ---
 
-## SECTION 4 — PRELIMINARY SCENARIO RESULTS: FINLAND 2035
+## Suggested Section — Finland 2017 Validation
 
-### 4.1 Scenario Design
+### Validation objective and protocol
 
-We present preliminary results for Finland 2035 under two cross-cutting dimensions: (A) **GHG constraint level** (parametric sweep from unconstrained to 95% CO₂ reduction relative to the 2017 baseline of 41,200 ktCO₂/yr), and (B) **nuclear policy** (baseline: all five Finnish units operational, f_min = 4.36 GW; phase-out: Loviisa units retired, f_min = 2.49 GW). A third dimension — **forest management scenario** (S1/BES, S2/NFS, S3/BDS) — is introduced in Section 4.3 as the main contribution.
+To establish model credibility before turning to forward-looking scenarios, the Finnish implementation of EnergyScope was calibrated against a historical baseline year. The validation run retained the observed 2017 demand structure and technology fleet and applied an 18-patch calibration chain to match the main Finnish energy-balance aggregates. The final reference run is `20260323_173930__2017_baseline` (`v37_solar` in the run notes), solved with 12 typical days and `relax_co2 = true` in order to avoid a non-physical forced-CCS artifact in the historical reproduction. In the calibration dashboard, this run reaches a weighted score of 1.2% over the 14 scored indicators documented in `Docs/finland_2017_validation_justifications.md`.
 
-The 2035 data incorporates Finland's legislated coal ban (effective 2029, hard availability constraint), national renewable deployment commitments (6.0 GW wind onshore, 1.6 GW offshore, 1.3 GW PV), and IEA WEO 2020 gas price projections. A social discount rate of 1.5% is applied, following Limpens et al. (2019) and Thiran (2023). The GHG baseline of 41,200 ktCO₂/yr corresponds to Finland's calibrated 2017 CO₂_net (net after biogenic credits), consistent with the Finnish national GHG inventory.
+This validation strategy follows the standard EnergyScope logic: the model is not “validated” as a predictive tool for the future, but its internal consistency is tested by checking whether a constrained historical configuration reproduces a known national energy system with acceptable deviations.
 
-### 4.2 GHG Sweep Results — Baseline Nuclear (Scenario A)
+### Main validation results
 
-A key structural finding is that the unconstrained 2035 optimum already achieves approximately **69% CO₂ reduction** relative to 2017. This floor is entirely explained by input data: the coal ban eliminates ~10–15 MtCO₂/yr of potential coal combustion; forced nuclear at 4.36 GW covers 75% of electricity demand with zero carbon; and the collapse in renewable capital costs (PV: −73% vs 2017; wind: −50%) makes large-scale wind deployment cost-optimal even without a climate constraint.
+Table X compares the calibrated 2017 baseline to the Finnish statistical reference values stored in `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/validation_table.csv`.
 
-The following table summarises the GHG sweep results for Scenario A (baseline nuclear):
+| Category | Indicator | Actual 2017 | Model | Relative error |
+|---|---:|---:|---:|---:|
+| Primary energy | Biomass | 100.0 TWh | 96.8 TWh | -3.2% |
+| Primary energy | Oil | 82.0 TWh | 80.9 TWh | -1.4% |
+| Primary energy | Gas | 20.0 TWh | 20.0 TWh | 0.0% |
+| Primary energy | Coal + peat | 35.0 TWh | 35.0 TWh | 0.0% |
+| Primary energy | Nuclear | 65.0 TWh | 65.1 TWh | +0.1% |
+| Primary energy | Hydro | 15.0 TWh | 14.6 TWh | -2.7% |
+| Primary energy | Wind | 5.0 TWh | 4.8 TWh | -4.1% |
+| Electricity | Nuclear | 21.6 TWh | 20.8 TWh | -3.6% |
+| Electricity | Hydro | 14.6 TWh | 14.6 TWh | 0.0% |
+| Electricity | Wind | 4.8 TWh | 4.8 TWh | -0.1% |
+| Electricity | CHP (all) | 20.73 TWh | 20.49 TWh | -1.2% |
+| Electricity | Condensation | 3.28 TWh | 3.29 TWh | +0.3% |
+| Electricity | Gas power | 3.2 TWh | 4.37 TWh | +36.7% |
+| Electricity | Imports | 20.43 TWh | 19.54 TWh | -4.4% |
+| Heat | District heat production | 36.5 TWh | 52.33 TWh | +43.4% |
+| Emissions | CO2 | 41.2 MtCO2 | 41.25 MtCO2 | +0.1% |
 
-**Table: Finland 2035 GHG Sweep — Scenario A (Baseline Nuclear, f_min = 4.36 GW)**
+The key result is that the model reproduces the main 2017 Finnish system aggregates very closely. All major primary-energy indicators except solar fall within about ±5%, the electricity balance is well matched, and CO2 emissions are reproduced almost exactly. The strongest remaining discrepancies are district heat production and gas-fired electricity.
 
-| GHG savings target | GWP limit (ktCO₂/yr) | System cost (bn€/yr) | CO₂_net (MtCO₂/yr) | PE total (TWh/yr) | Biomass total (TWh/yr) |
-|---|---|---|---|---|---|
-| Unconstrained | — | 22.96 | 13.0 | 303.6 | 63.4 |
-| 70% | 12,360 | 22.96 | 12.4 | 305.1 | 63.7 |
-| 75% | 10,300 | 23.02 | 10.3 | 298.3 | 62.7 |
-| 80% | 8,240 | 23.09 | 8.2 | 288.6 | 61.9 |
-| 85% | 6,180 | 23.20 | 6.2 | 285.8 | 63.4 |
-| 90% | 4,120 | 23.32 | 4.1 | 286.2 | 65.0 |
-| 95% | 2,060 | **23.52** | 2.1 | 298.0 | **85.2** |
+### Interpretation and scientific caveats
 
-The system cost increases by only **+565 M€/yr (+2.5%)** from unconstrained to 95% GHG savings — a remarkably flat cost curve that reflects Finland's structural advantages: the coal ban, nuclear baseload, and mature renewable technologies already set a very deep decarbonisation floor. The incremental cost of the remaining 26 percentage points (from 69% to 95%) is thus modest.
+Two residual mismatches should be discussed explicitly in the paper.
 
-The primary decarbonisation mechanism is **gas phase-out for heating** (Regime I, 70–85%): decentralised gas heat pumps (`DEC_HP_GAS`) and industrial gas boilers are progressively replaced by electric heat pumps backed by nuclear/wind and direct biomass boilers. Biomass use remains relatively flat at 62–65 TWh through this range, confirming that biomass is a passive participant in the first phase of Finland's decarbonisation.
+First, district heat production is overestimated by 43.4%. This is not primarily a calibration failure but a structural aggregation artifact. In the current EnergyScope formulation, `share_heat_dhn` is applied to the full low-temperature heat pool, including industrial low-temperature demand. In Finnish statistics, however, the reported district-heating output mainly corresponds to residential and service-sector network heat. As documented in `Docs/finland_2017_validation_justifications.md`, the 45% district-heating share is physically consistent when applied only to residential and service heat, but it becomes too large when imposed on the aggregate low-temperature demand used by the model.
 
-A **qualitative transition** occurs at 90–95% (Regime II): the final ~4 MtCO₂/yr of residual emissions come from maritime diesel, heavy freight, and hard-to-abate industrial processes. Eliminating these requires bio-based liquid fuels (pyrolysis, gasification), driving a sharp biomass surge to 85 TWh at 95%.
+Second, gas-fired electricity remains 36.7% above the statistical reference. The same justification file shows that this residual comes from CHP co-production arithmetic rather than a simple tuning issue: under a binding gas cap, any gas routed through district-heating CHP produces electricity as an unavoidable by-product. Sensitivity tests on CHP bounds reduced model realism elsewhere without solving the problem.
 
-**[Figure: Fig 3 — Primary energy by source vs GHG savings, Scenario A]**  
-*File: `case_studies/FI/manual_runs/ghg_sweep_analysis/fig3_primary_energy_vs_ghg.png`*
+These limitations do not invalidate the historical benchmark. On the contrary, the 2017 baseline shows that the calibrated Finnish model is able to reproduce the overall energy balance, electricity structure, and CO2 level of the real system with high fidelity, while making the remaining structural aggregation issues transparent.
 
-**[Figure: Fig 4 — Biomass allocation by end use vs GHG savings, Scenario A]**  
-*File: `case_studies/FI/manual_runs/ghg_sweep_analysis/fig4_biomass_allocation_vs_ghg.png`*
+### Validation figures to insert
 
-### 4.3 Nuclear Phase-Out Sensitivity (Scenario B)
+Recommended main-text figures:
+- `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/pe_comparison.png`
+- `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/elec_comparison.png`
+- `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/error_chart.png`
 
-Retiring the Loviisa units (1.87 GW) reduces nuclear PE from 87.6 TWh to 50.1 TWh. The gap is partly filled by additional wind (+9 TWh), gas (+3 TWh), and imports. Counter-intuitively, **system cost decreases by 154 M€/yr** in the phase-out scenario (22.81 vs 22.96 bn€/yr), as the Loviisa units' high annualised capital cost is not cost-competitive against mature wind at 1.5% discount rate. This finding underscores the sensitivity of nuclear competitiveness to the discount rate assumption.
+Sankey recommendation:
+- Use `plots/validation_2017/validation_sankey.html` as the authoritative Sankey asset.
+- A clean publication-quality static export is still needed from the original plotting workflow. The browser screenshots produced during this session are useful for inspection but are not yet good enough for a final paper figure.
 
-The phase-out scenario reveals **biomass as the critical buffer at high decarbonisation levels**: without Loviisa's 13.9 TWh of zero-carbon electricity backing up the grid, the system must deploy 21.6 TWh more biomass at 90–95% savings. At 95% savings, total biomass reaches **106.8 TWh — 97% of Finland's estimated sustainable domestic biomass ceiling (~110 TWh)**. This near-ceiling outcome is not practically achievable given real-world supply chain constraints, suggesting that nuclear retirement combined with a 95% GHG target creates a biomass availability bottleneck.
+Suggested caption language for the Sankey:
 
-**[Figure: Biomass demand comparison A vs B vs scenario ceiling]**
-
-### 4.4 Forest Management Scenarios: Biomass Availability as a Climate Constraint
-
-The results above are computed with a single undifferentiated WOOD resource at the 2035 baseline availability (~110 TWh). This section introduces the main contribution of the paper: differentiating this ceiling into three biomass supply scenarios derived from the Finnish forest management literature.
-
-#### 4.4.1 Scenario construction from Blattert et al. (2022) and Mönkkönen et al. (2024)
-
-Three biomass supply scenarios (S1, S2, S3) are constructed following the policy scenarios of Blattert et al. (2022) and the ecological harvest ceiling derived by Mönkkönen et al. (2024):
-
-- **S1 — Bioeconomy (BES):** Maximise domestic wood and residue mobilisation. Harvest maintained at current intensity (~96% of max sustainable, Mönkkönen). Bioenergy residues maximised (~8 Mm³/yr under BES). WOOD = 110,806 GWh; BIOMASS_RESIDUES = 12,000 GWh.
-
-- **S2 — National Forest Strategy (NFS):** Balance timber production and biodiversity. Roundwood target 80 Mm³/yr; bioenergy residues ≥ 6.5 Mm³/yr (Blattert Table 2); deadwood floor ≥ 8 m³/ha constrains residue extraction. WOOD = 92,338 GWh; BIOMASS_RESIDUES = 9,750 GWh.
-
-- **S3 — Biodiversity Strategy (BDS):** Ecological safe operating space. Harvest at 60% of max sustainable (Mönkkönen ecological ceiling). Deadwood +60% target (Blattert BDS) severely limits residue extraction. WOOD = 69,254 GWh; BIOMASS_RESIDUES = 2,000 GWh.
-
-The volume-to-energy conversion uses 2.0 MWh/m³ for roundwood and 1.5 MWh/m³ for residues, consistent with Finnish energy statistics (Luke 2022). Non-forest resources (agricultural biomass, biowaste, municipal waste) are unchanged across scenarios.
-
-**Table: Domestic biomass availability by forest scenario (Finland 2035)**
-
-| Resource | Baseline 2035 | S1 / BES | S2 / NFS | S3 / BDS |
-|---|---|---|---|---|
-| WOOD (TWh/yr) | 110.8 | **110.8** | **92.3** | **69.3** |
-| BIOMASS_RESIDUES (TWh/yr) | 5.0 | **12.0** | **9.8** | **2.0** |
-| WET_BIOMASS (TWh/yr) | 1.5 | **1.8** | **1.5** | **0.9** |
-| Other (ENERGY_CROPS_2, BIOWASTE, WASTE) | 23.6 | 23.6 | 23.6 | 23.6 |
-| **Total domestic biomass ceiling (TWh/yr)** | **140.9** | **148.2** | **127.2** | **95.8** |
-
-#### 4.4.2 Preliminary qualitative results
-
-Combining the GHG sweep demand figures (Section 4.2) with the scenario-specific supply ceilings reveals a key result:
-
-**At 95% GHG reduction (Scenario A baseline nuclear), biomass demand = 85.2 TWh/yr:**
-- Under **S1/BES** (ceiling 148 TWh): 85.2 / 148 = **58% utilisation** — comfortable headroom. 95% decarbonisation is feasible.  
-- Under **S2/NFS** (ceiling 127 TWh): 85.2 / 127 = **67% utilisation** — still feasible, moderate constraint.  
-- Under **S3/BDS** (ceiling 96 TWh): 85.2 / 96 = **89% utilisation** — approaching the ceiling. Real-world constraints (supply chain, price signals not modelled) would likely push this to infeasibility, suggesting that **conservation forestry forecloses 95% decarbonisation** in Finland unless compensated by additional non-biomass solutions.
-
-**At 90% GHG reduction (Scenario B nuclear phase-out), biomass demand = 86.6 TWh/yr:**
-- Under S3/BDS: 86.6 / 96 = **90% utilisation** — the combination of nuclear phase-out + conservation forestry creates a binding biomass constraint already at 90% GHG reduction.
-
-These results, while preliminary and stylized (model runs under each scenario yet to be executed), provide a clear policy insight: **the choice of forest management regime is as consequential for Finland's climate targets as the choice of nuclear policy**, and the two dimensions interact. A full analysis coupling EnergyScope parametric runs under all three forest scenarios × nuclear alternatives × GHG targets is ongoing and will be reported in the final version.
-
-**[Figure: Schematic — Biomass demand under GHG sweep vs S1/S2/S3 ceilings]**
+> Figure X. Sankey diagram of the calibrated Finland 2017 energy system. The figure is used as a structural consistency check rather than as a statistical validation metric: it shows that the calibrated model reproduces the main conversion chains between imported fuels, domestic biomass, electricity generation, district heating, and final energy services.
 
 ---
 
-## APPENDIX: NOTES FOR FINAL VERSION
+## Suggested Section — Finland 2035 Scenario Design
 
-1. **Run the model for each forest scenario:** Use `Data/2035/FI/Resources_S1_BES.csv`, `Resources_S2_NFS.csv`, `Resources_S3_BDS.csv` with `run_ghg_sweep_2035.py` at 70%, 80%, 90%, 95% savings. Compare actual model outcomes vs. the stylized projections above.
+### Scenario matrix used in the paper
 
-2. **Add figure from GHG sweep analysis folder:** Figs 3 and 4 from `case_studies/FI/manual_runs/ghg_sweep_analysis/` should be embedded.
+The forward-looking analysis is now built around a 3 x 3 scenario matrix rather than the earlier generic GHG sweep. The two scenario dimensions are:
 
-3. **Add Sankey diagram for 2017 calibration:** `plots/validation_2017/validation_sankey.html` or the Sankey PNG if rendered.
+1. Forest biomass supply scenario: `S1_BES`, `S2_NFS`, `S3_BDS`
+2. GHG / nuclear configuration: `unconstrained`, `ghg_95pct`, `ghg_95pct_nonuke`
 
-4. **Consider adding cost curve figure** (cost vs GHG savings level, Scenarios A and B overlaid).
+The GHG baseline is Finland 2017 `CO2_net = 41.2 MtCO2/y`, so the 95% target corresponds to a binding limit of 2.06 MtCO2/y. The `ghg_95pct_nonuke` case applies the patch `fi_nuclear_phaseout_strong_2035.csv`, which sets `NUCLEAR f_min = 0` and `f_max = 0`, i.e. a strong no-nuclear counterfactual.
 
-5. **Extend validation discussion** with the note on coal/peat representation once those technologies are added to the model.
+The earlier 80% GHG column should be dropped from the paper. It has been superseded by the stronger and more policy-relevant `ghg_95pct_nonuke` counterfactual.
 
-6. **Update abstract year:** Abstract mentions 2050 but current scenarios are 2035. Clarify scope.
+### Biomass supply-curve construction
+
+The Finnish biomass representation follows the stepwise supply-curve logic introduced by Colla et al. for Belgium, but adapted to Finnish data and policy debates. Instead of a single homogeneous `WOOD` resource, the model uses four domestic steps plus an import backstop:
+
+| Resource step | Interpretation | Marginal cost |
+|---|---|---:|
+| `WOOD_FI1` | industrial by-products (black liquor, bark, sawdust) | 11 €/MWh |
+| `WOOD_FI2` | logging residues | 22 €/MWh in S1/S2, 26 €/MWh in S3 |
+| `WOOD_FI3` | secondary woodchips and sawdust streams | 27 €/MWh |
+| `WOOD_FI4` | direct fuelwood and landscape-care wood | 33 €/MWh |
+| `WOOD_FI5` | Baltic/Nordic import backstop | 70 €/MWh |
+
+This structure makes the biomass constraint visible as a rising marginal-cost ladder rather than an implicit single-price pool.
+
+### Forest scenarios and their parameterisation
+
+The three forest scenarios are derived from the Finnish forest-policy literature and then translated into EnergyScope parameters through the workflow documented in `Docs/biomass_scenario_mapping.md` and `Docs/biomass_supply_curve_fi.md`.
+
+| Scenario | Narrative | `WOOD_FI1` | `WOOD_FI2` | `WOOD_FI3` | `WOOD_FI4` | Domestic forest wood total |
+|---|---|---:|---:|---:|---:|---:|
+| S1 / BES | stylised high-mobilisation bioeconomy case | 54.53 TWh | 45.86 TWh | 15.05 TWh | 6.50 TWh | 121.94 TWh |
+| S2 / NFS | reference / national forest strategy baseline | 45.44 TWh | 38.21 TWh | 12.54 TWh | 5.42 TWh | 101.62 TWh |
+| S3 / BDS | biodiversity-first conservative case | 32.00 TWh | 6.00 TWh | 1.50 TWh | 0.50 TWh | 40.00 TWh |
+
+Scientific interpretation of the three cases:
+- `S1_BES` is a stylised high-biomass sensitivity case, not a literal one-to-one transcription of the Blattert et al. BES simulation.
+- `S2_NFS` is the neutral reference built from ENSPRESO medium potentials for 2035.
+- `S3_BDS` is the conservative biodiversity case. It is not the original ENSPRESO ENS_Low 2030 value of 74.2 TWh anymore. That initial value was revised downward after a three-way audit using LUKE 2024 observed biomass use, Mönkkönen et al. ecological harvest ceilings, and competing industrial roundwood demand. The revised domestic forest-biomass ceiling is 40 TWh.
+
+This conservative S3 revision is essential for scientific honesty. The paper should state explicitly that the original ENSPRESO low case was judged too optimistic for a genuine biodiversity-constrained Finnish forest system.
+
+### Figure to insert
+
+Main supply-curve figure:
+- `plots/biomass_supply_curves_fi_2035.png`
+
+Suggested caption language:
+
+> Figure X. Stepwise Finnish wood biomass supply curves used in the 2035 scenario matrix. S1 represents a stylised high-mobilisation case, S2 the ENSPRESO medium baseline, and S3 a conservative biodiversity-constrained supply after revision with LUKE 2024 and Mönkkönen et al. (2024). The vertical markers indicate the domestic forest-biomass ceilings; the import backstop is represented by the high-cost final step.
+
+---
+
+## Suggested Section — Finland 2035 Results Under Forest and Emissions Scenarios
+
+### Why the unconstrained 2035 cases are already deeply decarbonised
+
+Across the three forest cases, the unconstrained 2035 optimum already yields `CO2_net` values between 12.6 and 13.1 MtCO2/y, corresponding to a 68–70% reduction relative to the 2017 baseline. This is not a paradox. The 2035 dataset already embeds a strong structural decarbonisation floor through coal phase-out, brownfield renewable deployment, and the rest of the Finnish 2035 technology assumptions. The policy-relevant question is therefore not whether the unconstrained 2035 system decarbonises, but how the system reaches the last part of the path from roughly 70% to 95% under different forest constraints and with or without nuclear.
+
+### Main results table
+
+Table Y summarises the final 3 x 3 matrix using the latest completed run for each forest x GHG case in `case_studies/FI/forest_scenarios_2035/`.
+
+| Forest scenario | GHG case | System cost | `CO2_net` | Reduction vs 2017 | Finnish forest wood used |
+|---|---|---:|---:|---:|---:|
+| S1_BES | Unconstrained | 22.40 bn€/y | 13.02 MtCO2/y | 68.4% | 54.5 TWh |
+| S1_BES | -95% GHG (with nuclear) | 22.92 bn€/y | 2.06 MtCO2/y | 95.0% | 74.2 TWh |
+| S1_BES | -95% GHG (no nuclear) | 22.94 bn€/y | 2.06 MtCO2/y | 95.0% | 100.4 TWh |
+| S2_NFS | Unconstrained | 22.46 bn€/y | 12.57 MtCO2/y | 69.5% | 45.4 TWh |
+| S2_NFS | -95% GHG (with nuclear) | 23.02 bn€/y | 2.06 MtCO2/y | 95.0% | 74.2 TWh |
+| S2_NFS | -95% GHG (no nuclear) | 23.12 bn€/y | 2.06 MtCO2/y | 95.0% | 96.2 TWh |
+| S3_BDS | Unconstrained | 22.62 bn€/y | 13.10 MtCO2/y | 68.2% | 32.0 TWh |
+| S3_BDS | -95% GHG (with nuclear) | 23.56 bn€/y | 2.06 MtCO2/y | 95.0% | 40.0 TWh |
+| S3_BDS | -95% GHG (no nuclear) | 23.90 bn€/y | 2.06 MtCO2/y | 95.0% | 40.0 TWh |
+
+Note on units:
+- “System cost” is the annualised `TotalCost.csv` value.
+- “Finnish forest wood used” sums `WOOD_FI1` to `WOOD_FI5` from `Resources.csv` and therefore measures use of the forest-wood ladder only, not all other biomass resources.
+
+### Interpretation of the matrix
+
+Three results deserve emphasis.
+
+First, the unconstrained cases are relatively close in cost, but not identical in biomass use. S3-BDS is already more constrained than S1 and S2 even without a climate target: the unconstrained optimiser uses about 54.5 TWh of forest wood in S1, 45.4 TWh in S2, but only 32.0 TWh in S3, while total `CO2_net` remains around 13 MtCO2/y in all three cases.
+
+Second, the -95% GHG case with nuclear does not exhaust the S1 or S2 resource ceilings, but it fully saturates S3. With nuclear available, the model uses 74.2 TWh of forest wood in both S1 and S2, which corresponds to about 61% of the S1 ceiling and 73% of the S2 ceiling. In S3-BDS, however, the model immediately hits the 40 TWh ceiling. This is the cleanest expression of the biodiversity constraint in the current results: the 95% system remains feasible in the optimisation, but only at higher cost and with no forest-biomass margin left.
+
+Third, removing nuclear sharply increases the value of biomass in S1 and S2, but S3 cannot expand further. In the no-nuclear case, forest wood use rises from 74.2 to 100.4 TWh in S1 and from 74.2 to 96.2 TWh in S2. In S3-BDS it remains stuck at 40 TWh because the scenario ceiling is binding in both 95% cases. This is why the no-nuclear cost penalty is smallest in S1 and largest in S3: the model can replace lost nuclear electricity partly with additional forest biomass in S1 and S2, but not in S3.
+
+The correct interpretation is therefore not that S3 makes -95% impossible in the model, but that S3 removes forest biomass as a flexible adjustment margin. Deep decarbonisation remains feasible in the optimiser because it can still rely on electrification, wind, hydro, non-forest biomass, and imported carriers. However, the biodiversity-constrained scenario becomes the most expensive configuration and uses all domestic forest wood steps already under the 95% target.
+
+### Figures to insert
+
+Main 2035 result figures:
+- `plots/forest_scenarios_2035_energy_matrix.png`
+- `plots/forest_scenarios_2035_biomass_allocation.png`
+
+Suggested caption language for the matrix figure:
+
+> Figure X. Finland 2035 scenario matrix across three forest-management cases and three GHG configurations. The top row shows the primary-energy mix, while the bottom row shows the use of the Finnish forest-wood supply ladder. The unconstrained cases already reach roughly a 70% reduction versus 2017. The biodiversity-constrained S3 case is distinguished by early saturation of the domestic wood ceiling, especially under the -95% target.
+
+Suggested caption language for the biomass-allocation figure:
+
+> Figure X. Biomass allocation by final use in Finland 2035. The figure highlights how the no-nuclear cases increase pressure on biomass in S1 and S2, whereas S3-BDS remains capped by its conservative forest-biomass ceiling and therefore relies more heavily on non-biomass adjustments elsewhere in the system.
+
+---
+
+## Suggested Final Section — Next Step: Disturbance Shocks and Dynamic Biomass Supply
+
+The present paper should end by making a sharp distinction between what is already implemented and what remains a research extension.
+
+What is already implemented in the current version:
+- a calibrated 2017 Finnish baseline
+- a 2035 multi-step biomass supply curve
+- three forest-management narratives translated into EnergyScope parameters
+- a completed 3 x 3 scenario matrix crossing forest management with GHG ambition and nuclear availability
+
+What is not yet implemented, and should be presented strictly as future work:
+- dynamic annual forest trajectories under windstorm, bark-beetle, and wildfire disturbance
+- endogenous post-disturbance biomass price shocks
+- quality-differentiated calamity wood flows
+- constrained short-run energy-system re-optimisation after a disturbance event
+
+### Insertion-ready future-work text
+
+The next stage of the research is to move from static scenario shifts to disturbance-driven biomass trajectories. Following the concept note in `Docs/Coupled_Forest_Energy_Modelling_Finland_concept_note.docx`, the planned extension is to couple the Finnish forest simulator used by the Jyvaskyla/Luke team with the FLAM and PICUS disturbance modules developed in the ForestNavigator framework. The purpose of this coupling is to generate annual biomass supply curves for Finland under contrasting management regimes and climate pathways, while explicitly representing wildfire risk, bark-beetle outbreaks, windthrow, salvageable calamity wood, and the subsequent reduction in standing stock.
+
+In EnergyScope terms, this would allow the biomass ladder to evolve over time instead of remaining fixed for a single target year. The disturbance case is not simply a lower biomass ceiling. It is expected to generate a time profile with three distinct effects: a short-lived pulse of salvage wood, a temporary price depression for low-quality biomass, and a longer-lived structural reduction in future availability after damaged stands are harvested or lost. Methodologically, the concept note proposes a pre-shock 2030 snapshot, followed by a post-shock 2035 snapshot in which supply curves are updated and the energy system cannot fully re-optimise because investment lead times and inherited infrastructure lock in part of the pre-shock fleet.
+
+This future extension is scientifically important because it would connect biodiversity policy, forest risk, and energy-system resilience in a single framework. However, the current paper should not claim disturbance results yet. At this stage, the disturbance module is best presented as the logical continuation of the present work: the current article establishes the calibrated national baseline and the static management-scenario framework; the next article or next project phase would add dynamic disturbance shocks and price effects on top of that validated foundation.
+
+### Practical paper-safe closing sentence
+
+> A natural extension of the present work is to replace the static 2035 biomass ladders with annually updated supply curves derived from coupled forest-growth and disturbance models, thereby allowing windstorm, bark-beetle, and wildfire shocks to affect not only the quantity of biomass available to the energy system but also its timing, quality, and marginal cost.
+
+---
+
+## Asset Checklist for the Paper
+
+Validation 2017:
+- `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/pe_comparison.png`
+- `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/elec_comparison.png`
+- `case_studies/FI/manual_runs/20260323_173930__2017_baseline/validation_plots/error_chart.png`
+- `plots/validation_2017/validation_table.csv`
+- `plots/validation_2017/validation_sankey.html` (interactive supplementary asset; static export still needs cleanup)
+
+Scenario design 2035:
+- `plots/biomass_supply_curves_fi_2035.png`
+- `Docs/biomass_scenario_mapping.md`
+- `Docs/biomass_supply_curve_fi.md`
+
+Scenario results 2035:
+- `plots/forest_scenarios_2035_energy_matrix.png`
+- `plots/forest_scenarios_2035_biomass_allocation.png`
+- `case_studies/FI/forest_scenarios_2035/` latest run directories for S1, S2, S3 under the three retained GHG cases
+
+Future work:
+- `Docs/Coupled_Forest_Energy_Modelling_Finland_concept_note.docx`

@@ -8,6 +8,14 @@ import numpy as np
 from pathlib import Path
 
 
+SyntheticSource = {
+    "HPs": {
+        "source": "Ambient heat",
+        "layer": "Ambient heat",
+    }
+}
+
+
 class Cell:
 
     def __init__(self, name, year_balance, storage):
@@ -143,15 +151,23 @@ def write_sankey_file(space_id, case_study):
                     if value > 0:
                         tech_count = tech_count + 1
 
+            synthetic_source_flows = get_synthetic_source_flows(cell)
+
             for layer in cell.year_balance.T.index:
                 for tech in cell.year_balance.T.columns:
                     value = cell.year_balance.T.loc[layer][tech]
                     if value < -10:
+                        if tech in synthetic_source_flows:
+                            print("%s,%s,%f,%s,%s,%s" % synthetic_source_flows.pop(tech),
+                                  file=input2csv_file)
                         if layer in EndUseLayer:
                             continue
                         elif tech != "End Use":
                             print("%s,%s,%f,%s,%s,%s" % (layer, tech, -value / 1000, layer, LayerColor[layer], "TWh"),
                                   file=input2csv_file)
+
+            for synthetic_flow in synthetic_source_flows.values():
+                print("%s,%s,%f,%s,%s,%s" % synthetic_flow, file=input2csv_file)
 
             for layer in EndUseName:
                 value = cell.year_balance.loc["End Use"][layer]
@@ -159,6 +175,31 @@ def write_sankey_file(space_id, case_study):
                     print("%s,%s,%f,%s,%s,%s" %
                           (layer, EndUseName[layer], -value / 1000, layer, LayerColor[layer], "TWh"),
                           file=input2csv_file)
+
+
+def get_synthetic_source_flows(cell):
+    flows = {}
+
+    for tech, spec in SyntheticSource.items():
+        if tech not in cell.year_balance.index:
+            continue
+
+        row = cell.year_balance.loc[tech]
+        total_inputs = -row[row < 0].sum()
+        total_outputs = row[row > 0].sum()
+        missing_flow = total_outputs - total_inputs
+
+        if missing_flow > 50:
+            flows[tech] = (
+                spec["source"],
+                tech,
+                missing_flow / 1000,
+                spec["layer"],
+                LayerColor[spec["layer"]],
+                "TWh",
+            )
+
+    return flows
 
 
 RegroupElements = {
@@ -356,6 +397,7 @@ EndUseName = {
 
 LayerColor = {
     "Elec.": "#00BFFF",
+    "Ambient heat": "#F6C8BD",
     "Oil": "#8B008B",
     "Jet Fuel": "#CDC0B0",
     "Diesel": "#D3D3D3",

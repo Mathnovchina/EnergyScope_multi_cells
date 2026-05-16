@@ -38,9 +38,9 @@ STEP_LABELS = [
 ]
 
 SC_STYLE = {
-    "S1-BES": {"color": "#a04000", "lw": 2.4, "label": "S1 – High potential (Bioeconomy strategy, +20% vs. ref.)"},
-    "S2-NFS": {"color": "#4a4a4a", "lw": 2.4, "label": "S2 – Reference / BAU (Policy trends)"},
-    "S3-BDS": {"color": "#1e6b3c", "lw": 2.4, "label": "S3 – Low potential (Biodiversity-friendly, −15% vs. ref.)"},
+    "S1-BES": {"color": "#a04000", "lw": 2.4, "label": "S1 - BES: stylised high-mobilisation case"},
+    "S2-NFS": {"color": "#4a4a4a", "lw": 2.4, "label": "S2 - NFS: ENSPRESO-medium reference"},
+    "S3-BDS": {"color": "#1e6b3c", "lw": 2.4, "label": "S3 - BDS: conservative biodiversity case"},
 }
 
 # Step background shading colours (very light)
@@ -76,8 +76,8 @@ def build_staircase(sc_data, keys):
 
 
 # ── Figure layout: single main panel ─────────────────────────────────────────
-fig = plt.figure(figsize=(11, 6))
-ax_main = fig.add_axes([0.08, 0.12, 0.88, 0.80])
+fig = plt.figure(figsize=(13.2, 6.6))
+ax_main = fig.add_axes([0.08, 0.12, 0.84, 0.80])
 
 # ── Compute all staircases ───────────────────────────────────────────────────
 all_data = {}
@@ -90,12 +90,6 @@ ref_spans = all_data["S2-NFS"]["spans"]
 for i, (xl, xr, c_mwh, backstop) in enumerate(ref_spans):
     ax_main.axvspan(xl, xr, alpha=0.07, color=STEP_BG[i],
                     ymin=0, ymax=1, zorder=0)
-    # Step label: use S2-NFS band mid-point but cap to visible region
-    mid = (xl + min(xr, X_MAX - 1)) / 2
-    y_lbl = 5 if i == 0 else 73
-    ax_main.text(mid, y_lbl, f"Step {i+1}", ha="center",
-                 va="bottom" if i == 0 else "top",
-                 fontsize=8.5, color="#555", fontstyle="italic")
 
 # ── Draw staircases ──────────────────────────────────────────────────────────
 dom_offsets = {"S1-BES": 2.5, "S2-NFS": 0, "S3-BDS": -2.5}
@@ -124,43 +118,20 @@ ax_main.set_xticks(range(0, X_MAX, 10))
 ax_main.set_xlabel("Cumulative available supply (TWh/yr)", fontsize=11)
 ax_main.set_ylabel("Marginal supply cost (€/MWh)", fontsize=11)
 ax_main.set_title(
-    "Finnish Wood Biomass Supply Curves – Finland 2035\n"
-    "S1: Bioeconomy strategy (high potential)  ·  "
-    "S2: Reference / BAU  ·  "
-    "S3: Biodiversity-friendly (low potential)",
-    fontsize=10.5,
+    "Finnish Forest-Biomass Supply Curves for 2035\n"
+    "S1 BES | S2 NFS | S3 BDS",
+    fontsize=11,
 )
-ax_main.legend(loc="upper center", fontsize=9.5, framealpha=0.9,
-               bbox_to_anchor=(0.5, 0.98), ncol=1)
+ax_main.legend(
+    loc="center right",
+    fontsize=9.3,
+    framealpha=0.95,
+    bbox_to_anchor=(0.985, 0.56),
+    borderaxespad=0.3,
+    title="Forest scenario",
+    title_fontsize=9.5,
+)
 ax_main.grid(True, alpha=0.22, ls=":")
-
-# ── Literature-based upper bound for S3-BDS ──────────────────────────────────
-# Conservative ceiling based on:
-#   Mönkkönen et al. 2024 (biodiversity-safe harvest = 58% MAI ≈ 48 Mm³/yr)
-#   + LUKE 2024 (logging residues 2024: 2.6 Mm³ = 5 TWh; industry needs 45-48 Mm³)
-# Proposed conservative S3-BDS total: FI1=32 + FI2=6 + FI3=1.5 + FI4=0.5 = 40 TWh
-bds_conservative_ceiling = 40.0
-bds_current_ceiling = all_data["S3-BDS"]["dom"]  # ~74 TWh
-
-ax_main.axvspan(bds_conservative_ceiling, bds_current_ceiling,
-                alpha=0.10, color="#1e6b3c", zorder=0,
-                label="_nolegend_")
-ax_main.axvline(bds_conservative_ceiling, color="#1e6b3c", lw=1.4,
-                ls=(0, (4, 2)), alpha=0.85)
-ax_main.annotate(
-    "Proposed BDS ceiling\n(Mönkkönen 2024 +\nLUKE 2024 competing use)",
-    xy=(bds_conservative_ceiling, 38),
-    xytext=(bds_conservative_ceiling + 6, 50),
-    fontsize=7.5, color="#1e6b3c",
-    arrowprops=dict(arrowstyle="->", color="#1e6b3c", lw=0.9, shrinkA=0),
-    bbox=dict(boxstyle="round,pad=0.25", facecolor="white",
-              edgecolor="#1e6b3c", alpha=0.80, lw=0.7),
-)
-ax_main.text(
-    (bds_conservative_ceiling + bds_current_ceiling) / 2, 21,
-    "over-est.\nzone", fontsize=7.5, color="#1e6b3c", alpha=0.7,
-    ha="center", va="center", style="italic",
-)
 
 # Panel label
 ax_main.annotate("a)", xy=(0.015, 0.975), xycoords="axes fraction",
@@ -170,10 +141,15 @@ ax_main.annotate("a)", xy=(0.015, 0.975), xycoords="axes fraction",
                            edgecolor="none", alpha=0.75))
 
 # Backstop label
-ax_main.text(76, 71.5, "Step 5: Baltic/Nordic imports (70 €/MWh)",
+ax_main.text(84, 67.5, "Baltic/Nordic import backstop (70 €/MWh)",
              fontsize=8.5, color="#555")
 
 # ── Save ─────────────────────────────────────────────────────────────────────
-out = os.path.join(BASE, "plots", "biomass_supply_curves_fi_2035.png")
-plt.savefig(out, dpi=160, bbox_inches="tight")
-print(f"Saved: {out}")
+out_base = os.path.join(BASE, "plots", "biomass_supply_curves_fi_2035")
+for ext, kwargs in {
+    "png": {"dpi": 160},
+    "pdf": {},
+}.items():
+    out = f"{out_base}.{ext}"
+    plt.savefig(out, bbox_inches="tight", **kwargs)
+    print(f"Saved: {out}")
