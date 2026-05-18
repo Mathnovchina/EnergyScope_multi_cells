@@ -119,17 +119,23 @@ This is lower than the previous flat price of 0.02208 €/kWh, reflecting the la
 
 ### 2.4 GHG Emission Factors
 
-Lifecycle GHG from supply (harvesting + transport, excluding combustion CO₂ which is considered carbon-neutral):
+Lifecycle GHG from supply (harvesting + transport, excluding combustion CO₂ which is considered carbon-neutral).  
+Values updated to RED II Annex VI supply-chain defaults as tabulated by Colla et al. (2022). **Updated 2026-05 from preliminary monotone gradient (0.020–0.026).**
 
-| Step | gwp_op_local (ktCO₂/GWh) | Basis |
-|------|--------------------------|-------|
-| WOOD_FI1 | 0.020 | Very short transport (on-site by-products); lower than WOOD average |
-| WOOD_FI2 | 0.022 | Medium-distance truck transport from logging sites (~50 km average) |
-| WOOD_FI3 | 0.024 | Secondary processing step + transport |
-| WOOD_FI4 | 0.026 | Collection from dispersed sites; slightly higher fuel use |
-| WOOD_FI5 | 0.040 | Maritime + inland transport from Baltic; comparable to Colla WOOD10 |
+| Step | gwp_op_local (ktCO₂/GWh) | RED II Annex VI basis | Notes |
+|------|--------------------------|----------------------|-------|
+| WOOD_FI1 | **0.010** | ~50% of local forest-residue baseline (case 3a = 0.0216) | Mill-gate by-products: absent in-forest collection and forwarding steps; black liquor self-consumed, bark/sawdust at plant gate |
+| WOOD_FI2 | 0.022 | Case 3a, ≤500 km, forest residues = 0.0216 ≈ 0.022 | Logging residues: in-forest collection + forwarding + chipping + ~50 km transport — unchanged |
+| WOOD_FI3 | **0.014** | Case 7a, agricultural/short-supply-chain residues = 0.0144 | Secondary mill residues at processing sites; minimal additional transport; case 7a is conservative upper bound |
+| WOOD_FI4 | **0.019** | Blend 60% fuelwood (case 3a ≈ 0.022) + 40% landscape-care (case 7a ≈ 0.0144) → 0.0189 ≈ 0.019 | Fuelwood requires harvest + transport; landscape-care wood is short-chain |
+| WOOD_FI5 | 0.040 | Case 3a, >10,000 km = 0.0396 ≈ 0.040 | Rest-of-world backstop (Baltic/Nordic as primary market); conservative upper bound — unchanged |
 
-Reference: current WOOD gwp_op_local in `02_REF_REGION/Resources.csv` = 0.02456 ktCO₂/GWh (intermediate between WOOD_FI2 and WOOD_FI3 — consistent).
+**GHG merit order** (non-monotone with cost order): FI1(10) < FI3(14) < FI4(19) < FI2(22) << FI5(40).  
+This is physically correct: cheaper logging residues (FI2) require more supply-chain steps than mill-gate by-products (FI1, FI3).
+
+**Materiality note**: The revision (FI1: 20→10, FI3: 24→14, FI4: 26→19) reduces total biomass supply-chain GHG by ~600–750 ktCO₂/year under full domestic ceilings (S1/S2 at ~100–120 TWh). At a −95% GHG budget (~2,060 ktCO₂/y), this is ~25–35% of the remaining budget and may marginally affect GHG-constrained scenario results.
+
+Reference: aggregate WOOD gwp_op_local in `02_REF_REGION/Resources.csv` = 0.02456 ktCO₂/GWh (used as sanity check; now superseded for disaggregated FI steps).
 
 ### 2.5 ENSPRESO Time-Horizon Choice and Interpolation Methodology
 
