@@ -34,7 +34,7 @@ STEP_LABELS = [
     "Step 2: Logging residues\n(branches, tops — MINBIOFRSR1)",
     "Step 3: Secondary woodchips\n(MINBIOWOOW1 + W1a)",
     "Step 4: Fuelwood & landscape\n(MINBIOWOO + FRSR1a)",
-    "Step 5: Baltic/Nordic imports\n(unlimited backstop)",
+    "Step 5: Rest-of-world import backstop\n(unlimited)",
 ]
 
 SC_STYLE = {
@@ -141,7 +141,7 @@ ax_main.annotate("a)", xy=(0.015, 0.975), xycoords="axes fraction",
                            edgecolor="none", alpha=0.75))
 
 # Backstop label
-ax_main.text(84, 67.5, "Baltic/Nordic import backstop (70 €/MWh)",
+ax_main.text(84, 67.5, "Rest-of-world import backstop (70 €/MWh)",
              fontsize=8.5, color="#555")
 
 # ── Save ─────────────────────────────────────────────────────────────────────
