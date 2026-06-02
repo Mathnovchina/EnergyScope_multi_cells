@@ -125,9 +125,9 @@ AVAIL_STYLES = [
 # ─── BIOMASS ALLOCATION (Colla Fig. 4 equivalent) ────────────────────────
 # Technology → final-use category mapping
 BIOMASS_TECH_MAP = {
-    "IND_BOILER_WOOD":              "HT heat — boilers (wood)",
-    "IND_BOILER_BIOWASTE":          "HT heat — boilers (wood)",
-    "IND_BOILER_WASTE":             "HT heat — boilers (waste)",
+    "IND_BOILER_WOOD":              "HT heat — boilers",
+    "IND_BOILER_BIOWASTE":          "HT heat — boilers",
+    "IND_BOILER_WASTE":             "HT heat — boilers",
     "IND_COGEN_WOOD":               "HT heat — CHP",
     "IND_COGEN_WASTE":              "HT heat — CHP",
     "DHN_BOILER_WOOD":              "LT heat — DHN boilers",
@@ -144,11 +144,52 @@ BIOMASS_TECH_MAP = {
     "BIOMASS_TO_GASOLINE":          "Mobility fuels",
     "BIOMASS_TO_JET_FUEL":          "Mobility fuels",
     "BIOMASS_TO_LFO":               "Mobility fuels",
-    "BIOMASS_TO_METHANE":           "Mobility fuels",
     "BIOWASTE_TO_DIESEL":           "Mobility fuels",
     "BIOWASTE_TO_JET_FUEL":         "Mobility fuels",
-    "BIOMETHANATION_WET_BIOMASS":   "Biogas / biomethanation",
-    "BIOMETHANATION_BIOWASTE":      "Biogas / biomethanation",
+    # NOTE: BIOMASS_TO_METHANE, BIOWASTE_TO_METHANE, BIOMETHANATION_WET_BIOMASS,
+    # BIOMETHANATION_BIOWASTE are deliberately omitted here. They are intermediate
+    # conversions producing methane (GAS layer); their feedstock is re-routed to
+    # the downstream final use of the methane (Electricity / LT heat / Mobility / etc.)
+    # via GAS_TECH_MAP below.
+}
+# Technologies that convert biomass feedstock into the GAS layer (methane).
+# Their biomass consumption is re-attributed to the GAS-consuming end-uses.
+BIOMASS_TO_GAS_TECHS = (
+    "BIOMASS_TO_METHANE",
+    "BIOWASTE_TO_METHANE",
+    "BIOMETHANATION_WET_BIOMASS",
+    "BIOMETHANATION_BIOWASTE",
+)
+# Map of GAS-consuming technologies → final-use category (used to redistribute
+# the biomass feedstock that flows through the GAS layer).
+GAS_TECH_MAP = {
+    # HT industrial heat
+    "IND_BOILER_NG":           "HT heat \u2014 boilers",      # industrial process heat
+    "IND_COGEN_GAS":           "HT heat \u2014 CHP",
+    # DHN heat
+    "DHN_BOILER_GAS":          "LT heat \u2014 DHN boilers",
+    "DHN_COGEN_GAS":           "LT heat \u2014 DHN CHP",
+    "DHN_COGEN_GAS_a":         "LT heat \u2014 DHN CHP",
+    "DHN_COGEN_GAS_b":         "LT heat \u2014 DHN CHP",
+    "DHN_COGEN_GT":            "LT heat \u2014 DHN CHP",
+    # Decentralised heat
+    "DEC_BOILER_GAS":          "LT heat \u2014 decentralised",
+    "DEC_COGEN_GAS":           "LT heat \u2014 decentralised",
+    "DEC_ADVCOGEN_GAS":        "LT heat \u2014 decentralised",
+    "DEC_THHP_GAS":            "LT heat \u2014 decentralised",
+    # Power
+    "CCGT":                    "Electricity",
+    "CCGT_AMMONIA":            "Electricity",
+    # Materials / chemicals
+    "GAS_TO_HVC":              "NED / chemicals",
+    "GAS_TO_METHANOL":         "NED / chemicals",
+    "GAS_TO_LFO":              "NED / chemicals",
+    # Mobility
+    "CAR_NG":                  "Mobility fuels",
+    "TRUCK_NG":                "Mobility fuels",
+    "BUS_COACH_CNG_STOICH":    "Mobility fuels",
+    "BOAT_FREIGHT_NG":         "Mobility fuels",
+    "H2_NG":                   "Mobility fuels",   # H2 ultimately mostly serves FCEVs
 }
 BIOMASS_RESOURCE_COLS = [
     "WOOD", "WET_BIOMASS", "BIOWASTE", "BIOMASS_RESIDUES", "ENERGY_CROPS_2", "WASTE",
@@ -156,8 +197,7 @@ BIOMASS_RESOURCE_COLS = [
 
 # Final-use category display order (bottom → top), colours, hatch
 ALLOC_ORDER = [
-    "HT heat — boilers (wood)",
-    "HT heat — boilers (waste)",
+    "HT heat — boilers",
     "HT heat — CHP",
     "LT heat — DHN boilers",
     "LT heat — DHN CHP",
@@ -165,11 +205,9 @@ ALLOC_ORDER = [
     "Electricity",
     "NED / chemicals",
     "Mobility fuels",
-    "Biogas / biomethanation",
 ]
 ALLOC_COLORS = {
-    "HT heat — boilers (wood)":    "#1a5276",   # dark navy (solid — wood)
-    "HT heat — boilers (waste)":   "#1a5276",   # same navy, hatched
+    "HT heat — boilers":           "#1a5276",   # dark navy
     "HT heat — CHP":               "#e67e22",   # orange
     "LT heat — DHN boilers":       "#27ae60",   # green
     "LT heat — DHN CHP":           "#a9dfbf",   # light green
@@ -177,10 +215,9 @@ ALLOC_COLORS = {
     "Electricity":                 "#f7dc6f",   # yellow
     "NED / chemicals":             "#aaaaaa",   # gray, hatched
     "Mobility fuels":              "#e91e8c",   # hot pink
-    "Biogas / biomethanation":     "#c8e026",   # yellow-green
 }
 ALLOC_HATCHES = {
-    "HT heat — boilers (waste)":   "////",
+
     "NED / chemicals":             "////",
 }
 
@@ -232,17 +269,59 @@ def load_run(run_dir: Path) -> dict:
     yb       = pd.read_csv(out / "Year_balance.csv", index_col=0)
     bio_cols = [c for c in BIOMASS_RESOURCE_COLS if c in yb.columns]
     alloc: dict[str, float] = {}
-    for tech in yb.index:
-        consumption = sum(
-            abs(float(yb.loc[tech, c]))
-            for c in bio_cols
-            if float(yb.loc[tech, c]) < -0.01
-        )
-        if consumption > 0.01:
-            cat = BIOMASS_TECH_MAP.get(tech, "Other")
-            alloc[cat] = alloc.get(cat, 0.0) + consumption / 1000  # GWh → TWh
+    wood_used_gwh = 0.0   # consumption that came from the WOOD column only
+    bio_used_gwh  = 0.0   # consumption from any biomass column
+    # Feedstock channelled through the GAS layer (re-routed below)
+    biomass_to_gas_feedstock_gwh = 0.0
+    biomass_to_gas_wood_gwh      = 0.0
 
-    return {"carriers": carriers, "tiers": tiers, "cost": cost, "gwp": gwp, "alloc": alloc}
+    for tech in yb.index:
+        # Per-resource consumption of biomass feedstocks
+        per_col = {}
+        for c in bio_cols:
+            v = float(yb.loc[tech, c])
+            if v < -0.01:
+                per_col[c] = abs(v)
+        consumption = sum(per_col.values())
+        if consumption <= 0.01:
+            continue
+
+        bio_used_gwh  += consumption
+        wood_used_gwh += per_col.get("WOOD", 0.0)
+
+        if tech in BIOMASS_TO_GAS_TECHS:
+            # Will be re-routed to GAS-consuming end-uses below
+            biomass_to_gas_feedstock_gwh += consumption
+            biomass_to_gas_wood_gwh      += per_col.get("WOOD", 0.0)
+            continue
+
+        cat = BIOMASS_TECH_MAP.get(tech, "Other")
+        alloc[cat] = alloc.get(cat, 0.0) + consumption / 1000  # GWh → TWh
+
+    # ── Re-route biomass-to-gas feedstock to its downstream final use ────
+    if biomass_to_gas_feedstock_gwh > 0.01 and "GAS" in yb.columns:
+        gas_consumer_shares: dict[str, float] = {}
+        for tech in yb.index:
+            v = float(yb.loc[tech, "GAS"])
+            if v < -0.01 and tech != "GAS_STORAGE":
+                gas_consumer_shares[tech] = abs(v)
+        total_gas_demand = sum(gas_consumer_shares.values())
+        if total_gas_demand > 0:
+            for tech, demand in gas_consumer_shares.items():
+                cat = GAS_TECH_MAP.get(tech, "Other")
+                share = demand / total_gas_demand
+                alloc[cat] = alloc.get(cat, 0.0) + (
+                    biomass_to_gas_feedstock_gwh * share / 1000
+                )
+
+    wood_share = wood_used_gwh / bio_used_gwh if bio_used_gwh > 0 else 0.0
+
+    return {
+        "carriers": carriers, "tiers": tiers, "cost": cost, "gwp": gwp,
+        "alloc": alloc, "wood_share": wood_share,
+        "bio_total_twh": bio_used_gwh / 1000,
+        "wood_total_twh": wood_used_gwh / 1000,
+    }
 
 
 def find_run(scenario: str, ghg: str) -> Path | None:
@@ -493,12 +572,7 @@ def main():
         )
 
     # ─── FIGURE TITLE ─────────────────────────────────────────────────────
-    fig.suptitle(
-        "Finland 2035 — Energy mix & biomass supply ladder\n"
-        "under different forest management intensity  ×  GHG reduction ambition",
-        fontsize=13.5, fontweight="bold", y=0.965,
-        color="#1a252f",
-    )
+    # (no suptitle — caption is in the paper)
 
     # ─── SAVE ─────────────────────────────────────────────────────────────
     for suffix, kwargs in {
@@ -529,8 +603,8 @@ def plot_biomass_allocation(data: dict) -> None:
     x_groups   = np.arange(len(GHG_TARGETS)) * group_gap
     offsets    = np.array([-bar_w * 1.15, 0.0, bar_w * 1.15])
 
-    fig, ax = plt.subplots(figsize=(14.6, 7.9))
-    fig.subplots_adjust(left=0.08, right=0.72, top=0.84, bottom=0.14)
+    fig, ax = plt.subplots(figsize=(16.4, 7.9))
+    fig.subplots_adjust(left=0.06, right=0.70, top=0.84, bottom=0.14)
     ax.set_facecolor("#fafafa")
 
     for gi, xg in enumerate(x_groups):
@@ -572,16 +646,29 @@ def plot_biomass_allocation(data: dict) -> None:
                 zorder=4,
             )
 
-        # Total label above each bar
+        # Total label and woody-share label above each bar
         for i, (xb, ghg) in enumerate(zip(x_bars, GHG_TARGETS)):
             key = (scen_key, ghg)
             if key in data:
                 tot = sum(data[key]["alloc"].values())
+                wshare = data[key].get("wood_share", 0.0) * 100
+                # total close to bar
                 ax.annotate(
                     f"{tot:.1f}",
-                    xy=(xb, bottoms[i] + 0.8),
+                    xy=(xb, bottoms[i] + 1.0),
                     ha="center", va="bottom",
-                    fontsize=7.5, color=scen_info["color"], fontweight="bold",
+                    fontsize=7.8, color=scen_info["color"], fontweight="bold",
+                )
+                # wood share above the total, in a small white box for legibility
+                ax.annotate(
+                    f"wood {wshare:.0f}%",
+                    xy=(xb, bottoms[i] + 7.0),
+                    ha="center", va="bottom",
+                    fontsize=7.0, color="#2c3e50", style="italic",
+                    bbox=dict(
+                        boxstyle="round,pad=0.12",
+                        facecolor="white", edgecolor="none", alpha=0.85,
+                    ),
                 )
 
     # ── X-axis labels: each bar gets S1 / S2 / S3, group title stays above ─
@@ -602,7 +689,7 @@ def plot_biomass_allocation(data: dict) -> None:
     for gi, xg in enumerate(x_groups):
         ax.annotate(
             GHG_LABELS[gi].replace("\n", " "),
-            xy=(xg, 119.5),
+            xy=(xg, 134.0),
             ha="center", va="bottom",
             fontsize=10, fontweight="bold", color="#1a252f",
             bbox=dict(boxstyle="round,pad=0.25", facecolor="white", edgecolor="#d0d7de", alpha=0.95),
@@ -612,8 +699,8 @@ def plot_biomass_allocation(data: dict) -> None:
         ax.axvline((left + right) / 2, color="#c9d1d9", lw=1.0, ls=":", zorder=1)
 
     # ── Y axis ────────────────────────────────────────────────────────────
-    ax.set_ylim(0, 128)
-    ax.set_ylabel("Biomass used  (TWh/y)", fontsize=11)
+    ax.set_ylim(0, 145)
+    ax.set_ylabel("Biomass used  (TWh/y)\nattributed to final use", fontsize=11)
     ax.grid(axis="y", alpha=0.25, zorder=0)
     ax.set_xlim(x_groups[0] - 0.72, x_groups[-1] + 0.72)
 
@@ -621,7 +708,7 @@ def plot_biomass_allocation(data: dict) -> None:
     ned_val = 28.7   # always constant across all 9 runs
     ax.axhline(
         ned_val, color="#888888", ls="--", lw=1.2, zorder=2,
-        label=f"NED/chemicals floor  ({ned_val} TWh, constant)",
+        label=f"NED floor ({ned_val} TWh)",
     )
     ax.annotate(
         f"← NED floor: {ned_val} TWh (invariant)", color="#666666",
@@ -634,7 +721,7 @@ def plot_biomass_allocation(data: dict) -> None:
     handles, labels = [], []
     for h, lbl in zip(*ax.get_legend_handles_labels()):
         if lbl not in seen and lbl in ALLOC_ORDER + [
-            f"NED/chemicals floor  ({ned_val} TWh, constant)"
+            f"NED floor ({ned_val} TWh)"
         ]:
             seen.add(lbl)
             handles.append(h)
@@ -665,11 +752,7 @@ def plot_biomass_allocation(data: dict) -> None:
     )
 
     # ── Title ──────────────────────────────────────────────────────────────
-    ax.set_title(
-        "Finland 2035 — Biomass allocation by final use\n"
-        "bars grouped by GHG target; S1/S2/S3 identified by coloured borders and x-axis labels",
-        fontsize=11.5, fontweight="bold", color="#1a252f",
-    )
+    # (no title — caption is in the paper)
 
     for suffix, kwargs in {
         ".png": {"dpi": 200},
