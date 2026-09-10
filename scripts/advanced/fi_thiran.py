@@ -18,7 +18,7 @@ python plot_td_inputs_fi_2017_paper.py \
   --out_dir "plots/td_inputs_fi_2017"
 
 Notes:
-- Input CSV is semicolon-separated in Multi-Cells.
+- Input CSV can be comma- or semicolon-separated.
 - First column is a timestamp, parsed as UTC.
 """
 
@@ -32,7 +32,7 @@ import matplotlib.dates as mdates
 
 
 def read_multicells_timeseries(csv_path: Path) -> pd.DataFrame:
-    df = pd.read_csv(csv_path, sep=";")
+    df = pd.read_csv(csv_path, sep=None, engine="python")
     # First column is timestamp (unnamed in the Multi-Cells export)
     ts_col = df.columns[0]
     df["datetime"] = pd.to_datetime(df[ts_col], utc=True)
@@ -202,6 +202,30 @@ def plot_duration_curves(df: pd.DataFrame, out_dir: Path, year: int) -> None:
 
     fig.suptitle(f"Finland duration curves ({year}, UTC)", y=1.03)
     savefig(fig, out_dir / "figures" / f"FI_{year}_duration_curves_compact")
+
+    if dem_cols:
+        fig, ax = plt.subplots(1, 1, figsize=(6.8, 4.2), constrained_layout=True)
+        for c in dem_cols:
+            v = np.sort((df[c] * 1e3).values)[::-1]
+            x = np.linspace(0, 100, len(v), endpoint=False)
+            ax.plot(x, v, label=c)
+        ax.set_xlabel("Percent of hours (sorted descending)")
+        ax.set_ylabel("Per mille of annual demand per hour")
+        ax.legend(fontsize=8, loc="upper right")
+        ax.set_title(f"Finland demand duration curves ({year}, UTC)")
+        savefig(fig, out_dir / "figures" / f"FI_{year}_duration_curves_demands")
+
+    if res_cols:
+        fig, ax = plt.subplots(1, 1, figsize=(7.2, 4.2), constrained_layout=True)
+        for c in res_cols:
+            v = np.sort(df[c].values)[::-1]
+            x = np.linspace(0, 100, len(v), endpoint=False)
+            ax.plot(x, v, label=c)
+        ax.set_xlabel("Percent of hours (sorted descending)")
+        ax.set_ylabel("Capacity factor")
+        ax.legend(ncol=2, fontsize=8, loc="upper right")
+        ax.set_title(f"Finland renewable duration curves ({year}, UTC)")
+        savefig(fig, out_dir / "figures" / f"FI_{year}_duration_curves_res")
 
 
 def plot_daily_mean_scatter(df: pd.DataFrame, out_dir: Path, year: int) -> None:

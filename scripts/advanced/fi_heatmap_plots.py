@@ -10,7 +10,7 @@ import pandas as pd
 
 def load_time_series(csv_path: Path) -> pd.DataFrame:
     """Read the Finland time series file with a clean timestamp index."""
-    df = pd.read_csv(csv_path, sep=";", index_col=0, parse_dates=True)
+    df = pd.read_csv(csv_path, sep=None, engine="python", index_col=0, parse_dates=True)
     if df.index.tz is not None:
         df.index = df.index.tz_convert(None)
     df.index.name = "timestamp"
@@ -94,6 +94,7 @@ def plot_combined_heatmaps(
     df: pd.DataFrame,
     columns: list[str],
     output_dir: Path,
+    year: str,
 ) -> Path:
     """
     Create a single figure with three subplots (heatmaps) for ELECTRICITY,
@@ -165,7 +166,7 @@ def plot_combined_heatmaps(
     axes[-1].set_xlabel("Month", fontsize=11)
     
     fig.suptitle(
-        "Finland 2017 Time Series Heatmaps",
+        f"Finland {year} Time Series Heatmaps",
         fontsize=14,
         fontweight="bold",
         y=0.995,
@@ -174,6 +175,7 @@ def plot_combined_heatmaps(
     
     output_path = output_dir / "fi_heatmaps_combined.png"
     fig.savefig(output_path, dpi=300, bbox_inches="tight")
+    fig.savefig(output_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
     
     return output_path
@@ -220,8 +222,9 @@ def main() -> None:
     target_columns = ["ELECTRICITY", "HEAT_LOW_T_SH", "SPACE_COOLING"]
     
     # Combined heatmap figure
-    combined_path = plot_combined_heatmaps(df, target_columns, output_dir)
+    combined_path = plot_combined_heatmaps(df, target_columns, output_dir, args.year)
     print(f"Created combined heatmap: {combined_path}")
+    print(f"Created combined heatmap: {combined_path.with_suffix('.pdf')}")
 
 
 if __name__ == "__main__":
