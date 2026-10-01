@@ -118,14 +118,18 @@ bulk file reorganisation.
 
 Update this section as work progresses (newest first).
 
+- **2026-10-01** — Reproducibility freeze **done**: tagged `paper1-finland-forest-v1.0`; added
+  `REPRODUCIBILITY.md` + `paper1/` (result tables for the 9 canonical runs); fixed the corrupted
+  `.gitignore`. Decluttered the repo by **moving** (not deleting) ~38 scratch logs, 7 solver dumps,
+  superseded run batches (`20260515_*`, old GHG sweep, `national_plan_*`, old calib folders) and the
+  root debug-script folders into `_archive_20261001/`. Paper evidence untouched. **Next:** Plan B —
+  land–energy sink-coupling prototype.
 - **2026-10** — Added G4M-pivot concept note (`Docs/concept_note_G4M_forest_energy_finland.md`) and
-  this AGENT.md. Confirmed the forest-sink gap in the GHG constraint. **Next:** reproducibility
-  freeze/tag of paper-1 runs; prototype the land–energy sink-coupling term using literature sink
-  values as placeholder.
+  this AGENT.md. Confirmed the forest-sink gap in the GHG constraint.
 - *(add entries here)*
 
 ### Backlog / proposed (not started — require approval before model/data edits)
-- [ ] Reproducibility freeze: tag model version + data snapshot + manifest of paper-1 runs.
+- [x] Reproducibility freeze: tagged `paper1-finland-forest-v1.0` + `REPRODUCIBILITY.md` + `paper1/` (done 2026-10-01).
 - [ ] Prototype exogenous `co2_forest_sink` term in `Minimum_GWP_reduction` (concept note §5.C).
 - [ ] New **S0 sink-max / net-zero** scenario definition.
 - [ ] G4M → `WOOD_FI1…FI4` assortment mapping once IIASA data arrive.
