@@ -143,3 +143,8 @@ Update this section as work progresses (newest first).
 - Runs are **timestamped, append-only**; never overwrite.
 - Document decisions in `Docs/` (one topic per file) and log them in Section 6.
 - Keep edits minimal and reviewable; no unrequested refactors, comments, or dependency changes.
+- **Paper / Overleaf edits are author-owned.** Do **not** edit `paper1/Overleaf_working_paper/*.tex`
+  directly — the author syncs Overleaf manually. Instead, put well-organised, justified,
+  paste-ready LaTeX snippets (grouped by target section, each with a one-line justification and
+  the exact `references.bib` keys to use) into the ad-hoc tracker
+  `paper1/Overleaf_working_paper/REVIEW_FLAGS.md`.
