@@ -229,7 +229,48 @@ by observed Finnish residue use \citep{lukeWoodEnergy2024}.
 
 ---
 
+## G. Supply-curve audit (T1–T14) — paste-ready snippets
+
+Tracker: `Docs/forest_supply_flags_tracker.md` (§7 is the adopted resolution) · evidence: `Docs/forest_supply_curve_methodology_traceability.md` · re-run: `python scripts/check_forest_supply_traceability.py`.
+The `.tex` has **not** been edited. **Adopted decision (tracker §7):** `WOOD_FI1` represents Finland's captive industrial by-product stream (black liquor, bark, sawdust); its volume is the ENSPRESO `MINBIOWOOa` commodity, used as a documented proxy because black liquor is absent from ENSPRESO. All numbers are unchanged (no re-run). The snippets add the ENSPRESO-label caveat and keep the by-product wording.
+
+**G1 — FI1 description** (Table `tab:fi_biomass_ladder`; the existing "black liquor, bark, sawdust" wording is retained, so you may only need the footnote G2).
+```latex
+\texttt{WOOD\_FI1} & Aggregate industrial wood by-products: black liquor, bark and sawdust (volume from ENSPRESO \texttt{MINBIOWOOa})\footnotemark & 11 & 10 \\
+```
+
+**G2 — FI1 footnote (the key addition: the ENSPRESO-label caveat and the black-liquor rationale).**
+```latex
+\footnotetext{Black liquor, bark and sawdust are the cheapest, largely captive wood-energy streams in Finland; black liquor alone reached 43~TWh in 2017, the single largest domestic wood-energy source \citep{statfin12vq}. Black liquor is not represented in the ENSPRESO database, so we take the volume of the cheapest ENSPRESO wood commodity, \texttt{MINBIOWOOa} (45~TWh, which ENSPRESO formally labels as stemwood chips and pellets \citep{ruizJRCEUTIMESModelBioenergy2015}), as a proxy for this by-product stream. The assigned cost (11~\euro/MWh) and embedded GHG (10~tCO$_2$eq/GWh) reflect captive mill-gate by-products; replacing this proxy with a physically grounded black-liquor/by-product split is left to forthcoming work coupling G4M and industrial-throughput data.}
+```
+*Check before pasting:* `\euro` availability; and that `\footnotemark`/`\footnotetext` sit correctly inside the table (or convert to a normal `\footnote` placed just after the table).
+
+**G3 — bib entries** (add both to Zotero/`references.bib`).
+```bibtex
+@techreport{ruizJRCEUTIMESModelBioenergy2015,
+  author      = {Ruiz Castello, Pablo and Sgobbi, Alessandra and Nijs, Wouter and Thiel, Christian and Dalla Longa, Francesco and Kober, Tom and Elbersen, Berien and Hengeveld, Geerten},
+  title       = {The {JRC-EU-TIMES} model. Bioenergy potentials for {EU} and neighbouring countries},
+  institution = {Publications Office of the European Union},
+  address     = {Luxembourg},
+  year        = {2015},
+  number      = {EUR 27575 EN},
+  doi         = {10.2790/39014}
+}
+@misc{statfin12vq,
+  author = {{Statistics Finland}},
+  title  = {Total energy consumption by energy source (all categories), table 12vq},
+  howpublished = {StatFin database, \texttt{pxdata.stat.fi/PxWeb/api/v1/en/StatFin/ehk/12vq.px}},
+  note   = {Accessed 2026-10-08. Black liquor 42{,}989~GWh in 2017; total wood fuels 100{,}783~GWh}
+}
+```
+
+**G4 — T8: capacity-table totals.** Change the *Domestic total* row to `121.9 & 101.6 & 40.0` (exact sums 121.943, 101.619, 40.000 GWh; the printed 122.0 and 101.5 are sums of rounded entries).
+
+---
+
 ### Quick checklist
+- [ ] G1–G3 T1 corrected wording and JRC reference (needs your approval of the tracker §2.6 items; numbers pending T12/T13)
+- [ ] G4 T8 totals corrected
 - [ ] A1 undefined citation fixed
 - [ ] A2 S3 "three times" comparator corrected (×2 occurrences)
 - [ ] A3 S3 unconstrained allocation re-extracted (9.8 TWh?)

@@ -95,9 +95,9 @@ The Finnish biomass representation follows the stepwise supply-curve logic intro
 
 | Resource step | Interpretation | Marginal cost |
 |---|---|---:|
-| `WOOD_FI1` | industrial by-products (black liquor, bark, sawdust) | 11 €/MWh |
+| `WOOD_FI1` | aggregate industrial by-products: black liquor, bark, sawdust (proxied by ENSPRESO `MINBIOWOOa`; flag T1) | 11 €/MWh |
 | `WOOD_FI2` | logging residues | 22 €/MWh in S1/S2, 26 €/MWh in S3 |
-| `WOOD_FI3` | secondary woodchips and sawdust streams | 27 €/MWh |
+| `WOOD_FI3` | secondary woodchips and sawdust from processing (ENSPRESO `MINBIOWOOW1` + `W1a`) | 27 €/MWh |
 | `WOOD_FI4` | direct fuelwood and landscape-care wood | 33 €/MWh |
 | `WOOD_FI5` | Baltic/Nordic import backstop | 70 €/MWh |
 

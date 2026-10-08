@@ -44,8 +44,8 @@ rows = [
 
 definitions = [
     ("WOOD",
-     "Lignocellulosic woody biomass. Forest-origin products and residues: pulp/sawmill "
-     "by-products (black liquor, bark, sawdust), logging residues (branches, tops, stumps), "
+     "Lignocellulosic woody biomass. Forest-origin products and residues: industrial by-products "
+     "(black liquor, bark, sawdust), logging residues (branches, tops, stumps), "
      "secondary woodchips, direct fuelwood and landscape-care wood. Feeds the WOOD layer "
      "(boilers, CHP, gasification, wood-to-fuels). ENSPRESO codes MINBIOWOOa + MINBIOFRSR1 + "
      "MINBIOWOOW1(+a) + MINBIOWOO + MINBIOFRSR1a. *** This is the single resource later split "

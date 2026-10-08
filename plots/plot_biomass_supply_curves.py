@@ -32,7 +32,7 @@ STEP_KEYS = ["WOOD_FI1", "WOOD_FI2", "WOOD_FI3", "WOOD_FI4", "WOOD_FI5"]
 STEP_LABELS = [
     "Step 1: Industrial by-products\n(black liquor, bark, sawdust)",
     "Step 2: Logging residues\n(branches, tops — MINBIOFRSR1)",
-    "Step 3: Secondary woodchips\n(MINBIOWOOW1 + W1a)",
+    "Step 3: Secondary woodchips & sawdust\n(MINBIOWOOW1 + W1a)",
     "Step 4: Fuelwood & landscape\n(MINBIOWOO + FRSR1a)",
     "Step 5: Rest-of-world import backstop\n(unlimited)",
 ]

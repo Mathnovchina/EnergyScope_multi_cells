@@ -136,8 +136,9 @@ ENSPRESO provides three mobilisation scenarios:
 #### Competing uses: already handled by ENSPRESO
 
 ENSPRESO reports *energy-available* potentials **after** deducting industrial competing demand. Specifically:
-- **`MINBIOWOOa` ("C&P_RW")**: Energy from *by-products* of chemical and physical wood processing (black liquor, bark, sawdust from pulp/paper/sawmills). The raw industrial roundwood is excluded.
-- **`MINBIOFRSR1` ("Fuelwood residues")**: Logging branches and tops net of the roundwood extracted for industry.
+- **`WOOD_FI1` — aggregate industrial wood by-products (black liquor, bark, sawdust)** *(adopted interpretation 2026-10-08; see `Docs/forest_supply_flags_tracker.md` §7)*. `WOOD_FI1` represents Finland's captive industrial wood-energy stream, dominated by **black liquor** (43.0 TWh in 2017, Statistics Finland — the single largest Finnish wood-energy source) plus bark and sawdust from pulp/paper/sawmill complexes. Its **volume** is taken from the ENSPRESO commodity `MINBIOWOOa` (45.4 TWh in S2), which is numerically consistent with this by-product stream.
+  **Important caveat (flag T1):** ENSPRESO *formally* labels `MINBIOWOOa` as "woodchips and pellets from additionally harvestable stemwood" (JRC EUR 27575, printed p. 17; cost table "Roundwood Chips & Pellets"), **not** as by-products, and black liquor is deliberately excluded from ENSPRESO (it is endogenous in JRC-EU-TIMES, report footnote 6, p. 17). We nonetheless adopt the by-product interpretation as a **deliberate, documented proxy**, for three reasons: (i) black liquor — the largest Finnish wood-energy source — is absent from ENSPRESO yet is present in the validated 2017 system (biomass 100 TWh), so some ladder step must carry it; (ii) `MINBIOWOOa` is the cheapest, highest-volume ENSPRESO wood commodity and its magnitude (45 TWh) matches black liquor (43 TWh); (iii) this keeps the low cost (11 €/MWh) and low supply-chain GHG (10 tCO₂/GWh) physically meaningful (captive mill-gate streams). **This substitution is flagged for the IIASA collaboration**, where G4M + pulp/sawmill throughput data can replace the proxy with a physically grounded black-liquor/by-product split.
+- **`MINBIOFRSR1` ("Fuelwood residues")**: in the NUTS2 sheet 94% of the Finnish value is `C&P_Res` (chips and pellets from residues) and 6% `Fuelwood Res`. Described here as logging branches and tops net of the roundwood extracted for industry (interpretation; the "net of industry" wording is not found verbatim in the workbook, flag T9).
 
 No additional correction for industrial competing uses is needed in EnergyScope.
 
@@ -145,7 +146,7 @@ No additional correction for industrial competing uses is needed in EnergyScope.
 
 All values confirmed by direct Python extraction from `ENSPRESO_BIOMASS.xlsx`. Units: TWh/yr. Conversion: 1 PJ = 0.27778 TWh.
 
-| Scenario | Year | MINBIOWOOa (C&P by-prod.) | MINBIOFRSR1 (Fuel.resid.) | MINBIOWOOW1 (Woodchips) | MINBIOWOOW1a (Sawdust) | MINBIOWOO (Fuelwood) | MINBIOFRSR1a (Landsc.care) | **WOOD TOTAL** |
+| Scenario | Year | MINBIOWOOa (C&P_RW) | MINBIOFRSR1 (Fuel.resid.) | MINBIOWOOW1 (Woodchips) | MINBIOWOOW1a (Sawdust) | MINBIOWOO (Fuelwood) | MINBIOFRSR1a (Landsc.care) | **WOOD TOTAL** |
 |---|---|---|---|---|---|---|---|---|
 | ENS_Low | 2030 | 43.2 | 20.7 | 4.4 | 1.8 | 2.9 | 1.2 | **74.22** |
 | ENS_Low | 2050 | 46.8 | 9.6 | 2.2 | 0.9 | 3.1 | 0.6 | 63.28 |
@@ -162,7 +163,7 @@ The EnergyScope resources map to ENSPRESO as follows (confirmed from `Glossary` 
 
 | EnergyScope resource | ENSPRESO commodity codes | Description | Forest-management-sensitive? |
 |---|---|---|---|
-| **`WOOD`** | MINBIOWOOa + MINBIOFRSR1 + MINBIOWOOW1 + MINBIOWOOW1a + MINBIOWOO + MINBIOFRSR1a | Industrial by-products (black liquor, bark) + logging residues (branches/tops) + secondary woodchips + sawdust + direct fuelwood + landscape care residues | **YES — primary scenario lever** |
+| **`WOOD`** | MINBIOWOOa + MINBIOFRSR1 + MINBIOWOOW1 + MINBIOWOOW1a + MINBIOWOO + MINBIOFRSR1a | Aggregate industrial by-products (black liquor, bark, sawdust — proxied by `MINBIOWOOa`, flag T1) + logging residues (`MINBIOFRSR1`) + secondary woodchips + sawdust + fuelwood roundwood + landscape care residues | **YES — primary scenario lever** |
 | **`BIOMASS_RESIDUES`** | MINBIOAGRW1 | **"Agricultural waste"** (straw, stover) — **NOT** forest residues | Marginal; varies with agricultural scenario |
 | **`WET_BIOMASS`** | MINBIOSLU1 (+ possibly biogas fraction) | **"Sludge"** — NOT energy wood; utility/population driven | No |
 | `ENERGY_CROPS_2` | MINBIOCRP31 + MINBIOCRP41 | Miscanthus, switchgrass, willow | No |
@@ -174,7 +175,7 @@ The EnergyScope resources map to ENSPRESO as follows (confirmed from `Glossary` 
 
 | Component | TWh | % of WOOD | Sensitivity to forest management |
 |---|---|---|---|
-| MINBIOWOOa — C&P by-products (black liquor, bark, sawdust) | 53.8 | 48.5% | Scales with industrial roundwood processing volume |
+| MINBIOWOOa — aggregate industrial by-products: black liquor, bark, sawdust (proxy, flag T1) | 53.8 | 48.5% | Tied to pulp/sawmill industrial throughput; scales with harvest-driven processing volume |
 | MINBIOFRSR1 — Fuelwood residues (logging branches/tops) | 38.5 | 34.7% | **Most sensitive** — reduced by deadwood retention, residue harvest intensity |
 | MINBIOWOOW1 — Secondary woodchips | 8.9 | 8.0% | Scales with sawmill/chip production |
 | MINBIOWOOW1a — Sawdust | 3.7 | 3.3% | Scales with sawnwood production |
@@ -223,7 +224,7 @@ Three independent lines of evidence support a downward revision:
 
 **Evidence 1 — LUKE 2024 observed data (Finnish national wood energy statistics):**
 - Logging residues (MINBIOFRSR1 proxy) actually used for energy in Finland in 2024: **2.6 million m³ = ~5.1 TWh**. This is under the *current intensive harvest regime* (~75 Mm³/yr). The S3-BDS model WOOD_FI2 = 20.7 TWh is **4× the current observed utilisation**, yet S3-BDS represents a *lower*-harvest scenario.
-- Forest industry wood by-products at solid fuels CHP+heat plants: **10.1 Mm³ = ~20 TWh from solid streams** (black liquor reported separately by Statistics Finland). The WOOD_FI1 = 43 TWh includes black liquor, but a proportional reduction in industrial processing will reduce by-product availability.
+- Forest industry wood by-products at solid fuels CHP+heat plants: **10.1 Mm³ = ~20 TWh from solid streams** (black liquor reported separately by Statistics Finland). Under the adopted by-product interpretation (flag T1), `WOOD_FI1` carries black liquor + bark + sawdust, so a proportional reduction in industrial processing under BDS reduces by-product availability — this supports the S3 FI1 reduction below.
 - Source: LUKE (2024) *Wood in energy generation 2024*, Natural Resources Institute Finland.
 
 **Evidence 2 — Mönkkönen (2024) harvest ceiling + residue calculation:**
@@ -243,7 +244,7 @@ Three independent lines of evidence support a downward revision:
 
 | Tier | ENSPRESO ENS_Low 2030 | Conservative revision | Change | Rationale |
 |---|---:|---:|---:|---|
-| WOOD_FI1 (industrial by-products) | 43,188 GWh | **32,000 GWh** | −26% | BDS reduces roundwood processing → less bark/sawdust/black liquor; proportional to ↓ harvest vs baseline |
+| WOOD_FI1 (aggregate industrial by-products: black liquor, bark, sawdust) | 43,188 GWh | **32,000 GWh** | −26% | BDS lowers roundwood processing → less black liquor/bark/sawdust; reduction proportional to the lower industrial throughput under the biodiversity ceiling (valid under the adopted by-product interpretation, flag T1) |
 | WOOD_FI2 (logging residues) | 20,690 GWh | **6,000 GWh** | −71% | Literature ceiling: 3.9–5.1 TWh at FRV harvest; 6 TWh allows modest 2035 collection efficiency improvement |
 | WOOD_FI3 (secondary woodchips) | 6,272 GWh | **1,500 GWh** | −76% | Industry-competing; with harvest capped, secondary wood goes to industry; small remainder |
 | WOOD_FI4 (fuelwood/landscape) | 4,071 GWh | **500 GWh** | −88% | BDS 17% set-aside (Blattert); conservation areas dominate; fuelwood marginalised |

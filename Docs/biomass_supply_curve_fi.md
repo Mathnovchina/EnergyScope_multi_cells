@@ -26,7 +26,7 @@ The `WOOD1`–`WOOD10` resources are defined in the `BIOFUELS` set (= `NOT_LAYER
 
 | Resource | Avail (GWh) | c_op (€/kWh) | gwp_op (ktCO₂/GWh) | Description |
 |----------|-------------|--------------|---------------------|-------------|
-| WOOD3    | 11,037      | 0.01318      | 0.0144              | Black liquor / processing by-products (cheapest) |
+| WOOD3    | 11,037      | 0.01318      | 0.0144              | Local low-quality fraction (see note below); earlier label "black liquor / processing by-products" is **not supported** by Colla et al. (2022) |
 | WOOD1    | 12,920      | 0.02220      | 0.0216              | Logging residues tier 1 |
 | WOOD4    | 16,196      | 0.02562      | 0.0216              | Forest thinning |
 | WOOD2    | 6,793       | 0.02939      | 0.0288              | Secondary residues |
@@ -38,6 +38,8 @@ The `WOOD1`–`WOOD10` resources are defined in the `BIOFUELS` set (= `NOT_LAYER
 | WOOD10   | 1,000,000   | 0.08147      | 0.0396              | Nordic imports (unlimited backstop) |
 
 **Total domestic (WOOD1–9)**: ~110,970 GWh ≈ Belgium's ENSPRESO medium potential.
+
+> **Correction (2026-10-08, flag T1) — origin of the "black liquor" label.** The descriptions in the table above are annotations of the Belgian `.dat` file, not wording from Colla et al. (2022). Colla's Table 1 gives only origin × quality totals: Local good quality = 12,920 GWh (= `WOOD1`) and Local low quality = 17,831 GWh, which equals `WOOD2 + WOOD3` (6,793 + 11,037 = 17,830). Colla defines the low-quality class as energy crops, short-rotation coppice, agricultural residues, landscape care and other solid biodegradable waste, and his Table 2 gives 28.8 tCO₂eq/GWh for local low quality and 14.4 for landscape care / biodegradable waste, matching `WOOD2` (0.0288) and `WOOD3` (0.0144). So `WOOD3` is consistent with landscape care / biodegradable waste, **not** black liquor. The "cheapest step = black liquor" idea therefore cannot be inherited from the Belgian table for Finland's `WOOD_FI1`.
 
 ### 1.3 Sustainability Constraint (from `ESTD_model.mod`, lines 169–183)
 
@@ -73,7 +75,7 @@ The total Finnish wood potential (WOOD = 110,806 GWh in ENS_Med 2050) decomposes
 
 | Step | Label | ENSPRESO codes | Physical description |
 |------|-------|----------------|---------------------|
-| WOOD_FI1 | Industrial by-products | `MINBIOWOOa` | Black liquor, bark, sawdust from pulp/paper/sawmill complexes |
+| WOOD_FI1 | Aggregate industrial by-products: black liquor, bark, sawdust (adopted interpretation, flag T1) | `MINBIOWOOa` (volume proxy; ENSPRESO formally labels this "stemwood chips/pellets", JRC EUR 27575 — see caveat below) | Captive mill-gate stream dominated by black liquor (43 TWh in 2017, Statistics Finland); re-purposed because black liquor is absent from ENSPRESO yet present in the validated 2017 system. Flagged for IIASA |
 | WOOD_FI2 | Logging residues | `MINBIOFRSR1` | Branches, tops, stumps left after commercial timber harvest |
 | WOOD_FI3 | Secondary wood products | `MINBIOWOOW1` + `MINBIOWOOW1a` | Woodchips and sawdust from secondary wood processing |
 | WOOD_FI4 | Direct fuelwood + landscape | `MINBIOWOO` + `MINBIOFRSR1a` | Roundwood cut for energy use; roadside/landscape care residues |
@@ -105,7 +107,7 @@ Cost estimates based on Finnish market data (Finnish Energy Industry, Luke, IEA 
 
 | Step | c_op_local (€/kWh) | Basis |
 |------|-------------------|-------|
-| WOOD_FI1 | **0.011** | Industrial by-products: handling only (bark ~10–15 €/MWh at mill gate; black liquor self-consumed at near-zero marginal cost) |
+| WOOD_FI1 | **0.011** | **Cost hypothesis (flag T1/T2):** black liquor is captive and self-consumed in recovery boilers (~0 €/MWh marginal); bark and sawdust are ~6–12 €/MWh at the mill gate. A black-liquor-weighted blend is ~2–3 €/MWh, so **11 €/MWh is a conservative (upper) value**, retained from the prior calibration to keep the run matrix valid. Note: if FI1 were read literally as ENSPRESO stemwood chips, its cost would be ~35 €2010/MWh — not the interpretation adopted here |
 | WOOD_FI2 | **0.022** | Logging chips: collection + chipping + transport (~20–25 €/MWh, matches current calibrated flat price) |
 | WOOD_FI3 | **0.027** | Secondary woodchips from processing: slightly higher mobilisation cost (~25–30 €/MWh) |
 | WOOD_FI4 | **0.033** | Direct fuelwood (roundwood for energy) + landscape care: higher collection effort (~30–35 €/MWh) |
@@ -124,7 +126,7 @@ Values updated to RED II Annex VI supply-chain defaults as tabulated by Colla et
 
 | Step | gwp_op_local (ktCO₂/GWh) | RED II Annex VI basis | Notes |
 |------|--------------------------|----------------------|-------|
-| WOOD_FI1 | **0.010** | ~50% of local forest-residue baseline (case 3a = 0.0216) | Mill-gate by-products: absent in-forest collection and forwarding steps; black liquor self-consumed, bark/sawdust at plant gate |
+| WOOD_FI1 | **0.010** | ~50% of local forest-residue baseline (case 3a = 0.0216) | **GHG hypothesis (flag T1):** captive mill-gate by-products (black liquor, bark, sawdust) have minimal collection/transport — no in-forest forwarding — so ~half the RED II forest-residue value. Combustion CO₂ is biogenic (0). Consistent with the adopted by-product interpretation |
 | WOOD_FI2 | 0.022 | Case 3a, ≤500 km, forest residues = 0.0216 ≈ 0.022 | Logging residues: in-forest collection + forwarding + chipping + ~50 km transport — unchanged |
 | WOOD_FI3 | **0.014** | Case 7a, agricultural/short-supply-chain residues = 0.0144 | Secondary mill residues at processing sites; minimal additional transport; case 7a is conservative upper bound |
 | WOOD_FI4 | **0.019** | Blend 60% fuelwood (case 3a ≈ 0.022) + 40% landscape-care (case 7a ≈ 0.0144) → 0.0189 ≈ 0.019 | Fuelwood requires harvest + transport; landscape-care wood is short-chain |
@@ -291,7 +293,7 @@ Full table with all parameters per scenario per step:
 
 | Code | Description | Model step |
 |------|-------------|------------|
-| `MINBIOWOOa` | Industrial wood residues from primary processing (black liquor, bark, sawdust) | WOOD_FI1 |
+| `MINBIOWOOa` | Volume proxy for aggregate industrial by-products (black liquor, bark, sawdust). ENSPRESO formally labels it "stemwood chips/pellets" (JRC EUR 27575); re-purposed here because black liquor is absent from ENSPRESO (adopted interpretation, flag T1) | WOOD_FI1 |
 | `MINBIOFRSR1` | Forest sector residues tier 1 (logging residues: branches, tops, stumps) | WOOD_FI2 |
 | `MINBIOWOOW1` | Wood waste from wood processing industry (coarse chips) | WOOD_FI3 (part 1) |
 | `MINBIOWOOW1a` | Wood waste from wood processing industry (sawdust, shavings) | WOOD_FI3 (part 2) |
