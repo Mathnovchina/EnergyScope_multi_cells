@@ -1,0 +1,62 @@
+---
+title: "Working document template: data and figures from the paper-1 runs"
+author: "Matthieu Bordenave"
+date: today
+format:
+  html:
+    toc: true
+    code-fold: true
+    embed-resources: true
+    theme: cosmo
+jupyter: python3
+execute:
+  echo: false
+---
+
+## Purpose
+
+Template for a working document whose tables and figures are regenerated from committed run results (`paper1/results/`). Copy it, rename it, edit the text. Render with `scripts\render_doc.ps1 Docs\<file>.qmd`, or use the Quarto preview button in VS Code.
+
+## Total system cost across the 9 canonical runs
+
+```{python}
+from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
+
+root = Path.cwd()
+while not (root / "paper1" / "results").exists():
+    root = root.parent
+
+rows = []
+for d in sorted((root / "paper1" / "results").iterdir()):
+    f = d / "TotalCost.csv"
+    if f.exists():
+        scen, case = d.name.split("__")
+        cost = pd.read_csv(f, index_col=0).loc["TotalCost"].iloc[0]
+        rows.append({"forest": scen, "case": case, "total_cost": cost})
+df = pd.DataFrame(rows)
+tab = df.pivot(index="forest", columns="case", values="total_cost")
+
+fig, ax = plt.subplots(figsize=(7, 3.5))
+tab.plot.bar(ax=ax)
+ax.set_ylabel("Total cost (model units, see run_metadata.json)")
+ax.set_xlabel("")
+ax.legend(title="GHG case")
+plt.xticks(rotation=0)
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+tab.round(0)
+```
+
+## Diagram (Mermaid)
+
+```{mermaid}
+flowchart LR
+  G4M[G4M supply curves] --> ESMC[ESMC Finland]
+  Sink[Forest carbon sink] --> ESMC
+  ESMC --> Results[paper1/results]
+```
