@@ -3,7 +3,7 @@
 **Single source of truth for every open or closed flag.** Consolidated 2026-10-12 from three overlapping documents (see §7). Paste-ready LaTeX lives in [SNIPPETS_overleaf.md](./SNIPPETS_overleaf.md) (author-owned Overleaf rule, [AGENTS.md](../../AGENTS.md) §7). Evidence and derivations stay in their topic files and are linked, not copied.
 
 **Rules in force:** no change to `.mod`, `Data/`, `calibration/patches/` or any run under `case_studies/` without explicit approval; `.tex` files are never edited by the agent.
-**IDs are unchanged** from the earlier documents (A, B, C, E = paper review; T = supply-curve audit) so that old references still resolve. New flags from the S2BIOM benchmark are `S2B-n`.
+**IDs are unchanged** from the earlier documents (A, B, C, E = paper review; T = supply-curve audit) so that old references still resolve. New flags from the S2BIOM benchmark are `S2B-n`. Flags from the colleague review presented at the Pontignano annual meeting are `P-n` ([§1.5](#15-colleague-review--pontignano-annual-meeting-10-june-2026-p-flags)).
 
 **Status:** 🔴 open · 🟠 in progress · 🟡 awaiting your decision/action · 🟢 closed · ⚪ info
 **Severity:** H high · M medium · L low
@@ -83,7 +83,35 @@ Also add: D7 limitations subsection, D8 validation-strength sentence (confirm 1.
 | E5 | Cite the 1.2% weighted validation figure so it is not buried (D8). |
 | E6 | Say that single-cell ESMC reduces to the EnergyScope TD formulation. |
 
-### 1.5 Closed
+### 1.5 Colleague review — Pontignano annual meeting, 10 June 2026 (P flags)
+
+**Source:** David An, *Discussion on Bordenave, M., Role of forest biomass in the Finnish decarbonisation*, Pontignano annual meeting, 10 June 2026 — [PDF](./Pontignano_discussion__Bordenave__M_.pdf), verbatim text extraction [here](./Pontignano_discussion__Bordenave__M__extracted.txt) (11 slides: 2 general, 6 major, 10 minor points). Page numbers below are the reviewer's, from the PDF build he read; the line numbers are from the current [`main_certosa.tex`](../Overleaf_working_paper/main_certosa.tex) and were verified on 2026-10-12.
+
+**Class:** **B** blocker for submission · **X** correction/clarification · **R** robustness (may need new runs) · **F** future work.
+
+| ID | Cl | Sev | Status | Reviewer point (grounded summary) | Repository evidence verified | Proposed resolution | Needs | Closure check |
+|---|---|---|---|---|---|---|---|---|
+| **P-0** | ⚪ | – | ⚪ | **General, positive.** The research question "matters"; the contribution is "significant", naming the typical-day treatment of end-use demand and the construction of a biomass supply curve. Introduction and literature review "concise and convincing"; results "presented beautifully in detail". | – | Use as external support for the approved Energy framing ([§3](#3-decisions-log)): the TD + supply-curve combination reads as the contribution to an outside reader. No action. | – | – |
+| **P-1** | B | H | 🔴 | **Model section structure unclear.** "The model description is not so clear by the structure and the content. It could be decomposed into three sections: stylized facts, model description, data specification and parameter calibration." | Current §3 mixes all three: TD inputs/plots (l. 148–272), LP formulation (l. 273–495), Finnish calibration tables (l. 409–468, 524–581). | Restructure §3 into (i) stylised facts, (ii) model description, (iii) data and calibration. Compatible with the approved application-centred outline; merge with P-2/P-7. | Author (restructure is a `.tex` edit) | New section skeleton agreed and snippet drafted in `SNIPPETS_overleaf.md` |
+| **P-2** | B | H | 🔴 | **Equations not linked; mechanism unguessable.** "The model description only shows 7 equations, which are not linked together. I cannot understand the model mechanism clearly but through guessing, especially section 3.3.2 end-use demand in energy services." | Equation blocks at l. 264 (TD error metric), 472 (cost), 482 (`GWP_tot`), 513–519 (biomass). §3.3.2 (l. 288) describes the EUD mapping in prose only — no layer-balance equation is written anywhere. | Add the layer-balance / end-use constraint and the capacity and storage constraints, with a symbol table, so the chain resource → layer → technology → EUD closes. Cite the source formulation per equation (see P-3). | Author | A reader can trace each variable from resource to EUD without the figure |
+| **P-3** | B | H | 🔴 | **Borrowed vs. new is unclear.** "It is not clear which part of the models are borrowed, which are innovated by the author." | Overlaps **E6**: the runs are ESMC configured as a single FI node (`regions_names=["FI"]`, `set REGIONS := FI;` in all nine `reg_misc.dat`), i.e. reducing to the EnergyScope TD formulation; the Finnish contribution is the biomass ladder (l. 496–581), the 2017 calibration and the scenario matrix. | One explicit "inherited / adapted / new in this work" paragraph or table in §3, plus the E6 single-cell statement. | – | E6 + P-3 closed together by one snippet |
+| **P-4** | R | H | 🟡 | **Exogenous end-use demand is a strong assumption.** "Need more discussion as a limitation. Introducing additional scenarios, high/low energy demand in 2035, distributions?" | Overlaps **C6** (2035 demand projection method undocumented) and **C9** (EUD parameters 2020-based but drive the 2017 validation). Demand is fixed across all nine runs. | Two tiers: (a) document the projection method and state it as a limitation (no run needed); (b) a high/low 2035 demand sensitivity — **new runs, requires approval**. | You (decide (a) only, or (a)+(b)) | C6/C9 documented; decision on (b) logged in [§3](#3-decisions-log) |
+| **P-5** | X | M | 🔴 | **p. 7 — justify the 2017 reference year.** Suggests a footnote: chosen as the historical year with the most complete data (fewest hours missing), citing Thiran (2024) [p. 60]. | The reviewer supplies the justification and the page; repo-side the 2017 choice is used throughout the TD inputs and validation. | Add the footnote with the page-level citation (`thiranExploringOptionsFossilfree2025`). | Confirm the claim against Thiran p. 60 before citing | Footnote drafted with verified page |
+| **P-6** | X | M | 🔴 | **p. 25 — reference ordering.** "The references should be arranged by author surname in alphabetical order." | `\bibliographystyle{plainnat}` (l. 718) already sorts alphabetically. The reviewer's build apparently did not. | Verify the compiled PDF he read; if a stale `.bbl` caused it, recompile. No style change unless the journal asks. | Check the shared PDF | Compiled reference list is alphabetical |
+| **P-7** | X | M | 🔴 | **Move Figures 1–4 into a stylised-facts section before the model description.** | Figures 1–4 = demand-driver heatmaps (l. 190), mobility profile (l. 200), renewable availability (l. 210), load-duration curves (l. 219). | Fold into the P-1 restructure; candidates for the appendix under the approved outline — decide move vs. appendix per figure. | You | Figure placement decided in the outline |
+| **P-8** | X | M | 🔴 | **p. 13 — "what is grid losses, $Loss(Elec,t)$?"** | Used at l. 289 (and `Loss(HeatLowTDhn,t)`) and never defined, with no value given. | Define both loss terms, give the Finnish values and their source. | Locate the loss parameters in the input files | Symbols defined with sourced values |
+| **P-9** | B | H | 🔴 | **p. 15, Eq. (3) — minimised with respect to what, and where are the cost functions?** "To the installed size (Limpens et al., 2019)? The author needs to show the cost functions as well." | l. 472–477: $\min C_{tot}$ with $C_{inv}$, $C_{maint}$, $C_{op}$ and $\tau(j)$ named but never defined; decision variables $F(j)$ and the hourly flows are described only in prose (l. 283). Links to **C5** (discount rate 1.5% and lifetimes not stated). | State the decision-variable vector, give $\tau(j)$ explicitly with the discount rate and lifetimes, and define the three cost functions. | – | Eq. (3) self-contained; C5 closed with it |
+| **P-10** | X | M | 🔴 | **pp. 13, 15 — page-level citations for theses.** Moret (2017) and Thiran (2024) are PhD theses; indicate pages. | Overlaps **A1** (undefined key `moret_strategic_2017`, l. 409; correct key `moretStrategicEnergyPlanning2017`) and **E4** (duplicate `moretCharacterizationInputUncertainties2017`/`2017a`). `thiranExploringOptionsFossilfree2025` is a UCL thesis with no DOI. | Fix the keys, then add `[p. xx]` to every thesis citation. | – | A1/E4 closed and page numbers present |
+| **P-11** | X | L | 🔴 | **p. 15 — the first two paragraphs of §3.3.5 belong in the literature review.** | §3.3.5 begins l. 496; the two paragraphs (l. 498–500) are the Colla bioenergy-potential discussion, not model description. | Move to §2; keep only the Finnish implementation in §3.3.5. Consistent with P-1. | Author | Paragraphs relocated |
+| **P-12** | X | M | 🔴 | **p. 17 — the Table 4 description is messy; put it below the table as "Note: …".** | Table 4 = `tab:fi_biomass_ladder` (l. 526); its caption (l. 529) is a ~15-line RED II per-step mapping — and contains the **wrong "case 7a" label** identified in **S-RED**. | Split: short caption + `Note:` block below the table, fixing the case label in the same pass. | S-RED decision on FI1 GHG | Caption shortened and RED II labels correct |
+| **P-13** | B | H | 🟡 | **p. 19 — is the calibration credible when the reference year is also the model's initial period?** Asks: how many variables are set at initial values out of the total; what the calibration method is; which parameters and variables were chosen; what their values are; do they make sense. | Overlaps **B.1**, **A5**, **E5**, **C4**. `scripts/run_calib_manual.py` scores 14 weighted core metrics (CO₂ weight 2.0; biomass/oil/coal/nuclear 1.5) **plus three weight-0 informational metrics (ELEC_GAS, ELEC_IMPORTS, HEAT_DHN)** — i.e. the headline "1.2% over 14 indicators" excludes the three largest residuals (DHN +43%, gas elec +37%). 2017 also uses `relax_co2=true`. | Add an explicit calibration subsection: method, the calibrated parameter list with values and sources, the scored vs. informational metric split, and the `relax_co2` caveat. **Do not restate 1.2% without this disclosure.** | Recompute the score from the canonical outputs (read-only) | Score reproduced and the scoring boundary stated in the paper |
+| **P-14** | X | M | 🟠 | **p. 22, Fig. 10 — what causes the huge primary-energy decrease, and "I do not find imports (FI-5)".** | Fig. 10 = the 2035 matrix (l. 673). FI5 is **essentially unused in all nine runs (0.014–0.045 GWh/yr)**, so it is invisible at figure scale — this is a result, not an omission. Links to **T3** (results hinge on the FI1 ceiling) and **W-5** (the WOOD layer also carries `ENERGY_CROPS_2`). | State in the text that the import backstop is never economic, with the numbers; explain the primary-energy drop (efficiency/electrification and the loss of conversion losses between 2017 and 2035) with figures from the runs. | Extract the 2017 vs 2035 primary-energy decomposition (read-only) | Both questions answered with run-traceable numbers |
+
+**Overlap map (do not duplicate work).** P-3 ↔ E6 · P-4 ↔ C6, C9 · P-9 ↔ C5 · P-10 ↔ A1, E4 · P-12 ↔ S-RED · P-13 ↔ B.1, A5, E5, C4 · P-14 ↔ T3, W-5, A3.
+
+**Nothing in this review has been applied.** P-4(b) is the only item that would require new runs, and it is not approved.
+
+### 1.6 Closed
 
 | ID | Resolution |
 |---|---|
@@ -130,6 +158,7 @@ Potential definitions, modelling basis (EFISCEN, 50-year rolling maximum, FAWS, 
 
 | Date | Decision | Consequence |
 |---|---|---|
+| 2026-10-12 | **Publication benchmark — author selected Energy**, approved the primary framing of **constraint interaction and energy/feedstock allocation mechanisms supported by transparent supply provenance**, and approved the application-centred outline (Introduction; Methods/Finnish case; Results; Discussion/limitations; Conclusion; verified inherited detail in appendices). | Next approved batch: reconcile model identity, actual emissions boundary, result/validation accounting and citation identities, then prepare justified Overleaf snippets (E6, C1/C2, A1–A5, B.1/B.2, E4/E5, W-5, T8). No flags closed by this decision; T1 unchanged. No direct `.tex` edits, new assumptions, sensitivity ranges, model/input/patch changes or new runs approved. Benchmark and reproducible read-only checks remain session artefacts; exact journal fees/format details still require verification. |
 | 2026-10-08 | **T1 — `WOOD_FI1` kept as an aggregate industrial by-product proxy** (black liquor, bark, sawdust) with the ENSPRESO `MINBIOWOOa` volume; ENSPRESO-label caveat disclosed; cost 11 €/MWh and GHG 10 t/GWh retained as documented hypotheses; no re-run. | Closes T1/T12/T13/T14. Reasons: black liquor (43 TWh, 2017) is Finland's largest wood-energy source and absent from ENSPRESO; FI1 volume ≈ black liquor magnitude; cost, GHG and S3 response are consistent under that reading; 11 €/MWh is conservative vs a ~2–3 €/MWh blend. FI3 (12.5 TWh) is the literal ENSPRESO by-product code and cannot carry black liquor. Carry to IIASA: *replace the proxy with a physically grounded black-liquor/bark/sawdust/stemwood-chip split, including a captive-use restriction.* |
 | 2026-10-08 | ENS_High rejected for S1 (FI2 = 124 TWh, ~5× plausible); S1 = S2 × 1.20 as a stylised upper-bound sensitivity. | S2B-3 offers a sourced alternative (S2BIOM HIGH 68.9 TWh). |
 | 2026-05-15 | S3 hand-revised from ENS_Low 2030 (74.2 TWh) to 40.0 TWh (three-way audit: Luke 2024, Mönkkönen ceiling, competing demand). | Judgement (T4); S2B-5. |
@@ -166,7 +195,35 @@ Backlog from [AGENTS.md](../../AGENTS.md) (all need approval before model/data e
 
 ---
 
+## 5.1 Work order for the next session (prepared 2026-10-12)
+
+Sequenced so that every read-only evidence task comes before the text it feeds. **Block A needs no approval** (read-only checks + paste-ready snippets into [SNIPPETS_overleaf.md](./SNIPPETS_overleaf.md); no `.tex`, model, input, patch or run is touched). **Block B** is author-owned restructuring. **Block C** is blocked on your decisions.
+
+### Block A — evidence and snippets (read-only, start here)
+
+| # | Task | Flags closed/advanced | Inputs | Output |
+|---|---|---|---|---|
+| A-i | State the model identity: single-cell ESMC ≡ EnergyScope TD; write the "inherited / adapted / new in this work" table | **E6, P-3** | `scripts/run_fi_baseline_future.py` (FI-only config), the nine `reg_misc.dat` | Snippet (§3 opener) |
+| A-ii | Write out the missing equations: layer balance, capacity and storage constraints, decision-variable vector, $\tau(j)$ with discount rate and lifetimes, the three cost functions; build a symbol table | **P-2, P-9, C5** | `esmc/energy_model/ESMC_model_AMPL.mod`, `ESMC_obj_TotalCost.mod` | Snippet (§3.3.1/3.3.3) + symbol table |
+| A-iii | Reconcile the emissions boundary: the paper prints lifecycle $GWP_{tot}$ (l. 482) but the binding constraint is `sum CO2_net <= gwp_limit` (`.mod` l. 620–626; the lifecycle variant at l. 627 is commented out), with biogenic combustion CO₂ = 0 and RED II supply-chain GHG **reported, not charged** | **C1, C2** (and the Eq. (4) half of P-2) | same `.mod`, `indep.dat` | Snippet (§3.3.3 + limitations) |
+| A-iv | Calibration audit: recompute the weighted score from the canonical outputs; list the calibrated parameters with values and sources; document the 14 scored vs. 3 weight-0 informational metrics and `relax_co2` | **P-13, B.1, A5, E5, C4** | `scripts/run_calib_manual.py` (`REALITY_TARGETS`), `case_studies/FI/manual_runs/20260323_173930__2017_baseline/` | New calibration subsection snippet |
+| A-v | Re-extract every 2035 number; fix the nuclear-penalty ratios; state that the WOOD layer includes energy crops; correct the capacity totals | **B.2, A2, A3, W-5, T8** | `paper1/results/` (verified byte-identical to the canonical runs) | Corrected table/text snippets |
+| A-vi | Fig. 10 narrative: decompose the 2017→2035 primary-energy drop and state that FI5 is never economic (0.014–0.045 GWh/yr across all nine runs) | **P-14, T3** | same run outputs | Snippet (results) |
+| A-vii | Citation hygiene: fix `moret_strategic_2017`, resolve the `moretCharacterizationInputUncertainties2017`/`2017a` duplicate, add `[p. xx]` to thesis citations, check the compiled reference ordering, add the two new Zotero items | **A1, E4, P-10, P-6** | `references.bib`, Zotero (keys in [§6](#6-source-map-claim--repository-ground-truth)) | `.bib` snippet list |
+
+### Block B — restructuring and presentation (author-owned `.tex`)
+
+Agree the new §3 skeleton (stylised facts / model description / data and calibration) — **P-1** — then place the dependent items inside it: figures 1–4 relocation or appendix (**P-7**), move the two Colla paragraphs to §2 (**P-11**), split the Table 4 caption into a short caption + `Note:` while fixing the "case 7a" label (**P-12, S-RED**), add the 2017-year footnote once the Thiran p. 60 claim is verified (**P-5**), define the loss terms (**P-8**).
+
+### Block C — blocked on your decisions (nothing proceeds without them)
+
+1. **P-4** — exogenous demand: documentation + limitation only, or also a high/low 2035 demand sensitivity (**new runs**).
+2. **S2B-1 / S2B-3 / T4** — FI1 identity and the S1/S3 bounds (see the five decisions below).
+3. **S-PY** — base price year. **W-1/W-2/W-3** — material-use, industry-demand and NED sensitivities.
+---
+
 ## 6. Source map (claim → repository ground truth)
+
 
 | Paper element | Verify against |
 |---|---|
@@ -182,6 +239,8 @@ Backlog from [AGENTS.md](../../AGENTS.md) (all need approval before model/data e
 | No-sink / LULUCF gap | `AGENTS.md` §5; `Docs/concept_note_G4M_forest_energy_finland.md` §2 |
 | S2BIOM numbers | `scripts/analyse_s2biom_finland.py` on `Data/exogenous_data/S2biom/data_FI.xlsx`; PDFs D1.6, D1.8 as cited |
 | Source catalogue and qualification | [data_sources_register.md](../../Docs/data_sources_register.md) |
+| Colleague review (P flags) | [Pontignano PDF](./Pontignano_discussion__Bordenave__M_.pdf); verbatim extraction [Pontignano…extracted.txt](./Pontignano_discussion__Bordenave__M__extracted.txt) |
+| New EnergyScope precedents added 2026-10-12 | Zotero `jimenezzabalagaEnergyScopeMulticellPathway2026` (key `33AXSNCS`, SSRN preprint, DOI 10.2139/ssrn.7540425) and `jacquesCouplingStockflowConsistent2026` (key `S8YWI59G`) — **note:** the latter is in the library as the **published** article, *Energy Economics* 160:109401, DOI 10.1016/j.eneco.2026.109401, not the SSRN preprint 10.2139/ssrn.5650377; cite the published version |
 | RED II values, EUwood and Biomass Futures black liquor | [forest_ghg_and_black_liquor_reference_values.md](../../Docs/forest_ghg_and_black_liquor_reference_values.md); files in `Data/exogenous_data/RED II/` and `Data/exogenous_data/EUwood_BiomassFutures/` |
 | Dry LHV, density and moisture conversion evidence | [reference-values note §8](../../Docs/forest_ghg_and_black_liquor_reference_values.md#8-lhv-density-and-moisture-conversions-vtt-technology-272); [VTT PDF/CSV retrieval record](../../Data/exogenous_data/Biomass_fuel_properties/README.md) |
 | Wood allocation in the 9 runs; material-use handling | `scripts/summarise_wood_allocation.py` on `paper1/results/`; [woody_biomass_material_use_and_allocation.md](../../Docs/woody_biomass_material_use_and_allocation.md) |
@@ -193,7 +252,7 @@ Backlog from [AGENTS.md](../../AGENTS.md) (all need approval before model/data e
 | Earlier document | Role before | Now |
 |---|---|---|
 | `paper1/…/REVIEW_FLAGS.md` (A–G) | Paper review items **and** snippets | Review items → §1.2–1.4 here; snippets (D, G) → [SNIPPETS_overleaf.md](./SNIPPETS_overleaf.md) |
-| `Docs/forest_supply_flags_tracker.md` (T1–T14) | Supply audit status and T1 dossier | Status → §1.1/1.5 and decisions → §3; file kept as history with a pointer |
+| `Docs/forest_supply_flags_tracker.md` (T1–T14) | Supply audit status and T1 dossier | Status → §1.1/1.6 and decisions → §3; file kept as history with a pointer |
 | `Docs/forest_supply_curve_methodology_traceability.md` §10 | Duplicate issue register | §10 replaced by a pointer; the file remains the evidence/derivation document |
 
 | Date | Task | Files | Backup | Description | Status |
@@ -202,3 +261,4 @@ Backlog from [AGENTS.md](../../AGENTS.md) (all need approval before model/data e
 | 2026-10-12 | Source register and material-use/allocation note; flags W-1…W-6, S-PY, S-RED; A3 explained | `Docs/data_sources_register.md`, `Docs/woody_biomass_material_use_and_allocation.md`, `scripts/summarise_wood_allocation.py`, this file | – | Evidence and documentation only | done (uncommitted) |
 | 2026-10-12 | RED II, EUwood, Biomass Futures retrieved; S-RED and W-4 updated | `Data/exogenous_data/RED II/*`, `Data/exogenous_data/EUwood_BiomassFutures/*`, `Docs/forest_ghg_and_black_liquor_reference_values.md`, this file | – | New reference files and documentation; no model, patch or run changed | done (uncommitted) |
 | 2026-10-12 | VTT fuel-property evidence; T5/S2B-6 updated | `Data/exogenous_data/Biomass_fuel_properties/*`, source register, reference-values note, this file | New reference files; notes uncommitted | Sourced ranges/equations; black-liquor boundaries qualified; no numerical assumptions adopted | done (uncommitted) |
+| 2026-10-12 | Colleague review ingested as flags **P-0…P-14** and a sequenced work order | this file (§1.5, §5.1, §6), `Pontignano_discussion__Bordenave__M__extracted.txt` (new), `AGENTS.md` | git HEAD | Review PDF text-extracted verbatim; each point grounded in `main_certosa.tex` line numbers and repository evidence, classed (blocker/correction/robustness/future work), cross-referenced to existing IDs (E6, C1/C2, C5, C6/C9, A1–A5, B.1/B.2, E4/E5, S-RED, T3, W-5) and given an explicit closure check. Nothing applied; no `.tex`, model, data, patch or run touched; P-4(b) flagged as requiring new runs and approval. | done (uncommitted) |

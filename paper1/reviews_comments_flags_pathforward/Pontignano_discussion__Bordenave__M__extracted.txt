@@ -1,0 +1,175 @@
+
+===== PAGE 1 =====
+General comments
+Major comments
+Minor comments
+References
+Discussion on Bordenave, M., Role of forest biomass in the
+Finnish decarbonisation
+David An
+Pontignano annual meeting
+June 10, 2026
+David An
+Pontignano annual meeting
+1 / 11
+
+===== PAGE 2 =====
+General comments
+Major comments
+Minor comments
+References
+Overview
+1 General comments
+2 Major comments
+3 Minor comments
+David An
+Pontignano annual meeting
+2 / 11
+
+===== PAGE 3 =====
+General comments
+Major comments
+Minor comments
+References
+Overview
+1 General comments
+2 Major comments
+3 Minor comments
+David An
+Pontignano annual meeting
+3 / 11
+
+===== PAGE 4 =====
+General comments
+Major comments
+Minor comments
+References
+General comments
+▶The research question matters, predictions for Finland on the supply side of
+energy structure under energy transition, nuclear phase out and forest-biomass
+reservation.
+▶The research contribution is significant, employing typical day (TD) for end use
+energy demand and optimal energy supply portfolio, constructing a biomass
+supply curve.
+David An
+Pontignano annual meeting
+4 / 11
+
+===== PAGE 5 =====
+General comments
+Major comments
+Minor comments
+References
+Overview
+1 General comments
+2 Major comments
+3 Minor comments
+David An
+Pontignano annual meeting
+5 / 11
+
+===== PAGE 6 =====
+General comments
+Major comments
+Minor comments
+References
+Major comments
+▶The introduction and literature review are concise and convincing.
+▶The results are presented beautifully in detail.
+▶The model description is not so clear by the structure and the content. It could
+be decomposed into three sections, stylized facts, model description, data
+specification and parameter calibration.
+▶The model description only shows 7 equations, which are not linked together. I
+cannot understand the model mechanism clearly but through guessing, especially
+section 3.3.2 end-use demand in energy services.
+▶It is not clear which part of the models are borrowed, which are innovated by the
+author.
+▶Exogenous end-use demand is a strong assumption, need more discussion as a
+limitation. Introducing additional scenarios, high/low energy demand in 2035,
+distributions?
+David An
+Pontignano annual meeting
+6 / 11
+
+===== PAGE 7 =====
+General comments
+Major comments
+Minor comments
+References
+Overview
+1 General comments
+2 Major comments
+3 Minor comments
+David An
+Pontignano annual meeting
+7 / 11
+
+===== PAGE 8 =====
+General comments
+Major comments
+Minor comments
+References
+Minor comments I
+▶Page 7, add footnote the year 2017 was chosen as it is the historical year with the
+most complete data (i.e. the lowest number of hours with missing data, Thiran
+(2024)[p.60]).
+▶I suggest to put Figure 1-4 and their description in a stylized facts section before
+the model description section.
+▶Page 13, what is grid losses, Loss(Elec, t)?
+▶Page 15, equation (3), the cost minimization problem is minimizing with respect
+to what, to the installed size (Limpens et al., 2019)? The author needs to show
+the cost functions as well.
+▶Page 13 and 15, Moret (2017) and Thiran (2024) are PhD thesis, better to
+indicate the page as well.
+▶Page 15, the first two paragraphs of section 3.3.5 can be moved to the literature
+review section.
+David An
+Pontignano annual meeting
+8 / 11
+
+===== PAGE 9 =====
+General comments
+Major comments
+Minor comments
+References
+Minor comments II
+▶Page 17, the description of Table 4 is a bit messy, can be put below the table
+starting with ”Note: · · · ”.
+▶Page 19, how credible it is when the calibration reference year is also the initial
+period of the model? How many variables are set with the initial values among
+the total number of variables? What is the calibration method? Which
+parameters and variables are chosen for calibration? And what are their values, do
+they make sense?
+▶Page 22, Figure 10, what are the causes and consequences of this huge decrease
+in primary energy? I do not find imports (FI-5).
+▶Page 25, the references should be arranged by author surname in alphabetical
+order.
+David An
+Pontignano annual meeting
+9 / 11
+
+===== PAGE 10 =====
+General comments
+Major comments
+Minor comments
+References
+References I
+Gauthier Limpens, Stefano Moret, Herv´e Jeanmart, and Francois Mar´echal. Energyscope
+td: A novel open-source model for regional energy systems. Applied Energy, 255:
+113729, 2019.
+Stefano Moret. Strategic energy planning under uncertainty. PhD thesis, Epfl, 2017.
+Paolo Thiran. Exploring options for a fossil-free European energy system: The role of
+renewable fuels. PhD thesis, UCLouvain, 2024.
+David An
+Pontignano annual meeting
+10 / 11
+
+===== PAGE 11 =====
+General comments
+Major comments
+Minor comments
+References
+Good job and congratulations!
+David An
+Pontignano annual meeting
+11 / 11
