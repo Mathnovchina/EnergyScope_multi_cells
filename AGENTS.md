@@ -114,6 +114,7 @@ bulk file reorganisation.
 
 Update this section as work progresses (newest first).
 
+- **2026-10-12** — Added official VTT Technology 272 fuel handbook and qualified reference CSV in `Data/exogenous_data/Biomass_fuel_properties/`; extended `Docs/forest_ghg_and_black_liquor_reference_values.md` §8 with dry LHV, solid/loose density, moisture equations and checked examples. Source register and flags T5/S2B-6 updated; black-liquor HHV/organic-versus-total-solids caveats retained. Corrected this session's material-use inheritance wording, indirect-ammonia caveat and tiny FI5 flow unit in the allocation note. New reference files, no overwrite; no model/input/run or script assumption changed. Done, uncommitted.
 - **2026-10-01** â€” Reproducibility freeze **done**: tagged `paper1-finland-forest-v1.0`; added
   `REPRODUCIBILITY.md` + `paper1/` (result tables for the 9 canonical runs); fixed the corrupted
   `.gitignore`. Decluttered the repo by **moving** (not deleting) ~38 scratch logs, 7 solver dumps,
@@ -130,6 +131,9 @@ Update this section as work progresses (newest first).
   meeting-prep notes `Docs/meeting_prep_2026-10-09_G4M_coupling.md`, `Docs/meeting_slides_outline_2026-10-09.md`,
   `Docs/IIASA_Forest_Models_Briefing.md`. No model/data/run changed. Flags T1â€“T14 tracked in `Docs/forest_supply_flags_tracker.md`: T1 **resolved by decision** (tracker Â§7): `WOOD_FI1` kept as an aggregate industrial by-product proxy (black liquor, bark, sawdust) using the ENSPRESO `MINBIOWOOa` volume, because black liquor â€” Finland's largest wood-energy source (43 TWh, 2017) â€” is absent from ENSPRESO; documented cost/GHG hypotheses, ENSPRESO-label caveat carried openly, flagged for IIASA. No numeric value or run changed; this also resolves T12 (cost defensible), T13 (S3 cut valid), T14 (black liquor represented, keep-and-disclose). Docs, `Data/` comments, plot scripts, paper draft, REVIEW_FLAGS (section G) all updated. Remaining flags T2â€“T11 unchanged.
 - **2026-10-08** — Built meeting-opener deck `Docs/Finland_forest_IIASA_meeting_2026-10-09.pptx` (18 slides: context, Paper 1 method/results, gaps, RQs, IIASA proposals A-D, model landscape, path forward, open questions; generator `scripts/make_iiasa_meeting_deck.py`). In the spirit of the old `Finland_forest_bordenave` deck. Carries the adopted FI1/black-liquor flag.
+- **2026-10-12** — Flag documents consolidated into `paper1/reviews_comments_flags_pathforward/FLAGS.md` (single register: dashboard, decisions log, path forward) and `SNIPPETS_overleaf.md` (paste-ready LaTeX, formerly `REVIEW_FLAGS.md`); `Docs/forest_supply_flags_tracker.md` kept as history; issue register in the traceability doc replaced by a pointer. New S2BIOM benchmark (`Data/exogenous_data/S2biom/`, `scripts/analyse_s2biom_finland.py`) added as flags S2B-1…8. No model, data or run changed; nothing committed.
+- **2026-10-12** — Added `Docs/data_sources_register.md` (all data/database sources, qualification, availability) and `Docs/woody_biomass_material_use_and_allocation.md` (wood allocation in the 9 runs; material-use handling), plus `scripts/summarise_wood_allocation.py`; new flags W-1…W-6, S-PY, S-RED in FLAGS.md. No model, data or run changed.
+- **2026-10-12** — Retrieved RED II Directive text (`Data/exogenous_data/RED II/`) and EUwood + Biomass Futures reports (`Data/exogenous_data/EUwood_BiomassFutures/`); added `Docs/forest_ghg_and_black_liquor_reference_values.md` (values, conversions, page references, black-liquor synthesis). New reference files only; no model, patch or run changed.
 - *(add entries here)*
 
 ### Backlog / proposed (not started â€” require approval before model/data edits)
@@ -150,7 +154,7 @@ Update this section as work progresses (newest first).
   directly â€” the author syncs Overleaf manually. Instead, put well-organised, justified,
   paste-ready LaTeX snippets (grouped by target section, each with a one-line justification and
   the exact `references.bib` keys to use) into the ad-hoc tracker
-  `paper1/Overleaf_working_paper/REVIEW_FLAGS.md`.
+  `paper1/reviews_comments_flags_pathforward/SNIPPETS_overleaf.md`; issues, status and decisions are tracked in `paper1/reviews_comments_flags_pathforward/FLAGS.md` (consolidated 2026-10-12; `REVIEW_FLAGS.md` no longer exists).
 
 ---
 
@@ -160,4 +164,3 @@ Update this section as work progresses (newest first).
 - Documents with executed data/figures: `.qmd` (Quarto + `.venv` Jupyter kernel). Template: `Docs/working_doc_example.qmd`.
 - Render to self-contained HTML (also `-To pdf|docx`): `.\scripts\render_doc.ps1 Docs\<file>.qmd`.
 - Rendered `.html` files are generated artefacts: regenerate, never edit by hand.
-

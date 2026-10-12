@@ -229,21 +229,9 @@ Observations (from the outputs, not from the docs):
 
 ---
 
-## 10. Issue register (nothing fixed; all need your decision)
+## 10. Issue register
 
-| ID | Severity | Issue | Evidence | Suggested action (for your approval) |
-|---|---|---|---|---|
-| **T1** | **High** | FI1 (`MINBIOWOOa`): the model treats it as an aggregate industrial by-product block (black liquor, bark, sawdust), whereas ENSPRESO *formally* labels it stemwood chips/pellets (JRC EUR 27575). **Resolved by decision 2026-10-08 (tracker §7):** keep the by-product interpretation with the ENSPRESO `MINBIOWOOa` volume as a documented proxy, because black liquor — Finland's largest wood-energy source (43 TWh, 2017) — is absent from ENSPRESO; cost/GHG hypotheses documented; no re-run. Also resolves T12/T13/T14. | JRC EUR 27575 printed pp. 15, 17, 37, 39, 56; Glossary and NUTS2 sheets; Statistics Finland 12vq | Paste REVIEW_FLAGS section G into Overleaf; add JRC report to Zotero; flag for IIASA. |
-| **T2** | High | Costs are assumptions without a traceable source; ENSPRESO costs differ strongly (FI1 34.7 vs 11, FI3 ~7 vs 27, FI4 ~12–17 vs 33). | §6 | Add a cost-source table with exact references and price year; consider a cost sensitivity. |
-| **T3** | Medium | Unconstrained results hinge on the FI1 ceiling only. | §8 obs. 1 | State this in the discussion; add FI1 ±X% sensitivity. |
-| **T4** | Medium | S3 FI1/FI3/FI4 cuts are judgement; FI1 −26% vs harvest −37%; FI2 = 6.0 TWh is the top of the sensitivity grid; residue fraction and efficiency lack sources. | §5 | Document as judgement; show the grid; or replace by G4M output. |
-| **T5** | Medium | Conversion factor inconsistency: 1.5 vs ~1.96–1.98 MWh/m³; basis unstated. | §2, §5 | Fix one factor with moisture/LHV basis and a source. Needed anyway for G4M m³ output. |
-| **T6** | Medium | Docs/CSVs define scenario-specific `BIOMASS_RESIDUES` (6,600 / 4,985 / 3,400); canonical runs used 4,985 for all. `Resources_S*.csv` are not what the runs read. | §9, run metadata | Correct the docs and paper text; or run a **new** timestamped run if you want the documented values (do not overwrite). |
-| **T7** | Medium | Stale documentation: `biomass_supply_curve_fi.md` §4 tables show old GHG (0.020/0.024/0.026) and raw ENS_Low for S3; mapping doc cites a +20% cap of 132.97 TWh (2050 base) vs 121.9 used; run descriptions say "Biodiversity *Enhancement* Scenario" (S1) and "Biodiversity Default… ENS_Low 2030, strict constraints" (S3) although S1 is Bioeconomy and S3 is the revised 40 TWh case. | docs; run_metadata.json | Update docs. Treat run_metadata labels as read-only evidence; note the correct meaning in the paper/REPRODUCIBILITY. |
-| **T8** | Low | Paper capacity table totals 122.0 / 101.5 vs exact 121.9 / 101.6. | §4.3 | Correct in the Overleaf snippet (REVIEW_FLAGS). |
-| **T9** | Low | "After deducting traditional industrial demand" ENSPRESO quote not found; Luke figures unverifiable (no source file). | §3, §5 | Add the Luke table/PDF to Zotero; cite the exact page. |
-| **T10** | Low | Which model (EFISCEN vs CBM/GFTM) produces ENS_Low/Med/High MINBIO* values is unclear. | §3 | Clarify via the ENSPRESO/JRC-EU-TIMES biomass report. |
-| **T11** | Info | S3 uses 2030 while S1/S2 use 2035; justified qualitatively, but a timing inconsistency. | §4.1 | Mention in the methods. |
+Moved on 2026-10-12 to [paper1/reviews_comments_flags_pathforward/FLAGS.md](../paper1/reviews_comments_flags_pathforward/FLAGS.md) (IDs T1–T14 unchanged; new S2BIOM benchmark flags S2B-1…8). The evidence behind each flag stays in §§2–9 of this document.
 
 ---
 

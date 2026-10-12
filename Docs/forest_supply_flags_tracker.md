@@ -1,9 +1,11 @@
 # Forest supply-curve audit — flags tracker (T1–T14)
 
+> **Superseded as a register (2026-10-12).** Open/closed status of every flag now lives in [paper1/reviews_comments_flags_pathforward/FLAGS.md](../paper1/reviews_comments_flags_pathforward/FLAGS.md); paste-ready LaTeX in [SNIPPETS_overleaf.md](../paper1/reviews_comments_flags_pathforward/SNIPPETS_overleaf.md) (formerly `REVIEW_FLAGS.md`, section G). This file is kept as the **history and evidence dossier** for T1 (§2, §7) and the superseded T12/T13 plan (§3, §6); the dashboard below is no longer updated.
+
 Tracks progress on the issues raised in [forest_supply_curve_methodology_traceability.md](./forest_supply_curve_methodology_traceability.md) (§10), plus T12–T14 which arose when T1 was resolved.
 Re-run the evidence at any time: `python scripts/check_forest_supply_traceability.py` (add `--online` for the Statistics Finland test).
 Rules in force ([AGENTS.md](../AGENTS.md)): no change to `.mod`, `Data/`, `calibration/patches/` or any run under `case_studies/` without explicit approval;
-paper/Overleaf edits are author-owned, so corrections go to `paper1/Overleaf_working_paper/REVIEW_FLAGS.md` (section G) as paste-ready snippets.
+paper/Overleaf edits are author-owned, so corrections go to `paper1/reviews_comments_flags_pathforward/SNIPPETS_overleaf.md` (section G) as paste-ready snippets.
 
 **Status legend:** 🔴 open · 🟠 in progress · 🟡 awaiting your decision/approval · 🟢 done · ⚪ info only
 
@@ -60,7 +62,7 @@ FI1 (45.4 TWh in S2) is close to Statistics Finland's black liquor consumption (
 | `Docs/biomass_scenario_mapping.md` | `MINBIOWOOa` definition rewritten with the JRC evidence; column header, WOOD mapping row and composition row corrected; the FI1 black-liquor statements in the Luke bullet and the S3 revision table marked **superseded** |
 | `Docs/biomass_supply_curve_fi.md` | Belgian WOOD3 label corrected (R8); FI1 mapping, cost, GHG and glossary rows rewritten |
 | `scripts/check_forest_supply_traceability.py` | §8 commodity composition; optional §9 `--online` Statistics Finland (kept as context only) |
-| `paper1/Overleaf_working_paper/REVIEW_FLAGS.md` | Section G: paste-ready LaTeX for the corrected wording (snippet only; `.tex` untouched) |
+| `paper1/reviews_comments_flags_pathforward/SNIPPETS_overleaf.md` | Section G: paste-ready LaTeX for the corrected wording (snippet only; `.tex` untouched) |
 
 ### 2.5 Corrected wording for the paper
 > *Woodchips and pellets from additionally harvestable stemwood (ENSPRESO `MINBIOWOOa`, commodity `C&P_RW`; net of material use)*, and for FI3: *Wood-industry by-products: secondary woodchips and sawdust (ENSPRESO `MINBIOWOOW1` + `W1a`)*. Black liquor is excluded from ENSPRESO.
@@ -137,7 +139,8 @@ Under the BDS ceiling the audit (mapping doc §3.5.1, Evidence 3) says about 0�
 | 2026-10-08 | T1 paper snippet | `paper1/Overleaf_working_paper/REVIEW_FLAGS.md` | git HEAD | Section G (snippet only; `.tex` untouched), rewritten to the JRC wording | done |
 | 2026-10-08 | T1 propagation (approved) | `Data/2035/00_INDEP/Resources_indep.csv`, `Data/2035/02_REF_REGION/Resources.csv`, `plots/plot_biomass_supply_curves.py`, `plots/make_old_biomass_table_docx.py`, `Docs/paper_sections_draft.md`, `Docs/concept_note_G4M_forest_energy_finland.md` | `_backups/*_20261008_before_T1_*` + clean git HEAD | Comment/label text only; numeric cells verified identical; regenerated figure restored (labels not shown in the figure) | done |
 | 2026-10-08 | T12/T13 plan drafted | this file §6 | – | Options and run design; nothing decided or run | awaiting decisions |
-| 2026-10-08 | T1/T12/T13/T14 resolved by decision (§7): FI1 = industrial by-product proxy | `Docs/biomass_scenario_mapping.md`, `Docs/biomass_supply_curve_fi.md`, `Docs/paper_sections_draft.md`, `Docs/concept_note_G4M_forest_energy_finland.md`, `Data/2035/00_INDEP/Resources_indep.csv`, `Data/2035/02_REF_REGION/Resources.csv`, `plots/*.py`, `paper1/Overleaf_working_paper/REVIEW_FLAGS.md`, `Docs/meeting_prep_2026-10-09_G4M_coupling.md` | `_backups/*_20261008_before_T1_*` | Adopted by-product interpretation with documented cost/GHG hypotheses and the ENSPRESO-label caveat; no numeric value or run changed | done |
+| 2026-10-08 | T1/T12/T13/T14 resolved by decision (§7): FI1 = industrial by-product proxy | `Docs/biomass_scenario_mapping.md`, `Docs/biomass_supply_curve_fi.md`, `Docs/paper_sections_draft.md`, `Docs/concept_note_G4M_forest_energy_finland.md`, `Data/2035/00_INDEP/Resources_indep.csv`, `Data/2035/02_REF_REGION/Resources.csv`, `plots/*.py`, `paper1/Overleaf_working_paper/REVIEW_FLAGS.md`, | `Docs/meeting_prep_2026-10-09_G4M_coupling.md` | `_backups/*_20261008_before_T1_*` | Adopted by-product interpretation with documented cost/GHG hypotheses and the ENSPRESO-label caveat; no numeric value or run changed | done |
+| 2026-10-12 | `REVIEW_FLAGS.md` moved (`git mv`, uncommitted) | `paper1/Overleaf_working_paper/REVIEW_FLAGS.md` → `paper1/reviews_comments_flags_pathforward/REVIEW_FLAGS.md`; pointers updated in `AGENTS.md` §7 and this file; earlier log rows keep the old path | git HEAD | Location change only; content untouched | done |
 
 ---
 
