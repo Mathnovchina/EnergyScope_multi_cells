@@ -1,6 +1,9 @@
-# Finnish wood supply steps (WOOD_FI1–FI5): methodology, mapping, numbers and traceability
+# Finnish wood supply steps (WOOD_FI1–FI6): methodology, mapping, numbers and traceability
 
-**Status:** audit note, 2026-10-08. Nothing in the model, `Data/`, `calibration/patches/` or any run was modified.
+**Status:** audit note, 2026-10-08, with a 2026-10-13 input addendum. The
+original audit describes the nine frozen canonical runs. Future-run inputs now
+split their old unlimited FI5 into finite FI5 plus artificial unlimited FI6;
+no completed run was modified.
 **Scope:** how the wood availability per category, the costs and the GHG factors used in paper 1 were
 built, converted to model units, assigned to scenarios S1/S2/S3, and applied in the 9 canonical runs.
 **Verification script (read-only, re-runnable):** [`scripts/check_forest_supply_traceability.py`](../scripts/check_forest_supply_traceability.py)
@@ -16,7 +19,7 @@ Legend: ✅ re-derived from source by me and matches · ⚠️ matches but with 
 ENSPRESO_BIOMASS.xlsx            sheet "ENER - NUTS0 EnergyCom"   (Finland, PJ/yr, by energy-commodity code)
    │  1 PJ = 277.78 GWh (x 1000/3.6)                                        [no m³ involved]
    ▼
-6 ENSPRESO codes ──grouped──► 4 domestic steps WOOD_FI1..FI4  (+ FI5 import backstop, not from ENSPRESO)
+6 ENSPRESO codes ──grouped──► 4 domestic steps WOOD_FI1..FI4  (+ FI5/FI6 import tiers, not from ENSPRESO)
    │  S2: mean(ENS_Med 2030, 2040)   S1: S2 x 1.20   S3: ENS_Low 2030 then hand-revised
    ▼
 Data/2035/FI/Resources.csv (= S2) ; calibration/patches/fi_forest_S1_BES.csv, fi_forest_S3_BDS.csv
@@ -62,7 +65,8 @@ Glossary says (I read both):
 | FI2 | `MINBIOFRSR1` | Logging residues (branches, tops, stumps) | "Fuelwood residues; *not used in BaU forestry scenarios*" | ✅ plausible |
 | FI3 | `MINBIOWOOW1` + `W1a` | Secondary woodchips + sawdust | "Secondary forestry residues – woodchips" / "Sawdust"; *from GFTM in BaU* | ✅ |
 | FI4 | `MINBIOWOO` + `MINBIOFRSR1a` | Direct fuelwood + landscape-care wood | "FuelwoodRW; *from CBM in BaU (stem and other wood from harvesting)*" / "Residues from landscape care" | ✅ |
-| FI5 | – (market) | Baltic/Nordic import backstop | not from ENSPRESO | – |
+| FI5 | – (market) | Finite Baltic/Nordic import tier | not from ENSPRESO | – |
+| FI6 | – (assumption) | Artificial unlimited RoW stress backstop | not from ENSPRESO | – |
 | `BIOMASS_RESIDUES` | `MINBIOAGRW1` | Agricultural waste (not forest) | "Agricultural waste" | ✅ |
 
 Nothing in the Glossary mentions black liquor or bark, and the JRC report (EUR 27575) confirms that black liquor is **not** an ENSPRESO input (T1, resolved).
@@ -98,6 +102,10 @@ Raw ENSPRESO Finland values, recomputed from the workbook (GWh/yr):
 | FI4 | 5,420 | 6,504 | **500** | 4,071 | −87.7% |
 | FI5 | 1,000,000 | 1,000,000 | 1,000,000 | – | unlimited, never used in any run |
 | **Domestic total** | **101,619** | **121,943** | **40,000** | 74,220 | −46.1% |
+
+The FI5 row above is the historical input used by the completed runs. Current
+future-run inputs instead use FI5 = 2,259 GWh/y at 36.661 EUR2015/MWh and add
+FI6 = 1,000,000 GWh/y at the explicit 81.5 EUR2015/MWh stress value.
 
 | Scenario | Rule | Hypothesis / justification (as documented) | Status |
 |---|---|---|---|
@@ -160,7 +168,7 @@ harvest" ✅; BDS deadwood +60% and 17% protected area ✅; increment 108 Mm³ �
 | FI2 | 22 (26 in S3) | 22 | 22 | **26** | 20–25 €/MWh, "matches current calibrated flat price" 0.02208 | 20.5 / 23.5 |
 | FI3 | 27 | 27 | 27 | 27 | "slightly higher mobilisation cost, ~25–30" | 7.7 (`W1`), 6.1 (`W1a`) |
 | FI4 | 33 | 33 | 33 | 33 | "higher collection effort, ~30–35" | 16.6 (`WOO`), 11.8 (`FRSR1a`) |
-| FI5 | 70 | 70 | 70 | 70 | Baltic pellets / Swedish chips, 60–80 €/MWh (2022) + transport | – |
+| FI5 | 70 | 70 | 70 | 70 | Historical canonical-run backstop; superseded for future runs | – |
 
 Weighted average domestic cost (recomputed): S2 and S1 **18.3 €/MWh** (same shares), S3 **14.1 €/MWh**.
 
@@ -185,6 +193,10 @@ Findings:
 | FI3 | 14 | "case 7a" **14.4** | ⚠️ in Colla, but 14.4 is Colla's value for *landscape care and other solid biodegradable waste*, used here as a proxy for mill residues |
 | FI4 | 19 | 60/40 blend of 21.6 and 14.4 = 18.7 → 19 | ✅ arithmetic; ⚠️ blend weights are an assumption |
 | FI5 | 40 | Colla, rest of world, good quality = **39.6** | ✅ in Colla PDF |
+
+For future runs, FI5 retains 40 t/GWh as an author-approved conservative
+carry-over for the finite neighbouring tier, while FI6 uses 40 t/GWh as the
+Colla good-quality RoW-II factor.
 
 Values live in `Data/2035/02_REF_REGION/Resources.csv` (units ktCO₂/GWh: 0.010 / 0.022 / 0.014 / 0.019 / 0.040).
 **Applied in the runs ✅:** GWP_op / consumption in run outputs gives 10, 22, 14, 19 tCO₂/GWh exactly. FI5 factor cannot be verified from outputs

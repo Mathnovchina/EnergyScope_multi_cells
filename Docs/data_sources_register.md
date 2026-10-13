@@ -7,17 +7,17 @@
 ## 0. How to read the qualification
 
 | Field | Values |
-|---|---|
+|------------------------------------|------------------------------------|
 | **Class** | **Stat** = observed official statistics · **DB** = modelled/peer-reviewed dataset · **Scen** = literature scenario study · **Cat** = technology/price catalogue · **Assum** = modelling assumption or expert judgement |
 | **Trace** | ✅ file in repo and mapping to model inputs documented · ⚠️ partly (file in repo but mapping/values not fully verified, or values only reachable through an intermediate source) · ❌ not in repo / cannot be re-checked |
 | **Access** | what the repo states about availability and licence. "Licence not stated" means *not stated in the repo*; it does not mean unrestricted. Check terms before redistributing data or publishing derived numbers. |
 
 ### 0.1 Start here: navigation and evidence boundaries
 
-**Last file/locator check: 2026-10-12.** Links are relative to this document; command paths are relative to the repository root. Source IDs below are stable lookup labels, not bibliography keys.
+**Last file/locator check: 2026-10-13.** Links are relative to this document; command paths are relative to the repository root. Source IDs below are stable lookup labels, not bibliography keys.
 
 | Question | Read next | Evidence boundary |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | Which source supplies a parameter family? | §1, then §2–§3 or §4.3 | Attribution is not necessarily a verified sheet-to-cell mapping |
 | Where are the forest source files? | §0.2, using source IDs | File presence does not establish use in a calibrated run |
 | How do ENSPRESO rows become FI1–FI4? | §4.4–§4.5 | Distinguish literal source labels from the adopted FI1 proxy |
@@ -31,7 +31,7 @@ For a human or LLM agent, follow **source → locator/filter → units → trans
 ### 0.2 Exact local source index
 
 | Source ID | Primary local files / metadata | Role and current use |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | `SRC-ENS-BIO` | [ENSPRESO_BIOMASS.xlsx](../Data/exogenous_data/ENSPRESO/ENSPRESO_BIOMASS.xlsx); [supplementary material](../Data/exogenous_data/ENSPRESO/ENSPRESO_supplementary_material.docx) | Biomass availability and source costs; availability feeds the existing ladder. Source costs are cross-checks, not adopted Finnish step costs. Exact sheets in §4.4 |
 | `SRC-ENS-RE` | [Solar workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_SOLAR_PV_CSP.XLSX); [wind workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_WIND_ONSHORE_OFFSHORE.XLSX) | Renewable potentials; cell-level mapping not independently rechecked in this update (§3) |
 | `SRC-ENS-INTEGRATED` | [datapackage.json](../Data/exogenous_data/ENSPRESO/ENSPRESO_Integrated_Data/datapackage.json); [integrated documentation](../Data/exogenous_data/ENSPRESO/ENSPRESO_Integrated_Data/ENSPRESO%20Integrated%20Data%20Documentation.docx); [NUTS2 CSV](../Data/exogenous_data/ENSPRESO/ENSPRESO_Integrated_Data/ENSPRESO_Integrated_NUTS2_Data.csv); [offshore EEZ CSV](../Data/exogenous_data/ENSPRESO/ENSPRESO_Integrated_Data/ENSPRESO_Integrated_EEZ_Data_Offshore.csv) | Present locally; model-input mapping not verified here. Do not substitute these for the biomass workbook used by the audit |
@@ -42,38 +42,46 @@ For a human or LLM agent, follow **source → locator/filter → units → trans
 | `SRC-EUWOOD` | [Final report](../Data/exogenous_data/EUwood_BiomassFutures/EUwood_final_report_2010-06-30.pdf); [methodology report](../Data/exogenous_data/EUwood_BiomassFutures/EUwood_methodology_report_2010-06-30.pdf); [retrieval README](../Data/exogenous_data/EUwood_BiomassFutures/README.md) | Final: Table 1-1 p. 20, Finland Annex 1-13 p. 141; methodology: §5.4.4 pp. 141–144. Generic wood and black-liquor equivalent-volume factors differ |
 | `SRC-BF` | [Biomass Futures D3.3](../Data/exogenous_data/EUwood_BiomassFutures/BiomassFutures_D3.3_Atlas_technical_economic_biomass_potential_2012.pdf); [retrieval README](../Data/exogenous_data/EUwood_BiomassFutures/README.md) | Tables 3.4–3.5 p. 50; GHG Annex 2 p. 81; cost Annex 4 p. 87. Black-liquor mass/energy inconsistency unresolved |
 | `SRC-VTT` | [VTT Technology 272 PDF](../Data/exogenous_data/Biomass_fuel_properties/VTT_Technology_272_Properties_indigenous_fuels_Finland_2016.pdf); [qualified reference CSV](../Data/exogenous_data/Biomass_fuel_properties/VTT_272_reference_properties.csv); [retrieval/hash README](../Data/exogenous_data/Biomass_fuel_properties/README.md) | Reference properties, not adopted constants: equations pp. 27–29; Table 4.17 p. 63; Table 4.59 p. 111; black liquor pp. 112–115; Table 12.2 p. 195. PDF pages = printed page + 1 |
-| `SRC-THIRAN` | [Paolo Thiran thesis](../Data/exogenous_data/Paolo_Thiran_Thesis-v2.3-final.pdf) | Printed pp. 52–53 NED, 65–67 biomass pooling/Table 1.14, 134–135 competing-use caveats. Original ESMC method, not every Finnish adaptation |
+| `SRC-THIRAN` | [Paolo Thiran thesis](../Data/exogenous_data/Paolo_Thiran_Thesis-v2.3-final.pdf) | Printed p. 60 Table 1.11 (TD time-series sources, processing and 2017 rationale); pp. 63–67 renewable potentials and Table 1.14 biomass categories; pp. 134–135 competing-use caveats. Original ESMC method, not every Finnish adaptation |
+| `SRC-LUKE-TRADE` | Luke PxWeb: `met/puukay/pe/0800_puukay.px` (imported chips), `met/puukay/pp/1900_puukay.px` (pellets), `met/enekau/0300_enekau.px` (energy-wood prices) | Official observed Finnish volumes/prices; useful for import-tier and domestic-cost checks. Does not provide a 2035 potential or, in these tables, import origin and delivered border price |
+| `SRC-LUKE-TRANSPORT` | Luke PxWeb: `met/zzz_lak/Teollisuuspuun korjuu ja kaukokuljetus/05.15_Teollisuuspuun_kaukokuljetuksen_yksikkoku.px` | Official 2021 long-distance industrial-roundwood transport benchmark: total all-mode chain 161 km and 8.94 EUR/m³; used as a conservative Finnish national-node proxy, not a port-to-plant quote |
+| `SRC-COMTRADE-IMPORT` | UN Comtrade public API, reporter Finland `246`, flow `M`, HS 2017 codes `440121` coniferous chips, `440122` non-coniferous chips and `440131` pellets; 2024 partner queries for Estonia `233`, Latvia `428`, Lithuania `440`, Sweden `752`, Norway `578`, Russia `643`, and world `0` | Origin composition, net mass and customs import value. World totals for 440122/440131 are marked estimated; country rows used here are reported. Customs CIF unit values are not plant-gate costs |
+| `SRC-ECB-FX` | ECB Data API series `EXR.A.USD.EUR.SP00.A`, 2024 annual observation 1.08238046875 USD/EUR | Converts 2024 Comtrade USD customs values to EUR2024; no price-year escalation |
+| `SRC-HAMINAKOTKA` | Port of HaminaKotka Ltd, *Price List 2025*, p. 3 and category 20 p. 5 | Published port due: 0.64 EUR/m³ for CN 44.01/44.03–04 wood; generic dry-bulk 1.40 EUR/t used conservatively for pellets. Does not include a commercial stevedoring quote |
+| `SRC-EUROSTAT-HICP` | Eurostat API `prc_hicp_aind`, Finland `FI`, all-items `CP00`, annual average index `INX_A_AVG` | Transparent general-price harmonisation: 2015=100.00, 2021=106.12, 2024=119.83, 2025=122.01. Not a freight-specific deflator |
+| `SRC-STAT-WASTE` | StatFin PxWeb `jate/12qz.px`, municipal waste by treatment, 2002–2024 | Current waste-treatment totals; can contextualise legacy waste but does not validate the model's `BIOWASTE`/`WASTE` split or convert tonnes to model-energy availability |
 
 For sources outside this forest-focused index, §2–§3 retain available links and identify missing downloads/mappings. The [parameter provenance CSV](../Data/exogenous_data/FI_baseline_inputs_provenance_2035_2050.csv) is an intermediate register, not a substitute for primary sources.
 
 ## 1. Parameter families at a glance
 
 | Parameter family (model files) | Source(s) | Class | Trace |
-|---|---|---|---|
+|------------------|------------------|------------------|------------------|
 | Framework: layers, technology structure, discount rate 1.5%, grid losses, mobility shares | Thiran thesis | DB/Assum | ✅ |
-| Technology costs, lifetimes, efficiencies (`02_REF_REGION/Technologies.csv`) | DEA technology catalogues (via thesis [114]) | Cat | ⚠️ |
+| Technology costs, lifetimes, efficiencies (`02_REF_REGION/Technologies.csv`) | DEA technology catalogues (via thesis \[114\]) | Cat | ⚠️ |
 | Fossil and electricity import prices (`00_INDEP/Resources_indep.csv`) | IEA WEO 2020 (via thesis) | Scen | ⚠️ |
 | End-use demands 2035 (`FI/Demands.csv`) | EU Reference Scenario 2020 + JRC-IDEES (Eurostat-based) | Scen/DB | ⚠️ |
-| Non-energy demand and HVC/methanol/ammonia split (`FI/Misc.json`) | Eurostat energy balances, Prodcom, WITS, UNFCCC; method of Rixhon et al. (thesis [101]) | Stat | ⚠️ |
+| Non-energy demand and HVC/methanol/ammonia split (`FI/Misc.json`) | Eurostat energy balances, Prodcom, WITS, UNFCCC; method of Rixhon et al. (thesis \[101\]) | Stat | ⚠️ |
 | Wind, solar, geothermal potentials, areas (`FI/Technologies.csv`, `Misc.json`) | ENSPRESO wind/solar (Ruiz et al. 2019) | DB | ✅ |
-| Hydro capacities | Eurostat, JRC Hydropower database (thesis [169], [170]) | Stat/DB | ⚠️ |
+| Hydro capacities | Eurostat, JRC Hydropower database (thesis \[169\], \[170\]) | Stat/DB | ⚠️ |
 | Nuclear fleet 4.36 GW, wind/PV minima, import cap 25 TWh (patch `fi_baseline_2035.csv`) | Eurostat; national pipeline; interconnection estimate | Stat/Assum | ⚠️ |
 | **Wood availability FI1–FI4** (`FI/Resources_S1/S2/S3_*.csv`) | ENSPRESO biomass ENS_Med/ENS_Low; S1 = ×1.20 and S3 = 40 TWh by judgement | DB/Assum | ✅/⚠️ |
-| **Wood cost FI1–FI5, GHG FI1–FI5** | Finnish Energy/Luke/IEA 2022 (not in repo); RED II Annex VI via Colla et al. 2022; judgement | Assum | ❌/⚠️ |
-| Other biomass (wet, crops, biowaste, residues, waste) | ENSPRESO ENS_Med | DB | ✅ |
+| **Wood cost/GHG FI1–FI6** | Domestic FI1–FI4: Finnish Energy/Luke/IEA 2022 (not in repo) and judgement; imports FI5–FI6: §4.6; RED II Annex VI via Colla et al. 2022 | Stat/Assum | ⚠️ |
+| Other biomass (wet, crops, biowaste, residues) | ENSPRESO ENS_Med; Paolo's grouping in `import_rep.py` | DB | ✅ |
+| Legacy non-renewable `WASTE` | Elbersen et al. via Dommisse–Tychon, inherited from Thiran | DB/Assum | ⚠️ |
 | Time series (wind, PV, heat demand shapes, CSP) | OPSD weather, Renewables.ninja, PVGIS/pvlib, csp-guru | DB | ⚠️ |
 | 2017 calibration targets (`calibration/reality/finland_2017_reference.csv`) | Statistics Finland, IEA, IAEA, Fingrid, Finnish Energy, UNFCCC | Stat | ✅ |
 
 ## 2. Framework, technologies, prices, demands
 
 | Source | What it is | Used for | In repo | Vintage / geography | Access | Qualification and caveats |
-|---|---|---|---|---|---|---|
-| **Thiran, thesis** (EnergyScope Multi-Cells; file v2.3-final, cited "Thiran 2023" in the provenance CSV) | Original ESMC model and European dataset | Model structure, `Layers_in_out.csv`, defaults for REF region (DHN share 2–37%, public transport 19.9–50%, etc.) | [Paolo_Thiran_Thesis-v2.3-final.pdf](../Data/exogenous_data/Paolo_Thiran_Thesis-v2.3-final.pdf) | Europe, 2019–2050 | Licence not stated | Defaults are European/Belgian-type values, not Finnish: the provenance CSV itself marks the DHN share limits as REF defaults overridden at run time (`--dhn-min/--dhn-max`). Biomass: the thesis takes ENSPRESO ENS_Med as is (companion doc §3). Trace ✅ |
-| **DEA technology catalogues** | Danish Energy Agency technology data (electricity and district heating; other catalogues cited by thesis [128],[129] for fuels/chemicals) | Capex, O&M, lifetime, capacity factor (`02_REF_REGION/Technologies.csv`, interpolated to 2035) | [DEA_Elec_Heat.xlsx](../Data/exogenous_data/DEA_Elec_Heat.xlsx), [technology_data_catalogue_for_el_and_dh.pdf](../Data/exogenous_data/technology_data_catalogue_for_el_and_dh.pdf) | EU-average costs, price year **not stated** | Public catalogue; licence not stated in repo | Provenance CSV: confidence "high". Not Finland-specific (e.g. nuclear capacity factor 84.9% vs Finnish ~92%). Price year not documented → see flag S-PY (§6). Trace ⚠️ (which sheet feeds which cell is not documented) |
+|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| **Thiran, thesis** (EnergyScope Multi-Cells; file v2.3-final, cited "Thiran 2023" in the provenance CSV) | Original ESMC model and European dataset | Model structure, `Layers_in_out.csv`, defaults for REF region; Table 1.11 time-series source/processing map (printed p. 60); Table 1.14 biomass category/layer/code map (printed pp. 66–67) | [Paolo_Thiran_Thesis-v2.3-final.pdf](../Data/exogenous_data/Paolo_Thiran_Thesis-v2.3-final.pdf) | Europe, 2019–2050 | Licence not stated | Defaults are European/Belgian-type values, not Finnish. Biomass uses ENSPRESO `ENS_Med`, year 2050 in `scripts/advanced/import_rep.py`; the five source groups and weighted costs have now been reproduced exactly. The retained `WASTE` pool is inherited separately and is not recalculated by that script. Trace ✅ for the five ENSPRESO pools; ⚠️ for `WASTE` |
+| **DEA technology catalogues** | Danish Energy Agency technology data (electricity and district heating; other catalogues cited by thesis \[128\],\[129\] for fuels/chemicals) | Capex, O&M, lifetime, capacity factor (`02_REF_REGION/Technologies.csv`, interpolated to 2035) | [DEA_Elec_Heat.xlsx](../Data/exogenous_data/DEA_Elec_Heat.xlsx), [technology_data_catalogue_for_el_and_dh.pdf](../Data/exogenous_data/technology_data_catalogue_for_el_and_dh.pdf) | EU-average costs, price year **not stated** | Public catalogue; licence not stated in repo | Provenance CSV: confidence "high". Not Finland-specific (e.g. nuclear capacity factor 84.9% vs Finnish \~92%). Price year not documented → see flag S-PY (§6). Trace ⚠️ (which sheet feeds which cell is not documented) zotero key DanishEnergyAgency2022 |
 | **IEA WEO 2020** (Stated Policies) | Energy price outlook | Gas 44.25, diesel 79.7, LFO 60.2, electricity import 84.3 €/MWh (`00_INDEP/Resources_indep.csv`) | ❌ report not in repo | 2035 | Licensed report | Pre-2022 price outlook; the provenance CSV notes gas is above Finnish pre-2022 prices. Electricity import price confidence "medium". Not re-checkable here |
 | **EU Reference Scenario 2020** | EU energy/transport/climate projections | Growth rates for demands; mobility demands in `FI/Demands.csv` | ❌ not in repo | to 2050, country level | Public (European Commission) | Pre-war macro assumptions; demand-projection method for 2035 is **undocumented in the paper** (flag C6) |
 | **JRC-IDEES** | Integrated database of the European energy sector (Eurostat-based) | 2015 base of sectoral end-use demand (electricity, heat, HT heat) | ⚠️ derived CSVs only | Country, 2015 | Public (JRC) | Boundary mismatch with Statistics Finland for pulp/paper/steel electricity documented in `Docs/finland2017_demand_boundary_audit.md`. Matters for wood: pulp-mill energy demand sits inside the industry demand |
-| **Eurostat energy balances; Prodcom; WITS (World Bank); UNFCCC inventory; Indexmundi** | Statistics behind HVC, methanol, ammonia | Non-energy demand 12.6 TWh in 2035 and split HVC 93.0% / ammonia 3.1% / methanol 3.9% (`FI/Misc.json`) | ❌ no downloads in repo | 2019 base, grown with EU Ref | Public | Method adapted from Rixhon et al. (thesis [101]). Finnish HVC is based on current production sites (Neste, Borealis). NED covers **chemicals only** (see companion doc) |
+| **Eurostat energy balances; Prodcom; WITS (World Bank); UNFCCC inventory; Indexmundi** | Statistics behind HVC, methanol, ammonia | Non-energy demand 12.6 TWh in 2035 and split HVC 93.0% / ammonia 3.1% / methanol 3.9% (`FI/Misc.json`) | ❌ no downloads in repo | 2019 base, grown with EU Ref | Public | Method adapted from Rixhon et al. (thesis \[101\]). Finnish HVC is based on current production sites (Neste, Borealis). NED covers **chemicals only** (see companion doc) |
 | **Eurostat; JRC Hydropower; e-Highway; Gimeno-Gutiérrez** | Capacity and potential datasets | Hydro dam/river capacities, expansion limits | ❌ | EU | Public | Provenance CSV: high |
 | **Statistics Finland** (StatFin 12vq and other tables) | Official Finnish energy statistics | 2017 calibration; black liquor 42,989 GWh and total wood fuels 100,783 GWh (2017) used in the FI1 decision | ⚠️ values quoted in docs; online table accessed 2026-10-08 | Finland, 2017 (series 2015–2024) | Public | Strongest observed source for wood energy. Trace ✅ for 2017 targets, ⚠️ for others |
 | **EHK report** | Finnish energy report, 2018-12-11 | Calibration context | [ehk_2017_2018-12-11_en.pdf](../Data/exogenous_data/ehk_2017_2018-12-11_en.pdf) | 2017 | Licence not stated | The filename suggests a Statistics Finland energy publication; **exact parameter mapping not found** |
@@ -81,10 +89,10 @@ For sources outside this forest-focused index, §2–§3 retain available links 
 ## 3. Renewables, time series, calibration, GIS
 
 | Source | Used for | In repo | Access and notes |
-|---|---|---|---|
-| **ENSPRESO wind and solar** (`SRC-ENS-RE`; Ruiz et al. 2019, doi 10.1016/j.esr.2019.100379) | Wind onshore 30.77 GW, offshore 21.27 GW, rooftop 13.68 GW, utility PV 58.78 GW and areas are attributed in the provenance register; geothermal 0.3 GW is listed there too, but a wind/solar workbook locator for it is **not verified** | [Solar workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_SOLAR_PV_CSP.XLSX), [wind workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_WIND_ONSHORE_OFFSHORE.XLSX) | Open database (title); licence not stated. Offshore potential updated with the Ostend Declaration (thesis [172]); cell mapping not rechecked here |
+|------------------|------------------|------------------|------------------|
+| **ENSPRESO wind and solar** (`SRC-ENS-RE`; Ruiz et al. 2019, doi 10.1016/j.esr.2019.100379) | Wind onshore 30.77 GW, offshore 21.27 GW, rooftop 13.68 GW, utility PV 58.78 GW and areas are attributed in the provenance register; geothermal 0.3 GW is listed there too, but a wind/solar workbook locator for it is **not verified** | [Solar workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_SOLAR_PV_CSP.XLSX), [wind workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_WIND_ONSHORE_OFFSHORE.XLSX) | Open database (title); licence not stated. Offshore potential updated with the Ostend Declaration (thesis \[172\]); cell mapping not rechecked here |
 | **Open Power System Data weather** (doi 10.25832/weather_data/2020-09-16) | Country-aggregated temperature, DNI, DHI | ❌ gitignored, not local | Open. Cannot be re-checked here |
-| **Renewables.ninja** (via OPSD) | Wind and PV capacity-factor series | ❌ | Cited in thesis [181–184] |
+| **Renewables.ninja** (via OPSD) | Wind and PV capacity-factor series | ❌ | Cited in thesis \[181–184\] |
 | **PVGIS (JRC) and pvlib**; **oemof-thermal** | CSP time series (Spain-Portugal) | `Data/exogenous_data/csp/` | Documented in [README.md](../Data/exogenous_data/README.md) with visit dates (2023-04-05); not relevant for Finland (`solar_area_ground_high_irr` = 0) |
 | **csp-guru 2022-07-01.02** (Zenodo 10.5281/zenodo.7112761) | Existing CSP plants | `Data/exogenous_data/csp/csp-guru-…` | Licence file included in the folder |
 | **GIS**: Eurostat NUTS 2021 (GeoJSON), Natural Earth countries | Regional aggregation | `Data/exogenous_data/gis/` | Licence not summarised in repo |
@@ -99,10 +107,10 @@ For sources outside this forest-focused index, §2–§3 retain available links 
 Legend: ● provides it, ◐ partly or indirectly, ○ no.
 
 | Source | Availability by assortment | Harvest-level scenarios | Cost | GHG | Material-use treatment | Regional detail | In repo |
-|---|---|---|---|---|---|---|---|
+|---------|---------|---------|---------|---------|---------|---------|---------|
 | **ENSPRESO biomass** (Ruiz et al. 2019; JRC EUR 27575) | ● 17 commodities; woody: stemwood chips/pellets, fuelwood, residues, secondary residues | ● ENS_Low/Med/High (EFSOS-based) × 2010–2050 | ● €2010/GJ per commodity | ○ | ● explicit competing-use percentages (§4.2) | ● NUTS0/NUTS2 | ✅ workbook + report |
 | **S2BIOM** (D1.1, D1.6, D1.8, `data_FI.xlsx`) | ● kton dm by 40+ types incl. stemwood, residues, stumps, by-products, black liquor | ◐ potentials TECH/BASE/HIGH, UD1–UD8 (only 5–10% harvest cuts; UD5/UD6 = material use subtracted) | ◐ road-side cost forest only, EUR 2012, no stumpage | ○ | ● UD5–UD8 subtract FAO roundwood for material use | ● NUTS3 × 2012/2020/2030 | ✅ |
-| **Colla et al. 2022** (Front. Energy Res.; Belgium) | ◐ method: origin × quality categories | ○ | ◐ feedstock + processing + transport + pre-treatment; RoW import 81.5 €/MWh | ● RED II-derived embedded GHG per category (Table 2) | ○ | ○ | ✅ [_colla_extracted.txt](../Data/exogenous_data/Mypaper/_colla_extracted.txt); Belgian `.dat` in `0%_NED_constraints_naphtha_LFO_prices/` |
+| **Colla et al. 2022** (Front. Energy Res.; Belgium) | ◐ method: origin × quality categories | ○ | ◐ feedstock + processing + transport + pre-treatment; RoW import 81.5 €/MWh | ● RED II-derived embedded GHG per category (Table 2) | ○ | ○ | ✅ [\_colla_extracted.txt](../Data/exogenous_data/Mypaper/_colla_extracted.txt); Belgian `.dat` in `0%_NED_constraints_naphtha_LFO_prices/` |
 | **RED II (Directive (EU) 2018/2001), Annex VI** | ○ | ○ | ○ | ● default supply-chain GHG by pathway and distance | ○ | ○ | ✅ original and consolidated texts in `Data/exogenous_data/RED II/` |
 | **EUwood; Biomass Futures D3.3** | ◐ by-products and black liquor by country | ◐ A1/B2 scenarios; high/medium/low mobilisation | ◐ BL 0 €/t; other prices from Lindner et al. 2005 | ◐ GEMIS heat-output values | ● Wood Resource Balance: material vs energy demand | ◐ country | ✅ `Data/exogenous_data/EUwood_BiomassFutures/` |
 | **VTT Technology 272 (2016)** | ○ fuel properties, not supply potentials | ○ | ○ | ○ | ○ | Finnish fuels; species/assortment detail | ✅ [Biomass_fuel_properties/](../Data/exogenous_data/Biomass_fuel_properties); dry LHV, density, moisture equations |
@@ -120,7 +128,7 @@ Legend: ● provides it, ◐ partly or indirectly, ○ no.
 ### 4.3 Source cards
 
 | Source | Class | Vintage and geography | Qualification | Access |
-|---|---|---|---|---|
+|---------------|---------------|---------------|---------------|---------------|
 | **ENSPRESO biomass workbook** (`SRC-ENS-BIO`) | DB | 2010–2050 in 10-year steps; Low/Med/High; NUTS0/NUTS2; costs €2010 | Peer-reviewed (Energy Strategy Reviews 26, 100379); official JRC provenance. **Known issues:** ENS_High Finland FRSR1 = 124 TWh rejected as implausible, cause not established; `MINBIOWOOa` formally stemwood chips/pellets, not black liquor (T1); no native 2035 point; S3 uses 2030 (T11); material-use evidence comes from JRC, not a verbatim workbook quote (T9). Filters/mapping in §4.4 | **Present:** [biomass workbook](../Data/exogenous_data/ENSPRESO/ENSPRESO_BIOMASS.xlsx), [supplementary material](../Data/exogenous_data/ENSPRESO/ENSPRESO_supplementary_material.docx); full inventory §0.2. Licence not verified |
 | **JRC report EUR 27575** (Ruiz Castello et al. 2015) | DB/report | 2015 | Documents the methodology behind ENSPRESO values (EFISCEN/EFSOS for harvest, EFI-GTM for material use, CBM/GFTM for BaU); explains competing-use percentages | [biomass potentials in europe_web rev.pdf](./biomass%20potentials%20in%20europe_web%20rev.pdf); open JRC publication |
 | **S2BIOM** (`SRC-S2BIO`) | DB | 2012/2020/2030; NUTS3; kton dm | EU project; EFISCEN + 1 km constraint rasters; road-side cost without stumpage/profit/overhead or road delivery; energy conversion not supplied for most streams. Black liquor uses a crude pulp/wood-factor estimate; comparison with observed energy is conditional on unresolved mass/LHV boundaries, not a validated 57% ratio. No Finland validation found in inspected documents | Exact workbook/PDF links in §0.2; terms of use not stated |
@@ -138,21 +146,22 @@ Legend: ● provides it, ◐ partly or indirectly, ○ no.
 **Presence and sheet/header names verified 2026-10-12**, by read-only inspection of `SRC-ENS-BIO`. This does not validate every row or all methodology. Do not read the entire workbook into an LLM context.
 
 | Sheet (exact name) | Locator/filter | Unit / role |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | `INFO`, `Scenario definitions`, `Glossary` | Read definitions and literal commodity labels first | Avoid interpreting scenario names/codes from memory |
 | `ENER - NUTS0 EnergyCom` | Row 1: `Year`, `Scenario`, `NUTS0`, `Energy Commodity`, `Value`, `units`, `Metada`; filter `NUTS0 = FI`, scenario/year/code below | `Value` in PJ; national availability used by the audit |
-| `COST - NUTS0 EnergyCom` | Row 1: `Year`, `Scenario`, `NUTS0`, `Energy Commodity`, `NUTS0 Energy Commodity Cost `, `Units`; same FI/code/year filters | `Euro2010/GJ`; source-cost cross-check, not adopted step prices. Trailing header whitespace is real |
+| `COST - NUTS0 EnergyCom` | Row 1: `Year`, `Scenario`, `NUTS0`, `Energy Commodity`, `NUTS0 Energy Commodity Cost`, `Units`; same FI/code/year filters | `Euro2010/GJ`; source-cost cross-check, not adopted step prices. Trailing header whitespace is real |
 | `ENER - NUTS2 BioCom E` | Header includes `NUST2` (literal spelling), `E-Comm`, `B-Com`, `NUTS2 Potential available by Bio Commodity`, `Unit`; filter Finland/year/scenario/commodity | PJ; regional/biomass detail. Do not add national totals again or assume every row is an independent stream |
 | `COST - NUTS2 BioCom` | `NUTS0 = FI`; then NUTS2, year, scenario and commodity | `EUR2010/GJ`; regional cost detail |
 | `COST - NFO`, `NUTS2 conversion`, `Countries` | Cost assumptions, regional codes, country codes | Document any vintage/code conversion before regional use |
 
 | Model resource | Exact energy-commodity code(s) | Transformation / interpretation |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | `WOOD_FI1` | `MINBIOWOOa` | Additional stemwood chips/pellets in source. Adopted by-product proxy is an author decision, not source classification; T1/S2B-1 |
 | `WOOD_FI2` | `MINBIOFRSR1` | Primary forestry residues |
 | `WOOD_FI3` | `MINBIOWOOW1` + `MINBIOWOOW1a` | Sum secondary chips and sawdust; potential overlap with the FI1 proxy remains a caveat |
 | `WOOD_FI4` | `MINBIOWOO` + `MINBIOFRSR1a` | Sum direct fuelwood and landscape-care residues |
-| `WOOD_FI5` | **No ENSPRESO commodity mapping** | Import backstop; separate availability/cost/GHG assumptions |
+| `WOOD_FI5` | **No ENSPRESO commodity mapping** | Finite Baltic/Nordic import tier: 2.259 TWh/y at 36.661 EUR2015/MWh; GHG 0.040 retained conservatively by author decision |
+| `WOOD_FI6` | **No ENSPRESO commodity mapping** | Artificial unlimited RoW stress tier: author-defined 81.5 EUR2015/MWh, inspired by Colla RoW-II; GHG 0.040 |
 
 For each code, **S2** = mean of `ENS_Med` 2030 and 2040; **S1** = S2 × 1.20 (stylised); **S3** starts from `ENS_Low` 2030 but is manually revised to the 40 TWh ladder, not directly extracted. Multiply PJ by `1000/3.6` for GWh/y. ENSPRESO availability needs **no second LHV or m³ conversion**. Source costs multiply by 3.6 for EUR2010/MWh; model `c_op_local` is M€/GWh, so EUR/MWh divides by 1000 before entry. No inflation/base-year harmonisation is implied.
 
@@ -161,7 +170,7 @@ Derivations: [traceability note §§1–4/§6](./forest_supply_curve_methodology
 ### 4.5 Evidence chains: source versus adopted input versus result
 
 | Parameter / claim | Source → processing evidence | Destination / result evidence | Verification boundary |
-|---|---|---|---|
+|------------------|------------------|------------------|------------------|
 | Domestic wood availability | `SRC-ENS-BIO` → §4.4 → [read-only audit](../scripts/check_forest_supply_traceability.py) | Reference variants: [S1](../Data/2035/FI/Resources_S1_BES.csv), [S2](../Data/2035/FI/Resources_S2_NFS.csv), [S3](../Data/2035/FI/Resources_S3_BDS.csv). Runs use [baseline Resources.csv](../Data/2035/FI/Resources.csv) plus applicable [S1 patch](../calibration/patches/fi_forest_S1_BES.csv) / [S3 patch](../calibration/patches/fi_forest_S3_BDS.csv) | `avail_local`, GWh/y. Compare applied values, not just reference variants; S1/S3 choices remain assumptions |
 | Wood prices | Finnish assumptions (§4.3); ENSPRESO costs and S2BIOM road-side costs are comparisons | `c_op_local` in baseline/scenario inputs and applied patches; [traceability note §6](./forest_supply_curve_methodology_traceability.md) | Price year, delivered-cost boundary and per-step citations incomplete (T2/S-PY); matching a number is not provenance |
 | Wood GHG | `SRC-REDII` Part D → `SRC-COLLA` Table 2 → adaptation/rounding/blend; [values note §2](./forest_ghg_and_black_liquor_reference_values.md) | [REF-region resource factors](../Data/2035/02_REF_REGION/Resources.csv), `gwp_op_local`, ktCO₂/GWh; check run snapshots | FI1 judgement; FI4 blend assumption; zero upstream to collection is not zero total GHG; no forest sink |
@@ -171,8 +180,9 @@ Derivations: [traceability note §§1–4/§6](./forest_supply_curve_methodology
 
 Existing read-only checks, from the repository root with the project environment:
 
-```powershell
+``` powershell
 .\.venv\Scripts\python.exe scripts\check_forest_supply_traceability.py
+.\.venv\Scripts\python.exe scripts\check_fi_legacy_biomass_2035.py
 .\.venv\Scripts\python.exe scripts\analyse_s2biom_finland.py
 .\.venv\Scripts\python.exe scripts\summarise_wood_allocation.py
 ```
@@ -181,10 +191,53 @@ These do not launch optimisation or change calibrated inputs. The traceability s
 
 For a paper-ready number, record: source ID and sheet/page/filter; original value/unit/year; transformation or assumption; code version; input snapshot/patch; exact run command/directory; result file/column. Use [REPRODUCIBILITY.md](../REPRODUCIBILITY.md) and [versions.json](../case_studies/FI/versions.json) to locate canonical runs, then verify metadata. Missing links remain **unverified**; do not reconstruct them from plausible values or overwrite completed runs.
 
+### 4.6 Inherited biomass pools, 2035 correction and imports
+
+The genuine pre-ladder Finland resource table was recovered from Git commit `40a03df9f8d719338463b30488572d43ada0776a` (before the ladder commit `2e8999d31a535010c58b63a37b29a079290d2831`). The folder `Data/2035/FI_back_up_thiran/` is not that historical state: it already contains the post-ladder files. The executable provenance is `scripts/advanced/import_rep.py`: `ENS_Med`, Finland NUTS0, year 2050, PJ-to-GWh conversion, availability-weighted `EUR2010/GJ` costs, and a `1/3.3462` sludge-to-biogas conversion.
+
+| Resource retained beside the wood ladder | ENSPRESO codes | Current 2035 file (2050 source), TWh | Reconstructed 2035, TWh | Reconstructed cost, EUR2010/MWh |
+|---------------|---------------|--------------:|--------------:|--------------:|
+| `WET_BIOMASS` | `MINBIOSLU1` + `MINBIOGAS1` | 1.451 | **1.313** | **33.945** |
+| `ENERGY_CROPS_2` | `MINBIOCRP31` + `MINBIOCRP41` + `MINBIOCRP41a` | 7.754 | **5.388** | **24.207** |
+| `BIOWASTE` | `MINBIOMUN1` | 4.721 | **3.650** | **0.148** |
+| `BIOMASS_RESIDUES` | `MINBIOAGRW1` (agricultural waste) | 4.985 | **4.985** | **15.134** |
+
+The 2035 values linearly interpolate each commodity's 2030 and 2040 potential and unit cost before applying Paolo's transformations and aggregation. They were adopted on 2026-10-13 in the active Finland input and the three S1/S2/S3 reference tables, with the pre-change files copied to `_backups/*_20261013_before_2035_biomass_year_correction.csv`. The calculation is re-runnable with `scripts/check_fi_legacy_biomass_2035.py`. Completed canonical runs remain unchanged and still contain the former inputs; reruns are deferred until the wood ladder is finalised (flag T17). `WASTE` remains 11.095 TWh at 6.079 EUR/MWh under the author's legacy decision; neither `import_rep.py` nor the local source chain reconstructs it. Thiran attributes it to Elbersen et al. using Dommisse–Tychon.
+
+**Black-liquor classification and model boundary (checked 2026-10-13).**
+
+- The published ENSPRESO workbook contains no text match for “black liquor” or “liquor”. Its `MINBIOWOOa` energy commodity is additional stemwood converted to chips/pellets, not black liquor. The current FI1 identity is therefore a model proxy, not an ENSPRESO classification.
+- S2BIOM explicitly contains code `4132 Black liquor` in nine Finnish dry-matter TECH/BASE/UD01 sheets for 2012, 2020 and 2030. It is a secondary pulp-and-paper residue derived from pulp output; its zero mill-gate feedstock cost does not include the recovery plant or establish an unrestricted market price.
+- VTT Technology 272, printed pp. 112–113, describes black liquor as dissolved organic and inorganic kraft-pulp solids. After evaporation to about 60–85% dry solids, it is sent to a recovery boiler, where cooking chemicals are regenerated and steam is produced for electricity and mill processes. EUwood independently describes the stream as captive and fully used inside the pulp-and-paper process.
+- In the current EnergyScope matrix every `WOOD_FI*` resource feeds one common `WOOD` layer. Fourteen technologies consume it: power; industrial CHP/boiler; district CHP/boiler; decentralised boiler; hydrogen; methane; gasoline, diesel, jet-fuel and LFO routes; methanol; and HVC. HVC is a direct non-energy route, while methanol and hydrogen can also enter chemical/feedstock chains. There is no separate chemical-recovery balance.
+- Because resources are pooled before conversion, completed results cannot identify an FI1 end use. The total wood-layer allocation in the nine runs is mainly HVC/methanol and industrial heat; tighter cases add biomethane/liquid fuels and decentralised heat, while district wood use is negligible. This is a model allocation, not evidence that real black liquor serves those pathways.
+
+The resulting decision question is whether black liquor should be represented as a separate, scenario-invariant captive stream tied to fixed pulp throughput and restricted to recovery/industrial CHP, rather than remaining inside FI1 and the general wood supply curve. Any explicit S2BIOM secondary-residue addition must also address its warning about double counting primary wood that first enters forest industry (flag T18). The concise expert question is stored in `paper1/reviews_comments_flags_pathforward/FLAGS.md` §5.1.
+
+**Current official cross-checks (accessed 2026-10-13).**
+
+- Luke `0800_puukay.px`: total chip imports were 4.404 Mm³ in 2020, 1.669 in 2024 and 1.091 in provisional 2025; use in heating/power was 1.847, 0.788 and 0.451 Mm³. Luke defines these volumes as solid cubic metres with bark and uses 0.80 MWh/loose m³ with 0.40 solid m³/loose m³, exactly **2.0 MWh/solid m³**.
+- Luke `1900_puukay.px`: pellet imports were 111.8 kt in 2020, 212.6 kt in 2024 and 202.5 kt in 2025. Pellets are a separate customs/statistical product, and Luke uses **4.7 MWh/t**. The energy-supply tier uses imports less exports because the model has no re-export flow.
+- Luke `0300_enekau.px`: national delivery-sale prices are available by domestic energy-wood assortment through 2025; they are volume prices, not import-border prices, and require an approved assortment-specific energy conversion.
+- UN Comtrade 2024: Finland imported 0.674 Mt coniferous chips, 0.478 Mt non-coniferous chips and 0.213 Mt pellets. Estonia, Latvia, Lithuania and Sweden supplied 98.8%, 82.6% and 75.0% of these product totals, respectively. Norway and Russia report zero in the selected 2024 rows. World totals for non-coniferous chips and pellets carry Comtrade estimation flags; selected country rows do not.
+- The 2024 customs benchmark uses the ECB annual rate 1.08238046875 USD/EUR. Using Luke's official energy factors, the world-total Comtrade values imply **36.816 EUR2024/MWh for chips**, **41.691 for pellets** and a central-volume weighted **38.577 EUR2024/MWh CIF**. The chip price denominator uses all imported chips because customs value is not split by Finnish end use; the availability tier itself includes only chips reported as consumed in heating/power.
+- Luke's 2021 all-mode long-distance wood-transport average is 8.94 EUR/m³ over 161 km. At 2.0 MWh/m³ this is 4.47 EUR2021/MWh; using the same per-MWh value for pellets is conservative. HaminaKotka's 2025 port dues add 0.64 EUR/m³ for chips and, conservatively, the generic dry-bulk rate of 1.40 EUR/t for pellets.
+- Thiran defines `c_op` in M EUR2015/GWh. Eurostat Finnish all-items HICP therefore deflates the CIF, transport and port components to EUR2015: **32.193 + 4.212 + 0.256 = 36.661 EUR2015/MWh**. This resolves the import tier's price basis but not the wider model-wide mixed-price-year flag S-PY.
+- StatFin `12qz.px`: municipal waste treated for energy recovery declined from 1.932 Mt in 2020 to 1.282 Mt in 2024. This is a modern context series, not evidence for the inherited renewable/non-renewable split or for the model's energy potential.
+
+For imports, Colla et al. separate finite neighbouring, other-EU and rest-of-world sources and add a distinct artificial unlimited RoW-II stress backstop at 81.5 EUR/MWh. A Finnish two-tier simplification is methodologically defensible as:
+
+1.  **Finite Baltic/Nordic tier.** Use post-2022 Luke chips actually consumed in heating/power plus net pellet imports. The 2022–2024 mean is held constant to 2035 without trend growth; official energy factors convert it to **2.259 TWh/y**. Its evidence-led delivered cost is **36.7 EUR2015/MWh** (model `c_op` **0.03666 M EUR/GWh**) and is held constant in real terms to 2035. Do not count chips used by forest industry as freely available energy supply.
+2.  **Unlimited RoW stress tier.** The author selected **81.5 EUR2015/MWh** as an explicit model stress assumption inspired by Colla's RoW-II tier. It is not a Finnish 2035 market observation and is not presented as a price-year conversion of Colla's value.
+
+For the conservative 2035 central case, the 2022–2024 means are **0.722 Mm³/y of imported chips actually consumed in heating/power** and **0.1736 Mt/y of net pellet imports**, equal to 1.443 and 0.816 TWh/y. The finite high sensitivity is the maximum annual combined observation, 2024: **0.788 Mm³ chips plus 0.2121 Mt net pellets = 2.573 TWh/y**. Provisional 2025 gives the downside **0.451 Mm³ plus 0.2018 Mt = 1.850 TWh/y**. This avoids independently mixing maxima from different years.
+
+The five import-evidence questions are resolved: Luke volume basis, pellet overlap/netting, energy conversion, Finnish port/inland proxy and EUR2015 harmonisation. With explicit author approval, the future-run inputs now use finite `WOOD_FI5` at 2.259 TWh/y and 36.661 EUR2015/MWh, plus unlimited `WOOD_FI6` at the explicit 81.5 EUR2015/MWh stress value. Both retain 0.040 ktCO2e/GWh: for FI6 this matches Colla's good-quality RoW-II factor; for neighbouring FI5 it is an approved conservative carry-over rather than Colla's lower 0.0216 neighbouring-country factor. The calculation is reproducible in [`scripts/analyse_fi_biomass_import_ladder.py`](../scripts/analyse_fi_biomass_import_ladder.py); its dated JSON output remains a session artefact. The nine completed canonical runs were not changed and predate the two-tier input.
+
 ## 5. Which source for which forest parameter (recommended roles, not yet decisions)
 
 | Need | Best current source | Cross-check / complement | Gap |
-|---|---|---|---|
+|------------------|------------------|------------------|------------------|
 | Availability of energy wood, net of material use | ENSPRESO ENS_Med/Low (as used) | S2BIOM UD5 (stemwood 48.5 TWh), BASE/HIGH residues (21.6 / 68.9 TWh) | S1 and S3 are not source-derived (T3, T4) |
 | Industrial by-products (sawmill, bark, black liquor) | ENSPRESO `W1`/`W1a` (FI3) + proxy FI1 | S2BIOM 4111–4132 (58 TWh incl. black liquor 24.6, LHV assumed), Statistics Finland (black liquor 43 TWh) | EUwood/Biomass Futures now obtained; black liquor not separable in ENSPRESO; reconcile organic residue mass and total dry solids before conversion |
 | Cost by assortment | Model assumptions | ENSPRESO €2010/GJ; S2BIOM road-side (floor) | Delivered cost incl. stumpage per assortment (Luke/Finnish Energy) |
@@ -196,18 +249,23 @@ For a paper-ready number, record: source ID and sheet/page/filter; original valu
 ## 6. Cautions and open points
 
 | ID | Point |
-|---|---|
+|------------------------------------|------------------------------------|
 | S-PY | **Price years are mixed and undocumented:** IEA WEO 2020 prices, DEA catalogue (year not stated), ENSPRESO €2010, S2BIOM €2012, Finnish biomass costs "IEA 2022". No single base year is stated in the paper. |
 | S-LIC | Licences/terms are **not stated** in the repo for most datasets (ENSPRESO, S2BIOM, DEA, Statistics Finland tables, JRC-IDEES). Check before redistributing data files or releasing the repository. |
-| S-MISS | Not in repo and therefore not re-checkable: IEA WEO 2020, EU Reference Scenario 2020, JRC-IDEES raw, Eurostat downloads, Luke tables, OPSD weather. (RED II, EUwood and Biomass Futures were added on 2026-10-12.) |
+| S-MISS | Not in repo and therefore not locally frozen: IEA WEO 2020, EU Reference Scenario 2020, JRC-IDEES raw and OPSD weather. Luke/StatFin tables used in §4.6 are re-queryable official APIs but their 2026-10-13 extracts are session artefacts, not committed snapshots. (RED II, EUwood and Biomass Futures were added on 2026-10-12.) |
 | S-MAP | Sheet-to-cell mapping is not documented for the DEA workbook and the Finland calibration workbooks. |
 | S-RED | Resolved in part (2026-10-12): the Directive text is in the repo and the chain Annex VI → Colla Table 2 → model is verified (FI1 remains a judgement, "case 7a" label wrong). See [forest_ghg_and_black_liquor_reference_values.md](./forest_ghg_and_black_liquor_reference_values.md). |
 
 ## 7. Change log
 
 | Date | Task | Files | Backup | Description | Status |
-|---|---|---|---|---|---|
+|------------|------------|------------|------------|------------|------------|
 | 2026-10-12 | Data-source register created | this file | – | Compiled from provenance CSV, thesis, docs and repo survey; no data, model or run changed | done (uncommitted) |
 | 2026-10-12 | RED II, EUwood, Biomass Futures added | §4.1, §4.3, §6 | – | Local copies retrieved; see forest_ghg_and_black_liquor_reference_values.md | done (uncommitted) |
 | 2026-10-12 | LHV/density/moisture source added | §4–5; `Data/exogenous_data/Biomass_fuel_properties/*`; reference-values note §8 | New reference files; register uncommitted | Qualified VTT ranges and CSV; no assumption or model input changed | done (uncommitted) |
 | 2026-10-12 | ENSPRESO inventory and agent-readable traceability | §0.1–0.2, §3, §4.3–4.5; `AGENTS.md` §6 | Register uncommitted; git history for tracked tracker | Verified filenames and biomass sheet/header locators; stable source IDs, evidence chains and bounded reading workflow; no data/model/run changed | done (uncommitted) |
+| 2026-10-13 | Thiran inheritance, 2035 correction, waste and imports | §0.2, §1–2, §4.6, §6; `FLAGS.md` T15–T19 | Dated copies in `_backups/`; generated audit CSVs retained in session artefacts | Reproduced pre-ladder pools, interpolated the four retained ENSPRESO categories to 2035, queried official Luke/StatFin tables, recorded evidence boundaries, then applied the approved year correction to all four Finland resource tables; wood ladder, `WASTE`, patches and runs unchanged | input correction done; rerun deferred |
+| 2026-10-13 | Import origin and CIF benchmark | §0.2, §4.6; `FLAGS.md` T19 | API query outputs in session artefacts; no model value changed | Combined Luke physical totals, UN Comtrade 2024 partner/product data and ECB exchange rate; documented conditional energy/cost range and proposed finite-tier method | benchmark done; parameter decision pending |
+| 2026-10-13 | Black-liquor boundary and model-path audit | §4.6; `FLAGS.md` §5.1/T18 | Existing git history; no model/input/run changed | Distinguished ENSPRESO stemwood from S2BIOM `4132`, verified VTT recovery-boiler use, enumerated all 14 pooled-wood conversion paths and prepared a concise expert question | evidence complete; expert/author decision pending |
+| 2026-10-13 | Finnish import tier resolved | §0.2, §4.6; `scripts/analyse_fi_biomass_import_ladder.py`; `FLAGS.md` T19 | JSON result in session artefacts; no model value changed | Replaced provisional mass/LHV ranges with official Luke factors and net pellet flows; added Luke transport, HaminaKotka port dues and HICP-to-EUR2015 harmonisation. Proposed finite tier: 2.259 TWh/y at 36.7 EUR2015/MWh; high/downside 2.573/1.850 TWh/y | evidence complete; input and unlimited-tier decision pending |
+| 2026-10-13 | Two import tiers implemented | §4.4–4.6; `Data/2035/{00_INDEP,02_REF_REGION,FI}`; import/plot/check scripts; `FLAGS.md` T19 | Eight dated files in `_backups/*_20261013_before_import_tiers.*` | Applied approved FI5 finite tier (2.259 TWh/y, 36.661 EUR2015/MWh) and added FI6 unlimited stress tier (81.5 EUR2015/MWh); retained 0.040 ktCO2e/GWh for both by author decision. Completed runs untouched | input done; rerun deferred |

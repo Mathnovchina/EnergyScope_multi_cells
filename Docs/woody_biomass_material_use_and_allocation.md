@@ -14,7 +14,7 @@ Evidence: model files, the nine canonical runs, [Paolo Thiran's thesis](../Data/
 ## 2. What the model contains
 
 - Demands: energy end-uses plus `NON_ENERGY` ([ESMC_model_AMPL.mod](../esmc/energy_model/ESMC_model_AMPL.mod) L128–147, L285–290), split into HVC, AMMONIA, METHANOL by `share_ned` (Finland: 93.04% / 3.06% / 3.90% of 12,581 GWh in 2035, `Data/2035/FI/Misc.json`).
-- Supply: `WOOD_FI1`…`FI5` and `ENERGY_CROPS_2` all feed the single `WOOD` layer (`layers_in_out` = 1 in [Layers_in_out.csv](../Data/2035/00_INDEP/Layers_in_out.csv)). Thiran thesis, printed p. 65–66: "woody biomass and second generation energy crops supply both the wood layer".
+- Supply: current future-run inputs have `WOOD_FI1`…`FI6` and `ENERGY_CROPS_2` feeding the single `WOOD` layer (`layers_in_out` = 1 in [Layers_in_out.csv](../Data/2035/00_INDEP/Layers_in_out.csv)). The nine canonical runs predate FI6 and contain FI1–FI5 only. Thiran thesis, printed p. 65–66: "woody biomass and second generation energy crops supply both the wood layer".
 - Wood-consuming technologies: industrial, district and decentralised boilers; cogeneration (never built); `BIOMASS_TO_POWER`; `BIOMASS_TO_HVC` (2.381 GWh wood per GWh HVC); `BIOMASS_TO_METHANOL`; biodiesel/jet/LFO/gasoline and biomethane.
 - Ammonia uses hydrogen routes, not a direct WOOD input. An indirect biomass-to-hydrogen contribution cannot be ruled out from this wood-layer summary alone.
 - Thesis, printed p. 52–53: NED is built as three chemical feedstocks (HVC, methanol, ammonia) from Eurostat balances, Prodcom and trade data. It covers fossil feedstock replacement, not wood products.

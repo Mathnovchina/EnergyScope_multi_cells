@@ -61,7 +61,8 @@ Finland* — is built and its results are stable. In short:
   | `WOOD_FI2` | logging residues (branches, tops) | 22 €/MWh (26 in S3) |
   | `WOOD_FI3` | secondary woodchips / sawdust from processing | 27 €/MWh |
   | `WOOD_FI4` | direct fuelwood + landscape-care wood | 33 €/MWh |
-  | `WOOD_FI5` | Baltic/Nordic import backstop | 70 €/MWh |
+  | `WOOD_FI5` | Finite Baltic/Nordic imports | 36.661 €/MWh2015; 2.259 TWh/y |
+  | `WOOD_FI6` | Artificial unlimited RoW stress backstop | 81.5 €/MWh2015 |
 
 - **Three forest-management scenarios**, mapped from the Finnish policy literature
   (Blattert et al. 2022) and the ecological harvest ceiling (Mönkkönen et al. 2024), and

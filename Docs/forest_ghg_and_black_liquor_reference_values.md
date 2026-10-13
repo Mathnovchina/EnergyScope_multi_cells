@@ -61,7 +61,8 @@ Colla et al. (2022), Table 2 and notes a–c (local extract), take their footpri
 | Model value (t/GWh) | Repo documentation says | What the Directive says | Verdict |
 |---|---|---|---|
 | FI2 22 (21.6) | "case 3a, ≤ 500 km, forest residues" | Pellets from forest residues, case 3a, 1–500 km, typical 6 g/MJ = 21.6 | ✅ matches (a pellet value; woodchips from forest residues are 5 typical / 6 default = 18.0 / 21.6) |
-| FI5 40 (39.6) | "Colla, rest of world, good quality" | Pellets, case 3a, > 10,000 km, typical 11 g/MJ = 39.6 | ✅ matches; it is a long-distance value, conservative for Baltic/Nordic imports (6–7 g/MJ = 21.6–25.2) |
+| FI5 40 (39.6) | Author-approved conservative carry-over for finite Baltic/Nordic imports | Neighbouring good-quality pellets are 21.6 in Colla; >10,000 km is 39.6 | ⚠️ deliberately conservative; not the central neighbouring-country pathway |
+| FI6 40 (39.6) | "Colla, rest of world II, good quality" | Pellets, case 3a, >10,000 km, typical 11 g/MJ = 39.6 | ✅ matches the artificial unlimited RoW stress tier |
 | FI3 14 (14.4) | "case 7a" | **No "case 7a" exists in Annex VI.** Colla's note b gives 14.4 for "landscape care and other solid biodegradable waste" and maps it to the category "Agricultural residues" (4 g/MJ). The same number is the typical value for **woodchips from industry residues, 1–500 km** (4 g/MJ) | ⚠️ value fine; the "case 7a" label in `Docs/biomass_supply_curve_fi.md` and the traceability doc is wrong |
 | FI4 19 (18.7) | 60/40 blend of 21.6 and 14.4 | Blend of the two values above | ✅ arithmetic; blend weights are an assumption |
 | FI1 10 | "≈ 50% of forest-residue baseline (21.6 × 0.5)" | 10 t/GWh = 2.8 g/MJ. Not a Directive value. Closest: woodchips from industry residues 4 g/MJ typical (14.4); residues have zero upstream emissions to the point of collection (Part B point 18) | ⚠️ judgement; lies between zero and 14.4. Black liquor is not a named pathway in Part D |

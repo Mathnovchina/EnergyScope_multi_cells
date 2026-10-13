@@ -1,4 +1,4 @@
-"""Read-only traceability check of the Finnish wood supply steps (WOOD_FI1..FI5).
+"""Read-only traceability check of the Finnish wood supply steps (WOOD_FI1..FI6).
 
 Recomputes the 2035 scenario availabilities from ENSPRESO, compares them with the
 scenario CSVs, the patch files, the values actually applied in the 9 canonical runs
@@ -27,6 +27,7 @@ STEPS = {
     "WOOD_FI3": ["MINBIOWOOW1", "MINBIOWOOW1a"],
     "WOOD_FI4": ["MINBIOWOO", "MINBIOFRSR1a"],
 }
+IMPORT_STEPS = ["WOOD_FI5", "WOOD_FI6"]
 fails = []
 
 
@@ -104,7 +105,7 @@ def main():
 
     print("\n3. Baseline Resources.csv equals S2 for wood steps")
     base = read_resources_csv(os.path.join(DATA, "FI", "Resources.csv"))
-    for step in list(STEPS) + ["WOOD_FI5"]:
+    for step in list(STEPS) + IMPORT_STEPS:
         check(f"baseline {step} avail", base.loc[step, "avail_local"], csvs["S2_NFS"].loc[step, "avail_local"], 1e-9)
 
     print("\n4. Values applied in the 9 canonical runs (paper1/results)")
@@ -131,12 +132,17 @@ def main():
     for d in sorted(glob.glob(os.path.join(RESULTS, "*"))):
         res = pd.read_csv(os.path.join(d, "Resources.csv")).set_index("Resources")
         gwp = pd.read_csv(os.path.join(d, "Gwp_breakdown.csv")).set_index("Elements")
-        for step in list(STEPS) + ["WOOD_FI5"]:
+        for step in list(STEPS) + IMPORT_STEPS:
+            if step not in res.index:
+                continue
             q = res.loc[step, "R_year_local"]
             if q > 100 and step not in verified:
                 check(f"{os.path.basename(d)} {step} implied gwp_op", gwp.loc[step, "GWP_op"] / q * 1000, ref[step] * 1000, 0.05)
                 verified.add(step)
-    print("  [INFO] not verifiable from run outputs (never used):", sorted(set(list(STEPS) + ["WOOD_FI5"]) - verified))
+    print(
+        "  [INFO] not verifiable from run outputs (never used or not present):",
+        sorted(set(list(STEPS) + IMPORT_STEPS) - verified),
+    )
 
     print("\n6. ENSPRESO cost cross-check (EUR2010/MWh) vs model c_op (EUR/MWh)")
     for step, codes in STEPS.items():

@@ -19,7 +19,15 @@ GROUPS = {
     "Biofuels/biomethane (diesel, jet, methane)": ["BIOMASS_TO_DIESEL", "BIOMASS_TO_JET_FUEL", "BIOMASS_TO_METHANE"],
     "Power only (BIOMASS_TO_POWER)": ["BIOMASS_TO_POWER"],
 }
-RES = ["WOOD_FI1", "WOOD_FI2", "WOOD_FI3", "WOOD_FI4", "WOOD_FI5", "ENERGY_CROPS_2"]
+RES = [
+    "WOOD_FI1",
+    "WOOD_FI2",
+    "WOOD_FI3",
+    "WOOD_FI4",
+    "WOOD_FI5",
+    "WOOD_FI6",
+    "ENERGY_CROPS_2",
+]
 
 
 def main():

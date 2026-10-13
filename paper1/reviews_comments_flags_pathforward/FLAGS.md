@@ -1,6 +1,6 @@
 # Flags register — Paper 1 review, forest supply audit and path forward
 
-**Single source of truth for every open or closed flag.** Consolidated 2026-10-12 from three overlapping documents (see §7). Paste-ready LaTeX lives in [SNIPPETS_overleaf.md](./SNIPPETS_overleaf.md) (author-owned Overleaf rule, [AGENTS.md](../../AGENTS.md) §7). Evidence and derivations stay in their topic files and are linked, not copied.
+**Single source of truth for every open or closed flag.** Consolidated 2026-10-12 from three overlapping documents (see §7). The ordered execution checklist is [PUBLISHABILITY_WORKPLAN.md](./PUBLISHABILITY_WORKPLAN.md). Paste-ready LaTeX lives in [SNIPPETS_overleaf.md](./SNIPPETS_overleaf.md) (author-owned Overleaf rule, [AGENTS.md](../../AGENTS.md) §7). Evidence and derivations stay in their topic files and are linked, not copied.
 
 **Rules in force:** no change to `.mod`, `Data/`, `calibration/patches/` or any run under `case_studies/` without explicit approval; `.tex` files are never edited by the agent.
 **IDs are unchanged** from the earlier documents (A, B, C, E = paper review; T = supply-curve audit) so that old references still resolve. New flags from the S2BIOM benchmark are `S2B-n`. Flags from the colleague review presented at the Pontignano annual meeting are `P-n` ([§1.5](#15-colleague-review--pontignano-annual-meeting-10-june-2026-p-flags)).
@@ -28,8 +28,13 @@
 | **W-4** | M | 🟠 | Black liquor/by-products tied to pulp throughput. EUwood/Biomass Futures figures obtained; observed 43 TWh in 2017. Their differing years, uncertain mass bases and conversion conventions do not establish a validated 25–60 TWh range. EUwood describes captive use; Biomass Futures assumes 0 €/t, with Table 3.5 inconsistent for 2020. VTT distinguishes total liquor solids from organic residue. Details in [reference-values note](../../Docs/forest_ghg_and_black_liquor_reference_values.md) §5/§8.4. | Reconcile denominators; decide S2B-1 and FI1 options (§6) | You |
 | **W-5** | L | 🟠 | The WOOD layer includes `ENERGY_CROPS_2` (up to 7.8 TWh), so layer totals (e.g. S3 −95% 47.8) exceed the paper's "domestic wood used" (40.0). | State in the paper's table | – |
 | **W-6** | L | 🟠 | ENSPRESO Low/Med/High (EFSOS storylines) are mapped onto Blattert NFS/BES/BDS: two scenario families mixed. | Disclose | – |
+| **T15** | M | 🟠 | **Thiran tables in the paper.** Table 1.11 (printed p. 60) is already substantively reproduced by the paper's Finland TD-input table, but the citation lacks the pinpoint page and the reason for choosing synchronous 2017 profiles. Table 1.14 (printed pp. 66–67) is not reproduced: the paper's biomass table covers only `WOOD_FI1`–`FI5`, not the five inherited categories, layers and ENSPRESO codes. | Add the p. 60 citation/2017 note; add the Table 1.14 mapping in a supplement together with the Finland ladder extension | Author pastes H1/H2 |
+| **T16** | M | 🟠 | **Legacy waste boundary.** Author decision is to retain Paolo's `WASTE` unchanged. `BIOWASTE` is ENSPRESO `MINBIOMUN1`; `WASTE` is an older non-renewable pool attributed to Elbersen et al./Dommisse–Tychon, but the local calculation does not prove the renewable/non-renewable split. StatFin table 12qz supplies current municipal-waste treatment totals, not that split. | Disclose the inherited boundary and non-verified partition in the paper/supplement; do not claim that 12qz validates 11.095 TWh | H3; no input change |
+| **T17** | H | 🟢 | **Mixed-year 2035 inputs corrected 2026-10-13.** `WET_BIOMASS`, `ENERGY_CROPS_2`, `BIOWASTE` and `BIOMASS_RESIDUES` had retained Paolo's ENSPRESO `ENS_Med` **2050** values. Commodity-level 2030–2040 interpolation gives 2035 values of **1.313, 5.388, 3.650 and 4.985 TWh**, respectively (costs **33.945, 24.207, 0.148 and 15.134 EUR2010/MWh**). | Applied to the active input and S1/S2/S3 reference tables with dated backups; verified by `scripts/check_fi_legacy_biomass_2035.py`. Canonical completed runs remain unchanged and must not be reinterpreted | Rerun later under step 7 |
+| **T18** | H | 🟡 | **Black liquor is a captive pulp-mill by-product, not a harvest assortment.** EUwood says it arises and is used within one industrial process; S2BIOM derives it from pulp output and assigns zero mill-gate feedstock cost. Scaling it directly with S1/S2/S3 harvest would be inconsistent while pulp demand is fixed. S2BIOM also warns that summing primary forestry and secondary-residue base potentials double counts wood flows. | Preferred design for discussion: separate black liquor from stemwood, hold it scenario-invariant under fixed pulp throughput, and represent its captive-use boundary; decide implementation before rebuilding curves | You; likely model/input change and reruns |
+| **T19** | M | 🟢 | **Two-tier import input implemented 2026-10-13.** Luke's official factors (2.0 MWh/solid m³ chips; 4.7 MWh/t pellets), heating/power boundary and net-pellet accounting give `WOOD_FI5` = **2.259 TWh/y**. Comtrade/ECB CIF, Luke transport, HaminaKotka port dues and Finnish HICP give **36.661 EUR2015/MWh** (`c_op=0.03666`). The approved artificial `WOOD_FI6` is unlimited at **81.5 EUR2015/MWh**, explicitly a stress assumption inspired by Colla rather than a Finnish observation. Both use 0.040 ktCO2e/GWh by author decision; this is conservative for neighbouring FI5 and matches Colla's good-quality RoW-II factor for FI6. High/downside availability checks remain 2.573/1.850 TWh/y. | Rerun with the completed ladder after T18/domestic design is settled; optional importer/terminal quote can validate the delivery proxy | Input done with dated backups; canonical runs unchanged |
 | **S-PY** | M | 🔴 | Price years mixed and undocumented (IEA WEO 2020, DEA catalogue, ENSPRESO €2010, S2BIOM €2012, "IEA 2022"). | Choose a base year and document | You |
-| **S-RED** | L | 🟠 | RED II text is now in the repo (`Data/exogenous_data/RED II/`). Chain verified against Annex VI Part D: FI2 21.6 and FI5 39.6 = pellets case 3a (typical 6 and 11 g/MJ); FI3 14.4 = industry-residue woodchips / agricultural residues (4 g/MJ). **Wrong label:** "case 7a" does not exist. FI1 (10 t/GWh = 2.8 g/MJ) is a judgement; residues have zero upstream emissions to collection (Part B pt 18). See [forest_ghg_and_black_liquor_reference_values.md](../../Docs/forest_ghg_and_black_liquor_reference_values.md) | Correct the "case 7a" wording in docs; decide FI1 GHG (options in that doc §6) | You |
+| **S-RED** | L | 🟠 | RED II text is now in the repo (`Data/exogenous_data/RED II/`). Chain verified against Annex VI Part D: FI2 21.6 and FI6 39.6 = pellets case 3a (typical 6 and 11 g/MJ); FI5 conservatively retains 39.6 by author decision although Colla's neighbouring good-quality factor is 21.6; FI3 14.4 = industry-residue woodchips / agricultural residues (4 g/MJ). **Wrong label:** "case 7a" does not exist. FI1 (10 t/GWh = 2.8 g/MJ) is a judgement; residues have zero upstream emissions to collection (Part B pt 18). See [forest_ghg_and_black_liquor_reference_values.md](../../Docs/forest_ghg_and_black_liquor_reference_values.md) | Correct the "case 7a" wording in docs; decide FI1 GHG (options in that doc §6) | You |
 | **S2B-7** | L | ⚪ | Data limits: early thinnings (1115, 1121/1122) are absent from the Finnish sheet; industrial streams have identical TECH/BASE; forest costs are held constant 2012–2030; UD5 can go negative elsewhere (not Finland); D1.6 and D1.8 disagree on UD2. | Carry as caveats | – |
 | **S2B-8** | ⚪ | ⚪ | Opportunity: 19 NUTS3 regions × 2012/2020/2030 would support a regional split (multi-cell) and a benchmark for the G4M output. | Decide with the G4M coupling plan | You |
 | T2 | M | 🟠 | Costs are modelling assumptions without traceable sources (FI1 11 vs ENSPRESO 34.7; FI3 27 vs ~7; FI4 33 vs ~12–17). FI2 22 matches the observed chip price. | Cost-source table with price year; optional sensitivity; add S2B-4 | – |
@@ -158,6 +163,8 @@ Potential definitions, modelling basis (EFISCEN, 50-year rolling maximum, FAWS, 
 
 | Date | Decision | Consequence |
 |---|---|---|
+| 2026-10-13 | **Adopt the evidence-led Finnish import split for future runs:** finite `WOOD_FI5` = 2,259 GWh/y at 0.03666 M EUR2015/GWh; new unlimited `WOOD_FI6` = 0.0815 M EUR2015/GWh as an explicit Colla-inspired stress assumption. Retain 0.040 ktCO2e/GWh for both. | Implemented in the shared, reference-region and four Finland future-run input files with dated backups; scripts wired for FI6. Canonical runs remain frozen. T19 input done; rerun waits for T18/domestic ladder. |
+| 2026-10-13 | **Rebuild the 2035 wood-assortment ladder while retaining Paolo's other biomass categories and legacy `WASTE`; correct the retained ENSPRESO categories to 2035; rerun after the new availability/cost design is approved.** The author approved the 2035 correction, domestic cost-curve work, Nordic import research, price-year harmonisation and eventual reruns; black-liquor-dependent ladder design remains paused for expert input. | T17 implemented with backups and a reproducible check. T18 remains the blocking scientific decision for the wood ladder. T19 was subsequently approved and implemented in the separate decision above. |
 | 2026-10-12 | **Publication benchmark — author selected Energy**, approved the primary framing of **constraint interaction and energy/feedstock allocation mechanisms supported by transparent supply provenance**, and approved the application-centred outline (Introduction; Methods/Finnish case; Results; Discussion/limitations; Conclusion; verified inherited detail in appendices). | Next approved batch: reconcile model identity, actual emissions boundary, result/validation accounting and citation identities, then prepare justified Overleaf snippets (E6, C1/C2, A1–A5, B.1/B.2, E4/E5, W-5, T8). No flags closed by this decision; T1 unchanged. No direct `.tex` edits, new assumptions, sensitivity ranges, model/input/patch changes or new runs approved. Benchmark and reproducible read-only checks remain session artefacts; exact journal fees/format details still require verification. |
 | 2026-10-08 | **T1 — `WOOD_FI1` kept as an aggregate industrial by-product proxy** (black liquor, bark, sawdust) with the ENSPRESO `MINBIOWOOa` volume; ENSPRESO-label caveat disclosed; cost 11 €/MWh and GHG 10 t/GWh retained as documented hypotheses; no re-run. | Closes T1/T12/T13/T14. Reasons: black liquor (43 TWh, 2017) is Finland's largest wood-energy source and absent from ENSPRESO; FI1 volume ≈ black liquor magnitude; cost, GHG and S3 response are consistent under that reading; 11 €/MWh is conservative vs a ~2–3 €/MWh blend. FI3 (12.5 TWh) is the literal ENSPRESO by-product code and cannot carry black liquor. Carry to IIASA: *replace the proxy with a physically grounded black-liquor/bark/sawdust/stemwood-chip split, including a captive-use restriction.* |
 | 2026-10-08 | ENS_High rejected for S1 (FI2 = 124 TWh, ~5× plausible); S1 = S2 × 1.20 as a stylised upper-bound sensitivity. | S2B-3 offers a sourced alternative (S2BIOM HIGH 68.9 TWh). |
@@ -192,10 +199,54 @@ Backlog from [AGENTS.md](../../AGENTS.md) (all need approval before model/data e
 3. **LHV basis (S2B-6, T5).** choose and source one dry-basis LHV set and moisture convention.
 4. **Cost table (T2, S2B-4).** build a cost-source table (model vs ENSPRESO vs S2BIOM road-side) for the paper or supplement.
 5. **Regionalisation (S2B-8).** whether NUTS3 S2BIOM data should feed the multi-cell or G4M comparison.
+6. **Black liquor (T18).** Confirm whether to replace the FI1 proxy with a separate, scenario-invariant captive by-product resource tied conceptually to pulp throughput; this is the evidence-led option but needs model/input design.
+7. **Imports (T19).** Done in future-run inputs with backups: finite FI5 **2.259 TWh/y at 36.7 EUR2015/MWh** and unlimited FI6 **81.5 EUR2015/MWh** as an explicit stress assumption; high/downside checks **2.573/1.850 TWh/y**. Rerun after T18/domestic ladder closure.
+8. **2035 legacy pools (T17).** Corrected and verified in the future-run inputs; completed canonical runs remain unchanged. Rerun only after the full ladder is approved.
+
+### 5.1 Expert question — black liquor boundary (ready to send)
+
+**Problem diagnosis.** The Finnish model currently uses one pooled `WOOD` layer. The
+`WOOD_FI1` step is labelled as industrial by-products including black liquor, but its
+45.4 TWh availability comes from ENSPRESO `MINBIOWOOa`, which is formally additional
+stemwood chips/pellets. A complete text search of the published ENSPRESO workbook found no
+black-liquor entry. S2BIOM, by contrast, explicitly represents `4132 Black liquor` as a
+secondary pulp-and-paper residue derived from pulp production and gives it zero mill-gate
+feedstock cost.
+
+VTT describes the physical route as weak liquor concentration followed by combustion in a
+recovery boiler, which regenerates cooking chemicals and simultaneously produces steam for
+electricity and mill processes. The model has no equivalent captive recovery layer:
+`WOOD_FI1` enters the common `WOOD` balance and can feed 14 technologies: power; industrial
+CHP/boiler; district CHP/boiler; decentralised boiler; biomass hydrogen and methane; four
+liquid-fuel routes; methanol; and HVC. The HVC route is a direct non-energy use; methanol and
+hydrogen can also support chemical/feedstock chains. The nine completed runs cannot attribute
+any downstream flow specifically to FI1, but the pooled wood allocation is dominated by
+non-energy HVC/methanol and industrial heat, with biomethane/liquid fuels and decentralised
+heat added in tighter cases. Treating FI1 as black liquor therefore makes a captive stream
+available to uses that are physically unlike mill recovery.
+
+Scaling black liquor with S1/S2/S3 harvest may also be inconsistent while pulp throughput is
+fixed, and adding explicit pulp-industry residues to primary forest potentials can double
+count wood entering industry.
+
+**Short Teams message to send.**
+
+> Hi [Name], thanks again for pointing me to S2BIOM. I have a quick modelling question on
+> black liquor. ENSPRESO, which I used for my current wood ladder, does not expose it as a
+> separate resource (`MINBIOWOOa` is actually additional stemwood chips/pellets), whereas
+> S2BIOM explicitly includes black liquor (`4132`) as a pulp-and-paper by-product linked to
+> pulp output. In EnergyScope, putting it in the general `WOOD` pool would let it feed heat,
+> power, transport fuels and chemical feedstock, although in reality it is mainly used
+> captively in pulp-mill recovery boilers for chemical recovery, steam and electricity.
+> In BeWhere or your biomass accounting, would you represent it as a separate captive
+> by-product tied to pulp output and restricted to recovery/industrial CHP, or include it in
+> the general woody-biomass supply curve? If pulp output is fixed across my forest scenarios,
+> would you keep its availability fixed, and use zero mill-gate feedstock cost or an internal
+> opportunity cost?
 
 ---
 
-## 5.1 Work order for the next session (prepared 2026-10-12)
+## 5.2 Work order for the next session (prepared 2026-10-12)
 
 Sequenced so that every read-only evidence task comes before the text it feeds. **Block A needs no approval** (read-only checks + paste-ready snippets into [SNIPPETS_overleaf.md](./SNIPPETS_overleaf.md); no `.tex`, model, input, patch or run is touched). **Block B** is author-owned restructuring. **Block C** is blocked on your decisions.
 
@@ -261,4 +312,4 @@ Agree the new §3 skeleton (stylised facts / model description / data and calibr
 | 2026-10-12 | Source register and material-use/allocation note; flags W-1…W-6, S-PY, S-RED; A3 explained | `Docs/data_sources_register.md`, `Docs/woody_biomass_material_use_and_allocation.md`, `scripts/summarise_wood_allocation.py`, this file | – | Evidence and documentation only | done (uncommitted) |
 | 2026-10-12 | RED II, EUwood, Biomass Futures retrieved; S-RED and W-4 updated | `Data/exogenous_data/RED II/*`, `Data/exogenous_data/EUwood_BiomassFutures/*`, `Docs/forest_ghg_and_black_liquor_reference_values.md`, this file | – | New reference files and documentation; no model, patch or run changed | done (uncommitted) |
 | 2026-10-12 | VTT fuel-property evidence; T5/S2B-6 updated | `Data/exogenous_data/Biomass_fuel_properties/*`, source register, reference-values note, this file | New reference files; notes uncommitted | Sourced ranges/equations; black-liquor boundaries qualified; no numerical assumptions adopted | done (uncommitted) |
-| 2026-10-12 | Colleague review ingested as flags **P-0…P-14** and a sequenced work order | this file (§1.5, §5.1, §6), `Pontignano_discussion__Bordenave__M__extracted.txt` (new), `AGENTS.md` | git HEAD | Review PDF text-extracted verbatim; each point grounded in `main_certosa.tex` line numbers and repository evidence, classed (blocker/correction/robustness/future work), cross-referenced to existing IDs (E6, C1/C2, C5, C6/C9, A1–A5, B.1/B.2, E4/E5, S-RED, T3, W-5) and given an explicit closure check. Nothing applied; no `.tex`, model, data, patch or run touched; P-4(b) flagged as requiring new runs and approval. | done (uncommitted) |
+| 2026-10-12 | Colleague review ingested as flags **P-0…P-14** and a sequenced work order | this file (§1.5, §5.2, §6), `Pontignano_discussion__Bordenave__M__extracted.txt` (new), `AGENTS.md` | git HEAD | Review PDF text-extracted verbatim; each point grounded in `main_certosa.tex` line numbers and repository evidence, classed (blocker/correction/robustness/future work), cross-referenced to existing IDs (E6, C1/C2, C5, C6/C9, A1–A5, B.1/B.2, E4/E5, S-RED, T3, W-5) and given an explicit closure check. Nothing applied; no `.tex`, model, data, patch or run touched; P-4(b) flagged as requiring new runs and approval. | done (uncommitted) |

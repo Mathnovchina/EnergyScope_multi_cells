@@ -95,7 +95,7 @@ CARRIER_COLORS = {
 # Stacking order (bottom to top) — most fossil at bottom, cleanest at top
 CARRIER_ORDER = [
     "Oil products", "Gas", "Nuclear", "Hydro",
-    "Wind", "Solar", "Other biomass", "Finnish forestry",
+    "Wind", "Solar", "Other biomass", "Wood supply",
 ]
 
 TIER_COLORS = {
@@ -103,16 +103,25 @@ TIER_COLORS = {
     "WOOD_FI2": "#74c476",   # medium green
     "WOOD_FI3": "#d4a017",   # amber
     "WOOD_FI4": "#c0392b",   # red
-    "WOOD_FI5": "#6c1a15",   # dark red (backstop — expensive)
+    "WOOD_FI5": "#6c1a15",   # dark red (finite imports)
+    "WOOD_FI6": "#2b0b08",   # near-black (unlimited stress backstop)
 }
 TIER_LABELS = {
     "WOOD_FI1": "FI-1  (~11 €/MWh)",
     "WOOD_FI2": "FI-2  (~22 €/MWh)",
     "WOOD_FI3": "FI-3  (~27 €/MWh)",
     "WOOD_FI4": "FI-4  (~33 €/MWh)",
-    "WOOD_FI5": "FI-5  backstop",
+    "WOOD_FI5": "FI-5  finite imports (~36.7 €/MWh)",
+    "WOOD_FI6": "FI-6  stress backstop (~81.5 €/MWh)",
 }
-TIER_ORDER = ["WOOD_FI1", "WOOD_FI2", "WOOD_FI3", "WOOD_FI4", "WOOD_FI5"]
+TIER_ORDER = [
+    "WOOD_FI1",
+    "WOOD_FI2",
+    "WOOD_FI3",
+    "WOOD_FI4",
+    "WOOD_FI5",
+    "WOOD_FI6",
+]
 
 # Availability limit dash styles (cumulative up to tier FI1 … FI4)
 AVAIL_STYLES = [
@@ -252,7 +261,14 @@ def load_run(run_dir: Path) -> dict:
         "Hydro":            s("RES_HYDRO"),
         "Wind":             s("RES_WIND"),
         "Solar":            s("RES_SOLAR"),
-        "Finnish forestry": s("WOOD_FI1", "WOOD_FI2", "WOOD_FI3", "WOOD_FI4", "WOOD_FI5"),
+        "Wood supply": s(
+            "WOOD_FI1",
+            "WOOD_FI2",
+            "WOOD_FI3",
+            "WOOD_FI4",
+            "WOOD_FI5",
+            "WOOD_FI6",
+        ),
         "Other biomass":    s("WET_BIOMASS", "BIOMASS_RESIDUES", "BIOWASTE",
                               "ENERGY_CROPS_2", "WASTE"),
     }
@@ -544,7 +560,7 @@ def main():
     # Panel B: biomass tiers + availability lines
     tier_handles = [
         mpatches.Patch(facecolor=TIER_COLORS[t], label=TIER_LABELS[t])
-        for t in TIER_ORDER if t != "WOOD_FI5"
+        for t in TIER_ORDER if t != "WOOD_FI6"
     ]
     avail_handles = [
         Line2D([0], [0], ls=ls, lw=1.4, color=lc, alpha=0.75, label=lbl)

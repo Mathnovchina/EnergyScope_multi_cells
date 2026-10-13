@@ -5,6 +5,11 @@
 **Author**: derived from Colla et al. (2022) methodology, adapted for Finland.  
 **Purpose**: Paper section justifying the stepped biomass supply curve replacing the single-price WOOD resource.
 
+**Current-input note (2026-10-13).** The future-run inputs now split imports into a
+finite `WOOD_FI5` tier and an artificial unlimited `WOOD_FI6` stress tier. The nine
+completed canonical runs predate this change and remain unchanged; their FI5 results
+must not be reinterpreted as results from the new two-tier design.
+
 ---
 
 ## 1. Colla et al. (2022) Methodology
@@ -71,7 +76,7 @@ The factor `(18.7/20.1) ≈ 0.930` converts between the lower heating values of 
 
 ### 2.1 ENSPRESO Component Mapping
 
-The total Finnish wood potential (WOOD = 110,806 GWh in ENS_Med 2050) decomposes exactly into **6 ENSPRESO energy-commodity codes**, grouped into **4 domestic supply steps** plus one **import backstop**:
+The total Finnish wood potential (WOOD = 110,806 GWh in ENS_Med 2050) decomposes exactly into **6 ENSPRESO energy-commodity codes**, grouped into **4 domestic supply steps** plus two **import tiers**:
 
 | Step | Label | ENSPRESO codes | Physical description |
 |------|-------|----------------|---------------------|
@@ -79,7 +84,8 @@ The total Finnish wood potential (WOOD = 110,806 GWh in ENS_Med 2050) decomposes
 | WOOD_FI2 | Logging residues | `MINBIOFRSR1` | Branches, tops, stumps left after commercial timber harvest |
 | WOOD_FI3 | Secondary wood products | `MINBIOWOOW1` + `MINBIOWOOW1a` | Woodchips and sawdust from secondary wood processing |
 | WOOD_FI4 | Direct fuelwood + landscape | `MINBIOWOO` + `MINBIOFRSR1a` | Roundwood cut for energy use; roadside/landscape care residues |
-| WOOD_FI5 | Baltic/Nordic imports | Market (Baltic pellets, SE/EE chips) | High-cost import backstop — unlimited in principle |
+| WOOD_FI5 | Baltic/Nordic imports | Luke energy-use chip imports plus net pellet imports; Comtrade/ECB CIF; Finnish delivery proxy | Finite observed-market tier |
+| WOOD_FI6 | Rest-of-world stress backstop | Artificial tier adapted from Colla's RoW-II method | Unlimited, deliberately expensive stress resource |
 
 ### 2.2 Scenario-Specific Availability (GWh/yr)
 
@@ -92,7 +98,8 @@ Derived directly from ENSPRESO database (`ENSPRESO_BIOMASS.xlsx`, sheet `ENER - 
 | WOOD_FI3 | 12,543 | 6,272  | 15,052 |
 | WOOD_FI4 | 5,420  | 4,071  | 6,504  |
 | **Domestic total** | **101,619** | **74,221** | **121,943** |
-| WOOD_FI5 | 1,000,000 | 1,000,000 | 1,000,000 |
+| WOOD_FI5 | 2,259 | 2,259 | 2,259 |
+| WOOD_FI6 | 1,000,000 | 1,000,000 | 1,000,000 |
 
 **Consistency check**:
 - S2/NFS domestic = 101,619 GWh (ENS_Med 2035 interpolated; see §2.5 for methodology) ✓
@@ -111,7 +118,8 @@ Cost estimates based on Finnish market data (Finnish Energy Industry, Luke, IEA 
 | WOOD_FI2 | **0.022** | Logging chips: collection + chipping + transport (~20–25 €/MWh, matches current calibrated flat price) |
 | WOOD_FI3 | **0.027** | Secondary woodchips from processing: slightly higher mobilisation cost (~25–30 €/MWh) |
 | WOOD_FI4 | **0.033** | Direct fuelwood (roundwood for energy) + landscape care: higher collection effort (~30–35 €/MWh) |
-| WOOD_FI5 | **0.070** | Baltic wood pellets / Swedish chips imports: spot market 60–80 €/MWh (2022) + transport |
+| WOOD_FI5 | **0.03666** | Evidence-led delivered finite tier: 2024 Comtrade/ECB CIF, Luke 2021 all-mode transport, HaminaKotka 2025 port dues, all deflated with Finnish HICP to EUR2015 |
+| WOOD_FI6 | **0.0815** | Explicit EUR2015 stress assumption inspired by Colla's artificial unlimited RoW-II tier; not a Finnish market observation or a claimed conversion of Colla's unstated price year |
 
 **Weighted average check (S2/NFS)**:
 
@@ -130,9 +138,10 @@ Values updated to RED II Annex VI supply-chain defaults as tabulated by Colla et
 | WOOD_FI2 | 0.022 | Case 3a, ≤500 km, forest residues = 0.0216 ≈ 0.022 | Logging residues: in-forest collection + forwarding + chipping + ~50 km transport — unchanged |
 | WOOD_FI3 | **0.014** | Case 7a, agricultural/short-supply-chain residues = 0.0144 | Secondary mill residues at processing sites; minimal additional transport; case 7a is conservative upper bound |
 | WOOD_FI4 | **0.019** | Blend 60% fuelwood (case 3a ≈ 0.022) + 40% landscape-care (case 7a ≈ 0.0144) → 0.0189 ≈ 0.019 | Fuelwood requires harvest + transport; landscape-care wood is short-chain |
-| WOOD_FI5 | 0.040 | Case 3a, >10,000 km = 0.0396 ≈ 0.040 | Rest-of-world backstop (Baltic/Nordic as primary market); conservative upper bound — unchanged |
+| WOOD_FI5 | 0.040 | Author-approved conservative carry-over | Finite Baltic/Nordic tier; deliberately conservative versus Colla's 0.0216 neighbouring-country good-quality factor |
+| WOOD_FI6 | 0.040 | Case 3a, >10,000 km = 0.0396 ≈ 0.040 | Artificial rest-of-world stress backstop |
 
-**GHG merit order** (non-monotone with cost order): FI1(10) < FI3(14) < FI4(19) < FI2(22) << FI5(40).  
+**GHG merit order** (non-monotone with cost order): FI1(10) < FI3(14) < FI4(19) < FI2(22) << FI5/FI6(40).
 This is physically correct: cheaper logging residues (FI2) require more supply-chain steps than mill-gate by-products (FI1, FI3).
 
 **Materiality note**: The revision (FI1: 20→10, FI3: 24→14, FI4: 26→19) reduces total biomass supply-chain GHG by ~600–750 ktCO₂/year under full domestic ceilings (S1/S2 at ~100–120 TWh). At a −95% GHG budget (~2,060 ktCO₂/y), this is ~25–35% of the remaining budget and may marginally affect GHG-constrained scenario results.
@@ -185,15 +194,15 @@ The supply curve figure (`plots/biomass_supply_curves_fi_2035.png`) uses the fol
 
 ### 3.1 Files Modified
 
-The supply curve implementation requires changes to **6 files** in `Data/2035/`:
+The supply curve implementation spans **8 files** in `Data/2035/`:
 
 | File | Change |
 |------|--------|
-| `00_INDEP/Resources_indep.csv` | Add 5 rows (WOOD_FI1–5) with Category='Renewable', Subcategory='Biomass' |
-| `00_INDEP/Layers_in_out.csv` | Add 5 rows with `layers_in_out[WOOD_FIx, WOOD] = 1.0` |
-| `00_INDEP/Misc_indep.json` | Add WOOD_FI1–5 to `NOT_LAYERS` list |
-| `02_REF_REGION/Resources.csv` | Add 5 rows with default avail_local=0, scenario-specific gwp/c_op |
-| `FI/Resources.csv` | Replace WOOD (avail=110,806) with WOOD=0 + WOOD_FI1–4 + WOOD_FI5 |
+| `00_INDEP/Resources_indep.csv` | Define WOOD_FI1–6 with Category='Renewable', Subcategory='Biomass' |
+| `00_INDEP/Layers_in_out.csv` | Define WOOD_FI1–6 with `layers_in_out[WOOD_FIx, WOOD] = 1.0` |
+| `00_INDEP/Misc_indep.json` | Include WOOD_FI1–6 in the `NOT_LAYERS` list |
+| `02_REF_REGION/Resources.csv` | Define WOOD_FI1–6 with default avail_local=0 and resource-specific GHG factors |
+| `FI/Resources.csv` | Set WOOD=0 and define WOOD_FI1–6, including finite FI5 and unlimited FI6 |
 | `FI/Resources_S1_BES.csv` / `_S2_NFS.csv` / `_S3_BDS.csv` | Same substitution with scenario-specific avail_local |
 
 **`ESMC_model_AMPL.mod`** does **not** require changes for the basic supply curve (the `layer_balance` constraint automatically handles new NOT_LAYERS resources). The optional sustainability constraint (§3.3) would require AMPL modifications.
@@ -232,7 +241,8 @@ var High_wood_FI {c in REGIONS} >= 0;
 subject to def_low_wood_FI {c in REGIONS}:
     Low_wood_FI[c] = sum {t,h,td} (
         (R_t_local[c,'WOOD_FI1',h,td] + R_t_local[c,'WOOD_FI3',h,td]
-         + R_t_local[c,'WOOD_FI5',h,td]) * t_op[h,td]);
+         + R_t_local[c,'WOOD_FI5',h,td]
+         + R_t_local[c,'WOOD_FI6',h,td]) * t_op[h,td]);
 
 subject to def_high_wood_FI {c in REGIONS}:
     High_wood_FI[c] = sum {t,h,td} (
@@ -261,7 +271,8 @@ Full table with all parameters per scenario per step:
 | WOOD_FI2 | 38,214           | 0.022               | 0.022 |
 | WOOD_FI3 | 12,543           | 0.027               | 0.024 |
 | WOOD_FI4 | 5,420            | 0.033               | 0.026 |
-| WOOD_FI5 | 1,000,000        | 0.070               | 0.040 |
+| WOOD_FI5 | 2,259            | 0.03666             | 0.040 |
+| WOOD_FI6 | 1,000,000        | 0.0815              | 0.040 |
 
 ### S3/BDS — Biodiversity-Driven Scenario (ENS_Low 2030)
 
@@ -272,7 +283,8 @@ Full table with all parameters per scenario per step:
 | WOOD_FI2 | 20,690           | 0.026               | 0.022 |
 | WOOD_FI3 | 6,272            | 0.027               | 0.024 |
 | WOOD_FI4 | 4,071            | 0.033               | 0.026 |
-| WOOD_FI5 | 1,000,000        | 0.070               | 0.040 |
+| WOOD_FI5 | 2,259            | 0.03666             | 0.040 |
+| WOOD_FI6 | 1,000,000        | 0.0815              | 0.040 |
 
 > **Note on WOOD_FI2 cost in S3/BDS**: The c_op is increased from 0.022 to 0.026 €/kWh to reflect that the BDS constraint on harvest intensity forces collection of more dispersed/remote residues (the accessible low-cost fraction is smaller under stricter ecological constraints).
 
@@ -285,7 +297,8 @@ Full table with all parameters per scenario per step:
 | WOOD_FI2 | 45,857           | 0.022               | 0.022 |
 | WOOD_FI3 | 15,052           | 0.027               | 0.024 |
 | WOOD_FI4 | 6,504            | 0.033               | 0.026 |
-| WOOD_FI5 | 1,000,000        | 0.070               | 0.040 |
+| WOOD_FI5 | 2,259            | 0.03666             | 0.040 |
+| WOOD_FI6 | 1,000,000        | 0.0815              | 0.040 |
 
 ---
 

@@ -17,7 +17,8 @@ Renewable,Biomass,WOOD_FI1,0.010,0,0,Aggregate industrial by-products (black liq
 Renewable,Biomass,WOOD_FI2,0.022,0,0,Logging residues (branches/tops/stumps) - MINBIOFRSR1
 Renewable,Biomass,WOOD_FI3,0.014,0,0,Secondary woodchips and sawdust from processing - MINBIOWOOW1+MINBIOWOOW1a - RED II case 7a 14.4 ktCO2/GWh
 Renewable,Biomass,WOOD_FI4,0.019,0,0,Direct fuelwood and landscape residues - MINBIOWOO+MINBIOFRSR1a - RED II blend 60/40 case3a/case7a -> 19
-Renewable,Biomass,WOOD_FI5,0.040,0,0,Nordic/Baltic pellet and chip imports (backstop)
+Renewable,Biomass,WOOD_FI5,0.040,0,0,Finite Baltic/Nordic pellet and chip imports - conservative GWP factor retained by author decision
+Renewable,Biomass,WOOD_FI6,0.040,0,0,Artificial unlimited rest-of-world stress backstop - Colla RoW-II good-quality GWP factor
 Renewable,Biomass,WET_BIOMASS,0.01056,0,0,
 Renewable,Biomass,ENERGY_CROPS_2,0.00756,0,0,
 Renewable,Biomass,BIOMASS_RESIDUES,0.00324,0,0,

@@ -10,13 +10,13 @@ def find_run(scenario, ghg):
             return d
     return None
 
-WOOD_RESOURCES = ['WOOD_FI1','WOOD_FI2','WOOD_FI3','WOOD_FI4','WOOD_FI5']
+WOOD_RESOURCES = ['WOOD_FI1','WOOD_FI2','WOOD_FI3','WOOD_FI4','WOOD_FI5','WOOD_FI6']
 
 scenarios = ['S1_BES', 'S2_NFS', 'S3_BDS']
 ghgs = ['unconstrained', 'ghg_95pct', 'ghg_95pct_nonuke']
 
 print('Wood resource use (GWh/yr) — summed across all regions\n')
-header = f'{"Scenario":12s}  {"GHG config":25s}  {"FI1 TWh":>8} {"FI2 TWh":>8} {"FI3 TWh":>8} {"FI4 TWh":>8} {"FI5 TWh":>8}  {"TOTAL TWh":>10}'
+header = f'{"Scenario":12s}  {"GHG config":25s}  {"FI1 TWh":>8} {"FI2 TWh":>8} {"FI3 TWh":>8} {"FI4 TWh":>8} {"FI5 TWh":>8} {"FI6 TWh":>8}  {"TOTAL TWh":>10}'
 print(header)
 print('-'*len(header))
 
@@ -36,8 +36,8 @@ for s in scenarios:
             else:
                 row[fi] = 0.0
         total = sum(row.values())
-        vals = '  '.join(f'{row.get(f"WOOD_FI{i}",0)/1000:>8.1f}' for i in range(1,6))
+        vals = '  '.join(f'{row.get(f"WOOD_FI{i}",0)/1000:>8.1f}' for i in range(1,7))
         print(f'{s:12s}  {g:25s}  {vals}  {total/1000:>10.1f}')
 
 print()
-print('NOTE: FI5 is RoW import backstop (70 €/MWh, avail_exterior=1e6 GWh)')
+print('NOTE: canonical runs predate finite FI5 + unlimited FI6; absent FI6 is reported as zero')
