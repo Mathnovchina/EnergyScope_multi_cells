@@ -114,6 +114,7 @@ bulk file reorganisation.
 
 Update this section as work progresses (newest first).
 
+- **2026-10-14** — Reorganised `paper1/reviews_comments_flags_pathforward/SNIPPETS_overleaf.md` into an explicit Overleaf paste workflow. Added a current paste queue and standard `PASTE NOW` / `DONE` / `HOLD — DO NOT PASTE` statuses; each active item now identifies the target location, exact anchor text and required action before a copy-only LaTeX block. Corrected D5 to done because the sentence is already in `main_V1.tex`, and narrowed D2 to replacement of the one remaining incorrect sentence. No `.tex`, model, data, patch or run changed. Done, uncommitted.
 - **2026-10-13** — Reconciled the Overleaf snippet tracker with author-owned `paper1/Overleaf_working_paper/main_V1.tex` (previous main version retained as `main_V0.tex`): D1, D3 and H1 are present; D2 is only partly applied, with one incorrect S3-versus-S1 comparison remaining. Updated D4/D6 evidence notes from the EnergyScope TD 2019 demonstration and Thiran thesis; explained the 1.2% score formula and constrained-target caveat; deferred D7, held G/H2 pending author decisions, removed H3 per author request, and marked the D9 scaling chain not paste-ready pending evidence. Added snippet-format preference below. No `.tex`, model, data, patch or run changed. Done, uncommitted.
 - **2026-10-13** — Added `paper1/reviews_comments_flags_pathforward/PUBLISHABILITY_WORKPLAN.md`, an exhaustive ordered checklist from the current evidence state to an *Energy* submission. It separates work possible while waiting for the black-liquor expert, decisions and the T18 gate, pre-run input/reproducibility gates, the replacement 3×3 matrix, post-run auditing, manuscript restructuring, supplement, robustness options and submission requirements. It explicitly distinguishes the minimum Paper 1 package from optional sensitivities and Paper 2 G4M/sink/disturbance work. `FLAGS.md` remains the status source and now links to the workplan. Documentation only; no model, data, patch, run or `.tex` changed. Done, uncommitted.
 - **2026-10-13** — Resolved and implemented the approved two-tier Finnish biomass import design for future runs. Reproducible evidence gives finite `WOOD_FI5` = 2.259 TWh/y at 36.661 EUR2015/MWh (`c_op=0.03666 M EUR/GWh`); observed high/downside checks are 2.573/1.850 TWh/y. Inputs: 2022–2024 mean 0.722 Mm³ energy-use chips plus 0.1736 Mt net pellets; Luke 2.0 MWh/solid m³ and 4.7 MWh/t; Comtrade/ECB CIF 32.193 EUR2015/MWh; Luke transport 4.212; HaminaKotka port due 0.256. Added unlimited `WOOD_FI6` at the author-approved 81.5 EUR2015/MWh explicit Colla-inspired stress value. Both use 0.040 ktCO2e/GWh by author decision. Wired shared resources, WOOD layer, `NOT_LAYERS`, reference region, all four Finland resource tables and related scripts; eight input backups use `_20261013_before_import_tiers`. Updated the source register, supply-curve design and T19. No AMPL `.mod`, patch, completed run or `.tex` changed; rerun deferred until T18/domestic ladder is settled. Done, uncommitted.
@@ -168,6 +169,10 @@ Update this section as work progresses (newest first).
 - **Snippet style preference:** in this author's Overleaf snippets, avoid LaTeX emphasis,
   paragraph-heading and typewriter-formatting commands. Use ordinary prose and paragraph flow;
   write identifiers in plain text or escaped LaTeX text.
+- **Snippet instruction format:** every active Overleaf snippet must state a clear status, the
+  target location, exact anchor text, and one action (`REPLACE`, `INSERT AFTER`, or `DELETE`)
+  immediately before the copy-only LaTeX block. Keep held evidence outside the active paste queue
+  and label it `HOLD — DO NOT PASTE`.
 
 ---
 

@@ -68,7 +68,7 @@
 | C2 | Biogenic combustion CO₂ = 0; only supply-chain GHG (RED II) charged. | D3 applied in V1 |
 | C3 | Peat is not a separate model resource; the coal-plus-peat comparison maps to one 35 TWh COAL availability cap. The exact aggregate match is imposed, not independent evidence. | D4 snippet revised; not yet pasted |
 | C4 | The 2017 run relaxes only the CO₂ cap; it remains a least-cost optimisation subject to resource and technology-capacity constraints. Relaxation is not used in 2035. | D4 snippet revised; not yet pasted |
-| C5 | Discount rate (1.5%) and lifetimes not stated. | D5 |
+| C5 | The 1.5% discount rate and technology-specific lifetimes are now stated after the total-cost objective in V1. | D5 applied; no further paste required |
 | C6 | 2035 demand projection method undocumented in V1. Thiran §1.2.2 (pp. 51–53) describes the EU Reference Scenario 2020 framework and sector-specific disaggregation. | D6 filled with source-based wording; not yet pasted |
 | C7 | Single node (no intra-Finland spatial detail). | D7 deferred at author's request |
 | C8 | S1 (+20%) and S3 (40 TWh) are stylised/audited: repeat in results and figure footnotes. | – |
